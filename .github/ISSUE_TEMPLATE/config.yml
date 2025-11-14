@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Readme
+    url: https://github.com/catbee-technologies/catbee-docs#readme
+    about: Check the README for more information about the project.
+  - name: Discussions
+    url: https://github.com/catbee-technologies/catbee-docs/discussions
+    about: Ask questions or start a discussion here.
+  - name: Security Policy
+    url: https://github.com/catbee-technologies/catbee-docs/security/policy
+    about: Report security vulnerabilities responsibly here.

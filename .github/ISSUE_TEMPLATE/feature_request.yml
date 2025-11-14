@@ -1,0 +1,89 @@
+name: "Feature Request"
+description: Suggest improvements or new ideas for the documentation or docs website.
+title: "[Feature]: "
+labels: ["enhancement", "feature-request"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Have an idea to improve the documentation or website?  
+        Please fill out the details below to help us evaluate your request.
+
+  - type: checkboxes
+    id: prechecks
+    attributes:
+      label: Pre-checks
+      options:
+        - label: I have searched existing issues to avoid duplicates.
+          required: true
+        - label: I verified this request is related to documentation or the docs site.
+          required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area of Improvement
+      options:
+        - New Documentation Page
+        - Improve Existing Page
+        - Navigation / Sidebar Improvements
+        - UI / Layout Enhancement
+        - Search Improvements
+        - Build / Deployment Improvements
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: summary
+    attributes:
+      label: Feature Summary
+      placeholder: Short description, e.g., "Add a section for environment variable examples."
+    validations:
+      required: true
+
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Motivation / Problem
+      placeholder: |
+        Why is this needed?  
+        What problem does it solve for readers or contributors?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed Solution
+      placeholder: |
+        Explain how you imagine this improvement working.  
+        (New page outline, UI changes, examples, diagrams, etc.)
+    validations:
+      required: true
+
+  - type: textarea
+    id: examples
+    attributes:
+      label: Examples / References (optional)
+      placeholder: |
+        Links to other docs, mockups, screenshots, or inspiration.
+    validations:
+      required: false
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      options:
+        - Low
+        - Medium
+        - High
+    validations:
+      required: false
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: Additional Context
+      placeholder: Anything else you'd like us to know.

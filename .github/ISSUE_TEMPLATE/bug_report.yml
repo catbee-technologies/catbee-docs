@@ -1,0 +1,96 @@
+name: "Bug Report"
+description: "Report an issue with the documentation or the docs website."
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a documentation issue!  
+        Please provide as much detail as possible so we can address it quickly.
+
+  - type: checkboxes
+    id: prechecks
+    attributes:
+      label: Pre-checks
+      options:
+        - label: I have searched existing issues to avoid duplicates.
+          required: true
+        - label: I have refreshed the page and cleared the cache if it appears UI-related.
+          required: false
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Affected Area
+      options:
+        - Documentation Content (text, examples, incorrect info)
+        - Broken Link
+        - Sidebar / Navigation
+        - UI / Styling Issue
+        - Build Error
+        - Search Not Working
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: page
+    attributes:
+      label: Page URL or File Path
+      placeholder: e.g., /docs/getting-started or docs/intro.md
+    validations:
+      required: true
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Issue Summary
+      placeholder: Short and clear description of the problem.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      placeholder: |
+        1. Go to the page...
+        2. Click on...
+        3. Observe the issue...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      placeholder: What did you expect to see?
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      placeholder: What happened instead? Include screenshots if helpful.
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Console / Build Logs (if applicable)
+      description: Include build output, console errors, or DevTools logs.
+      placeholder: |
+        ```
+        <paste logs here>
+        ```
+    validations:
+      required: false
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: Additional Context
+      placeholder: Anything else that might help us understand the issue.
