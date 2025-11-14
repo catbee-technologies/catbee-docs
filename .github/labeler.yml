@@ -1,0 +1,73 @@
+# Branch based labels
+feat:
+  - head-branch:
+    - "^feat/"
+
+feature:
+  - head-branch:
+    - "^feature/"
+
+hotfix:
+  - head-branch:
+    - "^hotfix/"
+
+fix:
+  - head-branch:
+    - "^fix/"
+
+docs:
+  - head-branch:
+    - "^docs/"
+
+style:
+  - head-branch:
+    - "^style/"
+
+refactor:
+  - head-branch:
+    - "^refactor/"
+
+chore:
+  - head-branch:
+    - "^chore/"
+
+security:
+  - head-branch:
+    - "^security/"
+
+# Folder based labels
+
+ci:
+  - changed-files:
+    - any-glob-to-any-file: ".github/workflows/**"
+  - head-branch:
+    - "^ci/"
+
+readme:
+  - changed-files:
+    - any-glob-to-any-file: "README.md"
+
+dependency:
+  - changed-files:
+    - any-glob-to-any-file: "package.json"
+    - any-glob-to-any-file: "package-lock.json"
+
+docs:
+  - changed-files:
+    - any-glob-to-any-file: "docs/**"
+
+ng-catbee:
+  - changed-files:
+    - any-glob-to-any-file: "docs/@ng-catbee/**"
+
+ng-catbee-monaco-editor:
+  - changed-files:
+    - any-glob-to-any-file: "docs/@ng-catbee/monaco-editor/**"
+
+catbee:
+  - changed-files:
+    - any-glob-to-any-file: "docs/catbee/**"
+
+catbee-utils:
+  - changed-files:
+    - any-glob-to-any-file: "docs/@catbee/utils/**"
