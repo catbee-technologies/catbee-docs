@@ -15,10 +15,6 @@ fix:
   - head-branch:
     - "^fix/"
 
-docs:
-  - head-branch:
-    - "^docs/"
-
 style:
   - head-branch:
     - "^style/"
@@ -55,6 +51,9 @@ dependency:
 docs:
   - changed-files:
     - any-glob-to-any-file: "docs/**"
+    - any-glob-to-any-file: "*.md"
+  - head-branch:
+    - "^docs/"
 
 ng-catbee:
   - changed-files:
