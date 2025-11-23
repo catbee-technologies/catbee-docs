@@ -7,7 +7,7 @@ pagination_prev: null
 
 ## @ng-catbee/monaco-editor – Angular Monaco Editor Integration
 
-> A modern Angular library that seamlessly integrates the Monaco Editor, offering fully support for both **single** and **diff** editors — fully compatible with Reactive Forms, Template-driven Forms, and custom data models.
+> A modern Angular library that seamlessly integrates the Monaco Editor, offering full support for both **single** and **diff** editors — fully compatible with Reactive Forms, Template-driven Forms, and Signal Forms.
 
 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', margin: '1rem 0', }}>
   <img src="https://img.shields.io/badge/build-passing-brightgreen" alt="Build Status" />
@@ -34,11 +34,19 @@ pagination_prev: null
 
 - 📝 **Single Editor**: Drop-in Monaco editor for Angular apps
 - 🔀 **Diff Editor**: Effortlessly compare code side-by-side
-- ⚙️ **Supports Reactive & Template-driven Forms**: (FormControl, ngModel)
+- ⚙️ **Supports Reactive, Template-driven & Signal Forms**: (FormControl, ngModel, Signal)
 - 🎨 **Customizable**: Language, theme, and editor settings
-- 💡 **Custom Model Binding**: ([model] input for flexibility)
 - 🎨 **Highly Configurable**: theme, language, layout, options
 - 🧠 **Full Type Safety**: with rich TypeScript definitions
+
+## 🧩 Angular Compatibility
+
+| Angular Version | Supported                                                    |
+| --------------- | ------------------------------------------------------------ |
+| `v17` and above | ✅ Fully supported                                           |
+| `v20` & `v21`   | ✅ v21 release fully supports both Angular 20 and Angular 21 |
+
+This library is built and tested with Angular **20.3.0** and **21.x**, and supports all modern standalone-based Angular projects (v17+).
 
 ## 📜 License
 

@@ -35,7 +35,6 @@ Below are the key exported types and interfaces available in @ng-catbee/monaco-e
 
 ## Catbee-Specific Types
 
-- **`CatbeeMonacoEditorModel`** — Model interface for the single editor component.
 - **`CatbeeMonacoDiffEditorModel`** — Model interface for the diff editor component.
 - **`CatbeeMonacoDiffEditorEvent`** — Event interface emitted by the diff editor component.
 
