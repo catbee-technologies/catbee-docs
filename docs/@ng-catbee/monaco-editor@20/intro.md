@@ -5,9 +5,13 @@ sidebar_position: 1
 pagination_prev: null
 ---
 
-## @ng-catbee/monaco-editor – Angular Monaco Editor Integration
+:::warning Version
+This documentation refers to **v20.x.x**.
+:::
 
-> A modern Angular library that seamlessly integrates the Monaco Editor, offering full support for both **single** and **diff** editors — fully compatible with Reactive Forms, Template-driven Forms, and Signal Forms.
+## @ng-catbee/monaco-editor@20 – Angular Monaco Editor Integration
+
+> A modern Angular library that seamlessly integrates the Monaco Editor, offering fully support for both **single** and **diff** editors — fully compatible with Reactive Forms, Template-driven Forms, and custom data models.
 
 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', margin: '1rem 0', }}>
   <img src="https://img.shields.io/badge/build-passing-brightgreen" alt="Build Status" />
@@ -27,26 +31,24 @@ pagination_prev: null
 
 ## 📦 Demo
 
-- [Stackblitz](https://stackblitz.com/edit/ng-catbee-monaco-editor-v21?file=src%2Fapp%2Fapp.component.ts)
-- [Codesandbox](https://codesandbox.io/p/devbox/ng-catbee-monaco-editor-forked-fs62z7?file=%2Fsrc%2Fapp%2Fapp.component.ts)
+- [Stackblitz](https://stackblitz.com/edit/ng-catbee-monaco-editor?file=src%2Fapp%2Fapp.component.ts)
+- [Codesandbox](https://codesandbox.io/p/sandbox/ng-catbee-monaco-editor-txmm59?file=%2Fsrc%2Fapp%2Fapp.component.ts)
 
 ## ✨ Features
 
 - 📝 **Single Editor**: Drop-in Monaco editor for Angular apps
 - 🔀 **Diff Editor**: Effortlessly compare code side-by-side
-- ⚙️ **Supports Reactive, Template-driven & Signal Forms**: (FormControl, ngModel, Signal)
+- ⚙️ **Supports Reactive & Template-driven Forms**: (FormControl, ngModel)
 - 🎨 **Customizable**: Language, theme, and editor settings
+- 💡 **Custom Model Binding**: ([model] input for flexibility)
 - 🎨 **Highly Configurable**: theme, language, layout, options
 - 🧠 **Full Type Safety**: with rich TypeScript definitions
 
-## 🧩 Angular Compatibility
+| Angular Version | Supported          |
+| --------------- | ------------------ |
+| `v17` and above | ✅ Fully supported |
 
-| Angular Version | Supported                                                    |
-| --------------- | ------------------------------------------------------------ |
-| `v17` and above | ✅ Fully supported                                           |
-| `v20` & `v21`   | ✅ v21 release fully supports both Angular 20 and Angular 21 |
-
-This library is built and tested with Angular **20.3.0** and **21.x**, and supports all modern standalone-based Angular projects (v17+).
+This library is built and tested with Angular `20.3.0`, and supports all modern standalone-based Angular projects (v17+).
 
 ## 📜 License
 

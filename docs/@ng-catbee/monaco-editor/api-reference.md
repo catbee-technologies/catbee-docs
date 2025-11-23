@@ -4,23 +4,25 @@ title: API Reference
 sidebar_position: 4
 ---
 
-## `CatbeeMonacoEditorComponent`: Single editor
+## `CatbeeMonacoEditor`: Single editor
 
 ### Properties
 
-| Property                        | Description                                                                                                                                                                                                                       | Type                      | Default                    |
-| ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- | -------------------------- |
-| `[height]`                      | Height of Monaco Editor                                                                                                                                                                                                           | `string`                  | `300px`                    |
-| `[width]`                       | Width of Monaco Editor                                                                                                                                                                                                            | `string`                  | `100%`                     |
-| `[disabled]`                    | Disabled of monaco editor                                                                                                                                                                                                         | `boolean`                 | `false`                    |
-| `[placeholder]`                 | Placeholder of monaco editor, Can change the style via defining the `.monaco-editor-placeholder` CSS.                                                                                                                             | `string`                  | -                          |
-| `[placeholderColor]`            | Color of the placeholder text                                                                                                                                                                                                     | `string`                  | `rgba(128, 128, 128, 0.6)` |
-| `[showPlaceholderOnWhiteSpace]` | Show placeholder when editor is empty but contains whitespace characters                                                                                                                                                          | `boolean`                 | `false`                    |
-| `[autoFormat]`                  | Whether to automatically format the document                                                                                                                                                                                      | `boolean`                 | `true`                     |
-| `[options]`                     | Default options when creating editors                                                                                                                                                                                             | `MonacoEditorOptions`     | -                          |
-| `[initDelay]`                   | Delay initializing monaco editor in ms                                                                                                                                                                                            | `number`                  | `0`                        |
-| `[model]`                       | Model of monaco editor                                                                                                                                                                                                            | `CatbeeMonacoEditorModel` | -                          |
-| `[reInitOnOptionsChange]`       | Whether to re-initialize the editor instance when options change. By default, the editor will re-initialize only if the language option changes. Note: Some options (like language) may require re-initialization to take effect. | `boolean`                 | `false`                    |
+| Property                        | Description                                                                                                                                                                                                                       | Type                  | Default                    |
+| ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------- | -------------------------- |
+| `[(ngModel)]` or `[(value)]`    | Value of monaco editor                                                                                                                                                                                                            | `string`              | -                          |
+| `[language]`                    | Language of monaco editor                                                                                                                                                                                                         | `string`              | `plaintext`                |
+| `[uri]`                         | URI of monaco editor model                                                                                                                                                                                                        | `string`              | -                          |
+| `[height]`                      | Height of Monaco Editor                                                                                                                                                                                                           | `string`              | `300px`                    |
+| `[width]`                       | Width of Monaco Editor                                                                                                                                                                                                            | `string`              | `100%`                     |
+| `[disabled]`                    | Disabled of monaco editor                                                                                                                                                                                                         | `boolean`             | `false`                    |
+| `[placeholder]`                 | Placeholder of monaco editor, Can change the style via defining the `.monaco-editor-placeholder` CSS.                                                                                                                             | `string`              | -                          |
+| `[placeholderColor]`            | Color of the placeholder text                                                                                                                                                                                                     | `string`              | `rgba(128, 128, 128, 0.6)` |
+| `[showPlaceholderOnWhiteSpace]` | Show placeholder when editor is empty but contains whitespace characters                                                                                                                                                          | `boolean`             | `false`                    |
+| `[autoFormat]`                  | Whether to automatically format the document                                                                                                                                                                                      | `boolean`             | `true`                     |
+| `[options]`                     | Default options when creating editors                                                                                                                                                                                             | `MonacoEditorOptions` | -                          |
+| `[initDelay]`                   | Delay initializing monaco editor in ms                                                                                                                                                                                            | `number`              | `0`                        |
+| `[reInitOnOptionsChange]`       | Whether to re-initialize the editor instance when options change. By default, the editor will re-initialize only if the language option changes. Note: Some options (like language) may require re-initialization to take effect. | `boolean`             | `false`                    |
 
 ### Events
 
@@ -46,19 +48,19 @@ sidebar_position: 4
 | `(editorMouseLeave)`            | Event emitted when the mouse leaves the editor                    | `EventEmitter<MonacoEditorPartialMouseEvent>`           |
 | `(editorModelContentChange)`    | Event emitted when the content of the current model has changed   | `EventEmitter<MonacoModelContentChangedEvent>`          |
 
-## `CatbeeMonacoDiffEditorComponent`: Diff editor
+## `CatbeeMonacoDiffEditor`: Diff editor
 
 ### Properties
 
-| Property      | Description                                   | Type                      | Default     |
-| ------------- | --------------------------------------------- | ------------------------- | ----------- |
-| `[height]`    | Height of Monaco Editor                       | `string`                  | `300px`     |
-| `[width]`     | Width of Monaco Editor                        | `string`                  | `100%`      |
-| `[disabled]`  | Disables Modified Editor                      | `boolean`                 | `false`     |
-| `[options]`   | Default options when creating editors         | `MonacoDiffEditorOptions` | -           |
-| `[language]`  | Language of both original and modified models | `string`                  | `plaintext` |
-| `[initDelay]` | Delay initializing monaco editor in ms        | `number`                  | `0`         |
-| `[model]`     | Model of monaco editor                        | `CatbeeMonacoEditorModel` | -           |
+| Property                     | Description                                   | Type                          | Default     |
+| ---------------------------- | --------------------------------------------- | ----------------------------- | ----------- |
+| `[(ngModel)]` or `[(value)]` | Model of monaco editor                        | `CatbeeMonacoDiffEditorModel` | -           |
+| `[language]`                 | Language of both original and modified models | `string`                      | `plaintext` |
+| `[height]`                   | Height of Monaco Editor                       | `string`                      | `300px`     |
+| `[width]`                    | Width of Monaco Editor                        | `string`                      | `100%`      |
+| `[disabled]`                 | Disables Modified Editor                      | `boolean`                     | `false`     |
+| `[options]`                  | Default options when creating editors         | `MonacoDiffEditorOptions`     | -           |
+| `[initDelay]`                | Delay initializing monaco editor in ms        | `number`                      | `0`         |
 
 |
 | `[originalEditable]` | Whether the original editor is editable | `boolean` | `false` |

@@ -195,8 +195,11 @@ const config: Config = {
       'classic',
       {
         docs: {
-          sidebarPath: './sidebars.ts'
-          // showLastUpdateTime: true
+          routeBasePath: '/docs',
+          sidebarPath: './sidebars.ts',
+          showLastUpdateTime: true
+          // showLastUpdateAuthor: true,
+          // editUrl: 'https://github.com/catbee-technologies/catbee-docs/tree/main/',
         },
         blog: {
           showReadingTime: true,
@@ -221,13 +224,13 @@ const config: Config = {
       disableSwitch: false,
       respectPrefersColorScheme: true
     },
-    // announcementBar: {
-    //   id: 'new-release',
-    //   content: `🚀 Catbee Utils v1.0.x is now available on <a href="https://www.npmjs.com/package/@catbee/utils">npm</a>!`,
-    //   backgroundColor: '#6a4fbc',
-    //   textColor: '#ffffff',
-    //   isCloseable: true
-    // },
+    announcementBar: {
+      id: 'new-release-monaco-editor-v21',
+      content: `🚀 Monaco Editor v21 is now available on <a href="https://www.npmjs.com/package/@ng-catbee/monaco-editor">npm</a>!`,
+      backgroundColor: '#6a4fbc',
+      textColor: '#ffffff',
+      isCloseable: true
+    },
     navbar: {
       title: 'Catbee',
       logo: {
@@ -242,12 +245,22 @@ const config: Config = {
           label: 'Docs'
         },
         { to: '/license/', label: 'License', position: 'left' },
-        { href: 'https://github.com/catbee-technologies', label: 'GitHub', position: 'right' },
-        { href: 'https://www.npmjs.com/package/@catbee/utils', label: '@catbee/utils', position: 'right' },
         {
-          href: 'https://www.npmjs.com/package/@ng-catbee/monaco-editor',
-          label: '@ng-catbee/monaco-editor',
-          position: 'right'
+          label: 'GitHub',
+          position: 'right',
+          items: [
+            { href: 'https://github.com/catbee-technologies/catbee-utils', label: 'Catbee Utils' },
+            { href: 'https://github.com/catbee-technologies/ng-catbee', label: 'Ng Catbee' },
+            { href: 'https://github.com/catbee-technologies/catbee-docs', label: 'Catbee Docs' }
+          ]
+        },
+        {
+          label: 'NPM',
+          position: 'right',
+          items: [
+            { href: 'https://www.npmjs.com/package/@catbee/utils', label: '@catbee/utils' },
+            { href: 'https://www.npmjs.com/package/@ng-catbee/monaco-editor', label: '@ng-catbee/monaco-editor' }
+          ]
         }
       ]
     },
