@@ -4,35 +4,35 @@ title: Diff Editor
 sidebar_position: 3
 ---
 
-## CatbeeMonacoDiffEditorComponent Example
+## CatbeeMonacoDiffEditor Example
 
 ### 1. Using [(ngModel)]
 
 ```ts
 import { Component } from '@angular/core';
-import { CatbeeMonacoDiffEditorComponent, MonacoDiffEditorOptions, CatbeeMonacoDiffEditorModel, CatbeeMonacoDiffEditorEvent } from '@ng-catbee/monaco-editor';
+import { CatbeeMonacoDiffEditor, MonacoDiffEditorOptions, CatbeeMonacoDiffEditorModel, CatbeeMonacoDiffEditorEvent } from '@ng-catbee/monaco-editor';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-root',
-  imports: [CatbeeMonacoDiffEditorComponent, FormsModule],
+  imports: [CatbeeMonacoDiffEditor, FormsModule],
   template: `
     <ng-catbee-monaco-diff-editor
       [height]="'400px'"
       [width]="'100%'"
       [options]="options"
       [(ngModel)]="diffModel"
+      [language]="'javascript'"
       (editorDiffUpdate)="onDiffUpdate($event)"
       [originalEditable]="false"
       [disabled]="false"
-      [language]="'javascript'"
     />
   `
 })
 export class AppComponent {
   options: MonacoDiffEditorOptions = {
     theme: 'vs-dark',
-    automaticLayout: true,
-    minimap: { enabled: false }
+    automaticLayout: true
   };
 
   diffModel: CatbeeMonacoDiffEditorModel = {
@@ -50,46 +50,91 @@ export class AppComponent {
 
 ```ts
 import { Component } from '@angular/core';
-import { CatbeeMonacoDiffEditorComponent, MonacoDiffEditorOptions } from '@ng-catbee/monaco-editor';
-import { ReactiveFormsModule } from '@angular/forms';
+import { CatbeeMonacoDiffEditor, MonacoDiffEditorOptions } from '@ng-catbee/monaco-editor';
+import { ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CatbeeMonacoDiffEditorComponent, ReactiveFormsModule],
+  imports: [CatbeeMonacoDiffEditor, ReactiveFormsModule],
   template: `
     <form [formGroup]="form">
-      <ng-catbee-monaco-diff-editor formControlName="code" [language]="'javascript'" />
+      <ng-catbee-monaco-diff-editor
+        formControlName="code"
+        [language]="'javascript'"
+        [options]="options"
+      />
     </form>
   `
 })
 export class AppComponent {
+  options: MonacoDiffEditorOptions = {
+    theme: 'vs-dark',
+    automaticLayout: true
+  };
+
   form = new FormGroup({
     code: new FormControl({
       original: 'function hello() {\n\talert("Hello, world!");\n}',
       modified: 'function hello() {\n\talert("");\n}'
     })
   });
+
+  constructor() {
+    this.form.get('code')!.valueChanges.subscribe(value => {
+      console.log('Reactive Form value changed:', value);
+    });
+  }
 }
 ```
 
-### 3. Using Custom Model
+### 3. Using Signal Forms
 
 ```ts
-import { Component } from '@angular/core';
-import { CatbeeMonacoDiffEditorComponent, MonacoDiffEditorOptions, CatbeeMonacoDiffEditorModel } from '@ng-catbee/monaco-editor';
+import { Component, effect, signal } from '@angular/core';
+import { Field, form, required, pattern } from '@angular/forms/signals';
+import { CatbeeMonacoDiffEditorV2, MonacoDiffEditorOptions, CatbeeMonacoDiffEditorModel } from '@ng-catbee/monaco-editor';
 
 @Component({
   selector: 'app-root',
-  imports: [CatbeeMonacoDiffEditorComponent],
+  imports: [CatbeeMonacoDiffEditorV2, Field],
   template: `
-    <ng-catbee-monaco-diff-editor [model]="model" />
+    <ng-catbee-monaco-diff-editor-v2
+      [height]="'400px'"
+      [width]="'100%'"
+      [options]="options"
+      [field]="myForm"
+    />
   `
 })
 export class AppComponent {
-  model: CatbeeMonacoDiffEditorModel = {
-    original: `function hello() {\n  console.log('Hello, world!');\n}`,
-    modified: `function hello() {\n  console.log('Hello, Catbee!');\n}`
+  options: MonacoDiffEditorOptions = {
+    theme: 'vs-dark',
+    automaticLayout: true
   };
+
+  diffModel = signal<CatbeeMonacoDiffEditorModel>({
+    original: 'function hello() {\n\talert("Hello, world!");\n}',
+    modified: 'function hello() {\n\talert("");\n}'
+  });
+
+  myForm = form(this.diffModel, (path) => {
+    required(path.original, { message: 'Original code is required.' });
+    required(path.modified, { message: 'Modified code is required.' });
+    pattern(path.original, {
+      pattern: /alert/,
+      message: 'The code must contain an alert statement.'
+    });
+    pattern(path.modified, {
+      pattern: /alert/,
+      message: 'The code must contain an alert statement.'
+    });
+  });
+
+  constructor() {
+    effect(() => {
+      console.log('Signal Form value changed:', this.myForm().value());
+    });
+  }
 }
 ```
