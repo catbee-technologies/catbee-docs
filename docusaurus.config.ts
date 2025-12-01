@@ -2,6 +2,7 @@
 import { themes as prismThemes } from 'prism-react-renderer';
 import type { Config } from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
+import packageConfig from './versions.config';
 
 const config: Config = {
   title: 'Catbee Docs',
@@ -197,9 +198,10 @@ const config: Config = {
         docs: {
           routeBasePath: '/docs',
           sidebarPath: './sidebars.ts',
-          showLastUpdateTime: true
-          // showLastUpdateAuthor: true,
-          // editUrl: 'https://github.com/catbee-technologies/catbee-docs/tree/main/',
+          showLastUpdateTime: true,
+          breadcrumbs: true,
+          showLastUpdateAuthor: true,
+          editUrl: 'https://github.com/catbee-technologies/catbee-docs/tree/main/'
         },
         blog: {
           showReadingTime: true,
@@ -257,10 +259,7 @@ const config: Config = {
         {
           label: 'NPM',
           position: 'right',
-          items: [
-            { href: 'https://www.npmjs.com/package/@catbee/utils', label: '@catbee/utils' },
-            { href: 'https://www.npmjs.com/package/@ng-catbee/monaco-editor', label: '@ng-catbee/monaco-editor' }
-          ]
+          items: Object.keys(packageConfig).map(pkg => ({ href: `https://www.npmjs.com/package/${pkg}`, label: pkg }))
         }
       ]
     },

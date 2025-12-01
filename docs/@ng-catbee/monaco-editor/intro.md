@@ -2,7 +2,6 @@
 id: intro
 title: Introduction
 sidebar_position: 1
-pagination_prev: null
 ---
 
 ## @ng-catbee/monaco-editor – Angular Monaco Editor Integration
