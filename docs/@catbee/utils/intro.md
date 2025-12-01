@@ -1,5 +1,4 @@
 ---
-slug: /@catbee/utils/intro
 sidebar_position: 1
 ---
 
