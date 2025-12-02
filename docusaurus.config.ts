@@ -226,13 +226,13 @@ const config: Config = {
       disableSwitch: false,
       respectPrefersColorScheme: true
     },
-    announcementBar: {
-      id: 'new-release-monaco-editor-v21',
-      content: `🚀 Monaco Editor v21 is now available on <a href="https://www.npmjs.com/package/@ng-catbee/monaco-editor">npm</a>!`,
-      backgroundColor: '#6a4fbc',
-      textColor: '#ffffff',
-      isCloseable: true
-    },
+    // announcementBar: {
+    //   id: 'new-release-monaco-editor-v21',
+    //   content: `🚀 Monaco Editor v21 is now available on <a href="https://www.npmjs.com/package/@ng-catbee/monaco-editor">npm</a>!`,
+    //   backgroundColor: '#6a4fbc',
+    //   textColor: '#ffffff',
+    //   isCloseable: true
+    // },
     navbar: {
       title: 'Catbee',
       logo: {
