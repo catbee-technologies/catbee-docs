@@ -1,6 +1,6 @@
 ---
 id: installation
-title: Installation
+title: Installation and Configuration
 sidebar_position: 2
 ---
 
@@ -15,14 +15,14 @@ npm install @ng-catbee/cookie
 :::tip
 
 ```typescript
-import { CookieService, SsrCookieService } from '@ng-catbee/cookie';
+import { CatbeeCookieService, CatbeeSsrCookieService } from '@ng-catbee/cookie';
 ```
 
-Use `CookieService` in browser contexts and `SsrCookieService` for server-side rendering (SSR) scenarios.
+Use `CatbeeCookieService` in browser contexts and `CatbeeSsrCookieService` for server-side rendering (SSR) scenarios.
 :::
 
 :::warning
-`SsrCookieService` provides only getting cookies from the request headers and does not support setting cookies.
+`CatbeeSsrCookieService` provides only getting cookies from the request headers and does not support setting cookies.
 :::
 
 ## Configuration
@@ -95,7 +95,7 @@ Example:
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { CookieService } from '@ng-catbee/cookie';
+import { CatbeeCookieService } from '@ng-catbee/cookie';
 
 @Component({
   selector: 'app-example',
@@ -103,7 +103,7 @@ import { CookieService } from '@ng-catbee/cookie';
   template: `...`
 })
 export class ExampleComponent {
-  private cookieService = inject(CookieService);
+  private cookieService = inject(CatbeeCookieService);
 
   saveCookie() {
     // This will use global config for path/sameSite
@@ -122,7 +122,7 @@ You can start using the service immediately without any configuration:
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { CookieService } from '@ng-catbee/cookie';
+import { CatbeeCookieService } from '@ng-catbee/cookie';
 
 @Component({
   selector: 'app-root',
@@ -134,7 +134,7 @@ import { CookieService } from '@ng-catbee/cookie';
   `
 })
 export class AppComponent {
-  private cookieService = inject(CookieService);
+  private cookieService = inject(CatbeeCookieService);
   value = '';
 
   save() {
@@ -160,7 +160,7 @@ When running on the server:
 ```typescript
 import { Component, inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformServer } from '@angular/common';
-import { CookieService, SsrCookieService } from '@ng-catbee/cookie';
+import { CatbeeCookieService, CatbeeSsrCookieService } from '@ng-catbee/cookie';
 
 @Component({
   selector: 'app-ssr-safe',
@@ -168,8 +168,8 @@ import { CookieService, SsrCookieService } from '@ng-catbee/cookie';
   template: `...`
 })
 export class SsrSafeComponent {
-  private cookieService = inject(CookieService);
-  private ssrCookieService = inject(SsrCookieService);
+  private cookieService = inject(CatbeeCookieService);
+  private ssrCookieService = inject(CatbeeSsrCookieService);
   private platformId = inject(PLATFORM_ID);
 
   ngOnInit() {

@@ -21,4 +21,4 @@ A modern, type-safe Angular library for managing browser cookies with ease.
 
 ### API Reference
 
-- [API Documentation](./api-reference) - Complete API reference for CookieService
+- [API Documentation](./api-reference) - Complete API reference for CatbeeCookieService

@@ -10,7 +10,7 @@ sidebar_position: 1
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { JwtService, type JwtPayload } from '@ng-catbee/jwt';
+import { CatbeeJwtService, type JwtPayload } from '@ng-catbee/jwt';
 
 @Component({
   selector: 'app-user-profile',
@@ -25,7 +25,7 @@ import { JwtService, type JwtPayload } from '@ng-catbee/jwt';
   `
 })
 export class UserProfileComponent {
-  private jwtService = inject(JwtService);
+  private jwtService = inject(CatbeeJwtService);
   user: UserPayload | null = null;
 
   loadUserFromToken(token: string) {
@@ -49,7 +49,7 @@ interface UserPayload extends JwtPayload {
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { JwtService } from '@ng-catbee/jwt';
+import { CatbeeJwtService } from '@ng-catbee/jwt';
 
 @Component({
   selector: 'app-token-inspector',
@@ -69,7 +69,7 @@ import { JwtService } from '@ng-catbee/jwt';
   `
 })
 export class TokenInspectorComponent {
-  private jwtService = inject(JwtService);
+  private jwtService = inject(CatbeeJwtService);
   decodedToken: any = null;
 
   inspectToken(token: string) {
@@ -85,13 +85,13 @@ export class TokenInspectorComponent {
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { JwtService } from '@ng-catbee/jwt';
+import { CatbeeJwtService } from '@ng-catbee/jwt';
 
 @Component({
   selector: 'app-token-validator'
 })
 export class TokenValidatorComponent {
-  private jwtService = inject(JwtService);
+  private jwtService = inject(CatbeeJwtService);
 
   validateToken(token: string): boolean {
     // Check if token has valid JWT format (3 parts separated by dots)
@@ -110,13 +110,13 @@ export class TokenValidatorComponent {
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { JwtService } from '@ng-catbee/jwt';
+import { CatbeeJwtService } from '@ng-catbee/jwt';
 
 @Component({
   selector: 'app-token-checker'
 })
 export class TokenCheckerComponent {
-  private jwtService = inject(JwtService);
+  private jwtService = inject(CatbeeJwtService);
 
   isTokenValid(token: string): boolean {
     // Check format
@@ -146,13 +146,13 @@ export class TokenCheckerComponent {
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { JwtService } from '@ng-catbee/jwt';
+import { CatbeeJwtService } from '@ng-catbee/jwt';
 
 @Component({
   selector: 'app-claims-extractor'
 })
 export class ClaimsExtractorComponent {
-  private jwtService = inject(JwtService);
+  private jwtService = inject(CatbeeJwtService);
 
   extractUserInfo(token: string) {
     // Extract individual claims
@@ -177,7 +177,7 @@ export class ClaimsExtractorComponent {
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { JwtService } from '@ng-catbee/jwt';
+import { CatbeeJwtService } from '@ng-catbee/jwt';
 
 @Component({
   selector: 'app-token-dates',
@@ -190,7 +190,7 @@ import { JwtService } from '@ng-catbee/jwt';
   `
 })
 export class TokenDatesComponent {
-  private jwtService = inject(JwtService);
+  private jwtService = inject(CatbeeJwtService);
 
   issuedDate: Date | null = null;
   expirationDate: Date | null = null;
@@ -215,7 +215,7 @@ export class TokenDatesComponent {
 
 ```typescript
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { JwtService, type JwtPayload } from '@ng-catbee/jwt';
+import { CatbeeJwtService, type JwtPayload } from '@ng-catbee/jwt';
 
 // Define your custom payload structure
 interface CustomPayload extends JwtPayload {
@@ -244,7 +244,7 @@ interface CustomPayload extends JwtPayload {
   `
 })
 export class UserDashboardComponent implements OnInit {
-  private jwtService = inject(JwtService);
+  private jwtService = inject(CatbeeJwtService);
   private authService = inject(AuthService);
 
   userInfo = signal<CustomPayload | null>(null);

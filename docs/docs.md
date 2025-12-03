@@ -15,10 +15,10 @@ Catbee Technologies is a modern open-source ecosystem offering libraries across 
 
 The documentation is organized into two main namespaces:
 
-| Namespace                    | Focus                                                   |
-| ---------------------------- | ------------------------------------------------------- |
-| [`@catbee`](./@catbee)       | Backend, Node.js, and TypeScript Utilities              |
-| [`@ng-catbee`](./@ng-catbee) | Angular Components, UI Integrations, and Reactive Tools |
+| Namespace                     | Focus                                                   |
+| ----------------------------- | ------------------------------------------------------- |
+| [`@catbee`](./@catbee/)       | Backend, Node.js, and TypeScript Utilities              |
+| [`@ng-catbee`](./@ng-catbee/) | Angular Components, UI Integrations, and Reactive Tools |
 
 ---
 
@@ -39,15 +39,15 @@ Every package is designed with the following principles in mind:
 
 ## 📦 Current Packages
 
-| Package                                                        | Description                                                     | Namespace    |
-| -------------------------------------------------------------- | --------------------------------------------------------------- | ------------ |
-| [`@catbee/utils`](./@catbee/utils/intro)                       | General-purpose TypeScript utility collection                   | `@catbee`    |
-| [`@ng-catbee/cookie`](./@ng-catbee/cookie/intro)               | Type-safe cookie management for Angular                         | `@ng-catbee` |
-| [`@ng-catbee/indexed-db`](./@ng-catbee/indexed-db/intro)       | Type-safe IndexedDB wrapper for Angular                         | `@ng-catbee` |
-| [`@ng-catbee/jwt`](./@ng-catbee/jwt/intro)                     | JSON Web Token utilities for Angular                            | `@ng-catbee` |
-| [`@ng-catbee/loader`](./@ng-catbee/loader/intro)               | Loading indicator component for Angular                         | `@ng-catbee` |
-| [`@ng-catbee/monaco-editor`](./@ng-catbee/monaco-editor/intro) | Monaco Editor integration for Angular (single + diff support)   | `@ng-catbee` |
-| [`@ng-catbee/storage`](./@ng-catbee/storage/intro)             | Web Storage (localStorage/sessionStorage) utilities for Angular | `@ng-catbee` |
+| Package                                                         | Description                                                     | Namespace    |
+| --------------------------------------------------------------- | --------------------------------------------------------------- | ------------ |
+| [`@catbee/utils`](./@catbee/utils/intro/)                       | General-purpose TypeScript utility collection                   | `@catbee`    |
+| [`@ng-catbee/cookie`](./@ng-catbee/cookie/intro/)               | Type-safe cookie management for Angular                         | `@ng-catbee` |
+| [`@ng-catbee/indexed-db`](./@ng-catbee/indexed-db/intro/)       | Type-safe IndexedDB wrapper for Angular                         | `@ng-catbee` |
+| [`@ng-catbee/jwt`](./@ng-catbee/jwt/intro/)                     | JSON Web Token utilities for Angular                            | `@ng-catbee` |
+| [`@ng-catbee/loader`](./@ng-catbee/loader/intro/)               | Loading indicator component for Angular                         | `@ng-catbee` |
+| [`@ng-catbee/monaco-editor`](./@ng-catbee/monaco-editor/intro/) | Monaco Editor integration for Angular (single + diff support)   | `@ng-catbee` |
+| [`@ng-catbee/storage`](./@ng-catbee/storage/intro/)             | Web Storage (localStorage/sessionStorage) utilities for Angular | `@ng-catbee` |
 
 ---
 
@@ -59,8 +59,8 @@ MIT © Catbee Technologies (see the [LICENSE](/license/) file for the full text)
 
 ## 🔗 Quick Links
 
-- [@ng-catbee (Angular Libraries)](./@ng-catbee)
-- [@catbee (Backend Libraries)](./@catbee)
+- [@ng-catbee (Angular Libraries)](./@ng-catbee/)
+- [@catbee (Backend Libraries)](./@catbee/)
 - [GitHub Organization](https://github.com/catbee-technologies)
 - [Angular Docs](https://angular.io/)
 - [Node.js Docs](https://nodejs.org/)

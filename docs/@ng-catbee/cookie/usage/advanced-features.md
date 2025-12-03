@@ -7,14 +7,14 @@ sidebar_position: 3
 :::tip
 
 ```typescript
-import { CookieService, SsrCookieService } from '@ng-catbee/cookie';
+import { CatbeeCookieService, CatbeeSsrCookieService } from '@ng-catbee/cookie';
 ```
 
-Use `CookieService` in browser contexts and `SsrCookieService` for server-side rendering (SSR) scenarios.
+Use `CatbeeCookieService` in browser contexts and `CatbeeSsrCookieService` for server-side rendering (SSR) scenarios.
 :::
 
 :::warning
-`SsrCookieService` provides only getting cookies from the request headers and does not support setting cookies.
+`CatbeeSsrCookieService` provides only getting cookies from the request headers and does not support setting cookies.
 :::
 
 ## Partial JSON Updates
@@ -25,7 +25,7 @@ The `updateJson` method allows you to update specific properties of a JSON cooki
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { CookieService } from '@ng-catbee/cookie';
+import { CatbeeCookieService } from '@ng-catbee/cookie';
 
 interface AppSettings {
   theme: string;
@@ -64,7 +64,7 @@ interface AppSettings {
   `
 })
 export class SettingsManagerComponent {
-  private cookieService = inject(CookieService);
+  private cookieService = inject(CatbeeCookieService);
 
   readonly defaultSettings: AppSettings = {
     theme: 'light',
@@ -160,7 +160,7 @@ export class SettingsManagerComponent {
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { CookieService } from '@ng-catbee/cookie';
+import { CatbeeCookieService } from '@ng-catbee/cookie';
 
 interface UserProfile {
   name: string;
@@ -186,7 +186,7 @@ interface UserProfile {
   `
 })
 export class ProfileEditorComponent {
-  private cookieService = inject(CookieService);
+  private cookieService = inject(CatbeeCookieService);
 
   readonly defaultProfile: UserProfile = {
     name: '',
@@ -235,7 +235,7 @@ export class ProfileEditorComponent {
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { CookieService } from '@ng-catbee/cookie';
+import { CatbeeCookieService } from '@ng-catbee/cookie';
 
 @Component({
   selector: 'app-session-manager',
@@ -252,7 +252,7 @@ import { CookieService } from '@ng-catbee/cookie';
   `
 })
 export class SessionManagerComponent {
-  private cookieService = inject(CookieService);
+  private cookieService = inject(CatbeeCookieService);
 
   logout() {
     // Clear authentication-related cookies
@@ -301,7 +301,7 @@ export class SessionManagerComponent {
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { CookieService } from '@ng-catbee/cookie';
+import { CatbeeCookieService } from '@ng-catbee/cookie';
 
 interface SessionData {
   userId: string;
@@ -316,7 +316,7 @@ interface SessionData {
   template: `...`
 })
 export class SessionInitializerComponent {
-  private cookieService = inject(CookieService);
+  private cookieService = inject(CatbeeCookieService);
 
   initializeSession(sessionData: SessionData) {
     const options = {
@@ -357,7 +357,7 @@ export class SessionInitializerComponent {
 
 ```typescript
 import { Component, inject, OnInit } from '@angular/core';
-import { CookieService } from '@ng-catbee/cookie';
+import { CatbeeCookieService } from '@ng-catbee/cookie';
 
 interface CookieInfo {
   name: string;
@@ -407,7 +407,7 @@ interface CookieInfo {
   `
 })
 export class CookieInspectorComponent implements OnInit {
-  private cookieService = inject(CookieService);
+  private cookieService = inject(CatbeeCookieService);
 
   cookieList: CookieInfo[] = [];
   totalCookies = 0;
@@ -480,7 +480,7 @@ export class CookieInspectorComponent implements OnInit {
 
 ```typescript
 import { Component, inject, OnInit, OnDestroy } from '@angular/core';
-import { CookieService } from '@ng-catbee/cookie';
+import { CatbeeCookieService } from '@ng-catbee/cookie';
 import { BehaviorSubject, interval, Subscription } from 'rxjs';
 
 @Component({
@@ -499,7 +499,7 @@ import { BehaviorSubject, interval, Subscription } from 'rxjs';
   `
 })
 export class CookieWatcherComponent implements OnInit, OnDestroy {
-  private cookieService = inject(CookieService);
+  private cookieService = inject(CatbeeCookieService);
 
   username$ = new BehaviorSubject<string>('');
   theme$ = new BehaviorSubject<string>('light');
@@ -552,7 +552,7 @@ export class CookieWatcherComponent implements OnInit, OnDestroy {
 
 ```typescript
 import { Component, inject, OnInit, OnDestroy } from '@angular/core';
-import { CookieService } from '@ng-catbee/cookie';
+import { CatbeeCookieService } from '@ng-catbee/cookie';
 import { fromEvent, Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
@@ -576,7 +576,7 @@ import { filter } from 'rxjs/operators';
   `
 })
 export class SyncManagerComponent implements OnInit, OnDestroy {
-  private cookieService = inject(CookieService);
+  private cookieService = inject(CatbeeCookieService);
 
   counter = 0;
   theme = 'light';
@@ -634,7 +634,7 @@ export class SyncManagerComponent implements OnInit, OnDestroy {
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { CookieService } from '@ng-catbee/cookie';
+import { CatbeeCookieService } from '@ng-catbee/cookie';
 
 @Component({
   selector: 'app-validated-input',
@@ -662,7 +662,7 @@ import { CookieService } from '@ng-catbee/cookie';
   `
 })
 export class ValidatedInputComponent {
-  private cookieService = inject(CookieService);
+  private cookieService = inject(CatbeeCookieService);
 
   username = '';
   age = 0;
@@ -739,7 +739,7 @@ export class ValidatedInputComponent {
 
 ```typescript
 import { Component, inject, OnInit } from '@angular/core';
-import { CookieService } from '@ng-catbee/cookie';
+import { CatbeeCookieService } from '@ng-catbee/cookie';
 
 interface UserPreferencesV1 {
   theme: string;
@@ -759,7 +759,7 @@ interface UserPreferencesV2 {
   template: `...`
 })
 export class PreferencesMigratorComponent implements OnInit {
-  private cookieService = inject(CookieService);
+  private cookieService = inject(CatbeeCookieService);
 
   ngOnInit() {
     this.migratePreferences();

@@ -66,15 +66,31 @@ import { CatbeeLoader } from '@ng-catbee/loader';
 
 Service for programmatically controlling loaders.
 
+:::tip Service Aliases
+
+```typescript
+import { CatbeeLoaderService } from '@ng-catbee/loader';
+```
+
+You can also import the service using the shorter alias:
+
+```typescript
+import { LoaderService } from '@ng-catbee/loader';
+```
+
+Both `CatbeeLoaderService` and `LoaderService` refer to the same service.
+:::
+
 ### API Summary
 
-- [**`show(name: string, options?: LoaderDisplayOptions): Promise<void>`**](#show) - Shows a loader by name with optional runtime configuration.
-- [**`hide(name: string, delay?: number): Promise<void>`**](#hide) - Hides a loader by name with optional delay.
+- [**`show(name?: string, options?: LoaderDisplayOptions): Promise<void>`**](#show) - Shows a loader by name with optional runtime configuration.
+- [**`hide(name?: string, delay?: number): Promise<void>`**](#hide) - Hides a loader by name with optional delay.
 - [**`hideAll(): Promise<void>`**](#hideall) - Hides all currently visible loaders.
-- [**`isVisible(name: string): boolean`**](#isvisible) - Checks if a loader is currently visible.
-- [**`getState(name: string): LoaderState \| undefined`**](#getstate) - Gets the current state of a loader.
+- [**`isVisible(name?: string): boolean`**](#isvisible) - Checks if a loader is currently visible.
+- [**`getState(name?: string): LoaderState \| undefined`**](#getstate) - Gets the current state of a loader.
 - [**`getVisibleLoaders(): string[]`**](#getvisibleloaders) - Gets the names of all currently visible loaders.
-- [**`watch(name: string): Observable<LoaderState>`**](#watch) - Observes state changes for a specific loader.
+- [**`watch(name?: string): Observable<LoaderState>`**](#watch) - Observes state changes for a specific loader.
+- [**`loader$: Observable<LoaderState>`**](#loader) - Observable that emits all loader state changes across all loaders.
 
 ##### Importing the Service
 
@@ -96,7 +112,7 @@ Shows a loader by name with optional runtime configuration.
 **Method Signature:**
 
 ```typescript
-show(name: string, options?: LoaderDisplayOptions): Promise<void>
+show(name?: string, options?: LoaderDisplayOptions): Promise<void>
 ```
 
 **Parameters:**
@@ -131,7 +147,7 @@ Hides a loader by name with optional delay.
 **Method Signature:**
 
 ```typescript
-hide(name: string, delay?: number): Promise<void>
+hide(name?: string, delay?: number): Promise<void>
 ```
 
 **Parameters:**
@@ -176,7 +192,7 @@ Checks if a loader is currently visible.
 **Method Signature:**
 
 ```typescript
-isVisible(name: string): boolean
+isVisible(name?: string): boolean
 ```
 
 **Parameters:**
@@ -200,7 +216,7 @@ Gets the current state of a loader.
 **Method Signature:**
 
 ```typescript
-getState(name: string): LoaderState | undefined
+getState(name?: string): LoaderState | undefined
 ```
 
 **Parameters:**
@@ -242,7 +258,7 @@ Observes state changes for a specific loader.
 **Method Signature:**
 
 ```typescript
-watch(name: string): Observable<LoaderState>
+watch(name?: string): Observable<LoaderState>
 ```
 
 **Parameters:**
@@ -259,6 +275,64 @@ this.loaderService.watch('my-loader').subscribe(state => {
   console.log('Is visible:', state.visible);
   console.log('Options:', state.options);
 });
+```
+
+### `loader$`
+
+Observable that emits all loader state changes across all loaders in the application.
+
+**Property Type:**
+
+```typescript
+loader$: Observable<LoaderState>
+```
+
+**Returns:** Observable that emits whenever any loader's state changes (shown or hidden)
+
+**Example:**
+
+```typescript
+// Monitor all loader activity across the application
+this.loaderService.loader$.subscribe(state => {
+  console.log('Loader state changed:', state.name);
+  console.log('Is visible:', state.visible);
+  if (state.options) {
+    console.log('Options:', state.options);
+  }
+});
+```
+
+**Use Cases:**
+
+```typescript
+// Track all loader activity for analytics
+export class LoaderAnalyticsService {
+  private loaderService = inject(CatbeeLoaderService);
+
+  constructor() {
+    this.loaderService.loader$.subscribe(state => {
+      this.logLoaderEvent({
+        loaderName: state.name,
+        action: state.visible ? 'shown' : 'hidden',
+        timestamp: new Date()
+      });
+    });
+  }
+}
+
+// Display a global loading indicator based on any loader activity
+export class GlobalLoadingIndicator {
+  private loaderService = inject(CatbeeLoaderService);
+  protected hasActiveLoaders = signal(false);
+
+  constructor() {
+    this.loaderService.loader$.subscribe(state => {
+      // Check if any loaders are still visible
+      const visibleLoaders = this.loaderService.getVisibleLoaders();
+      this.hasActiveLoaders.set(visibleLoaders.length > 0);
+    });
+  }
+}
 ```
 
 ## Interfaces

@@ -10,7 +10,7 @@ sidebar_position: 1
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { LocalStorageService } from '@ng-catbee/storage';
+import { CatbeeLocalStorageService } from '@ng-catbee/storage';
 
 @Component({
   selector: 'app-user-settings',
@@ -25,7 +25,7 @@ import { LocalStorageService } from '@ng-catbee/storage';
   `
 })
 export class UserSettingsComponent {
-  private localStorage = inject(LocalStorageService);
+  private localStorage = inject(CatbeeLocalStorageService);
 
   username = '';
   storedUsername = '';
@@ -45,7 +45,7 @@ export class UserSettingsComponent {
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { LocalStorageService, SessionStorageService } from '@ng-catbee/storage';
+import { CatbeeLocalStorageService, CatbeeSessionStorageService } from '@ng-catbee/storage';
 
 @Component({
   selector: 'app-storage-demo',
@@ -61,8 +61,8 @@ import { LocalStorageService, SessionStorageService } from '@ng-catbee/storage';
   `
 })
 export class StorageDemoComponent {
-  private localStorage = inject(LocalStorageService);
-  private sessionStorage = inject(SessionStorageService);
+  private localStorage = inject(CatbeeLocalStorageService);
+  private sessionStorage = inject(CatbeeSessionStorageService);
 
   saveLocal() {
     // Persists even after closing the browser
@@ -82,7 +82,7 @@ export class StorageDemoComponent {
 
 ```typescript
 import { Component, inject, OnInit } from '@angular/core';
-import { LocalStorageService } from '@ng-catbee/storage';
+import { CatbeeLocalStorageService } from '@ng-catbee/storage';
 
 @Component({
   selector: 'app-auth-check',
@@ -100,7 +100,7 @@ import { LocalStorageService } from '@ng-catbee/storage';
   `
 })
 export class AuthCheckComponent implements OnInit {
-  private localStorage = inject(LocalStorageService);
+  private localStorage = inject(CatbeeLocalStorageService);
   isAuthenticated = false;
 
   ngOnInit() {
@@ -126,13 +126,13 @@ export class AuthCheckComponent implements OnInit {
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { LocalStorageService } from '@ng-catbee/storage';
+import { CatbeeLocalStorageService } from '@ng-catbee/storage';
 
 @Component({
   selector: 'app-cache-manager'
 })
 export class CacheManagerComponent {
-  private localStorage = inject(LocalStorageService);
+  private localStorage = inject(CatbeeLocalStorageService);
 
   clearCache(cacheKey: string) {
     if (this.localStorage.has(cacheKey)) {
@@ -147,13 +147,13 @@ export class CacheManagerComponent {
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { LocalStorageService } from '@ng-catbee/storage';
+import { CatbeeLocalStorageService } from '@ng-catbee/storage';
 
 @Component({
   selector: 'app-cleanup'
 })
 export class CleanupComponent {
-  private localStorage = inject(LocalStorageService);
+  private localStorage = inject(CatbeeLocalStorageService);
 
   clearTempData() {
     // Delete multiple keys at once
@@ -170,7 +170,7 @@ export class CleanupComponent {
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { LocalStorageService } from '@ng-catbee/storage';
+import { CatbeeLocalStorageService } from '@ng-catbee/storage';
 
 @Component({
   selector: 'app-reset',
@@ -181,7 +181,7 @@ import { LocalStorageService } from '@ng-catbee/storage';
   `
 })
 export class ResetComponent {
-  private localStorage = inject(LocalStorageService);
+  private localStorage = inject(CatbeeLocalStorageService);
 
   resetApp() {
     if (confirm('Are you sure? This will clear all saved data.')) {
@@ -199,13 +199,13 @@ export class ResetComponent {
 
 ```typescript
 import { Component, inject, OnInit } from '@angular/core';
-import { LocalStorageService } from '@ng-catbee/storage';
+import { CatbeeLocalStorageService } from '@ng-catbee/storage';
 
 @Component({
   selector: 'app-first-visit'
 })
 export class FirstVisitComponent implements OnInit {
-  private localStorage = inject(LocalStorageService);
+  private localStorage = inject(CatbeeLocalStorageService);
 
   ngOnInit() {
     // Only set if user hasn't visited before
@@ -222,13 +222,13 @@ export class FirstVisitComponent implements OnInit {
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { LocalStorageService } from '@ng-catbee/storage';
+import { CatbeeLocalStorageService } from '@ng-catbee/storage';
 
 @Component({
   selector: 'app-preferences'
 })
 export class PreferencesComponent {
-  private localStorage = inject(LocalStorageService);
+  private localStorage = inject(CatbeeLocalStorageService);
 
   loadPreferences() {
     // Get value or use default (auto-sets if missing)
@@ -248,7 +248,7 @@ export class PreferencesComponent {
 
 ```typescript
 import { Component, inject, signal } from '@angular/core';
-import { LocalStorageService } from '@ng-catbee/storage';
+import { CatbeeLocalStorageService } from '@ng-catbee/storage';
 
 @Component({
   selector: 'app-storage-inspector',
@@ -269,7 +269,7 @@ import { LocalStorageService } from '@ng-catbee/storage';
   `
 })
 export class StorageInspectorComponent {
-  private localStorage = inject(LocalStorageService);
+  private localStorage = inject(CatbeeLocalStorageService);
   allKeys = signal<string[]>([]);
 
   ngOnInit() {
@@ -295,13 +295,13 @@ export class StorageInspectorComponent {
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { LocalStorageService } from '@ng-catbee/storage';
+import { CatbeeLocalStorageService } from '@ng-catbee/storage';
 
 @Component({
   selector: 'app-storage-dump'
 })
 export class StorageDumpComponent {
-  private localStorage = inject(LocalStorageService);
+  private localStorage = inject(CatbeeLocalStorageService);
 
   exportAllData() {
     const entries = this.localStorage.entries();
@@ -323,13 +323,13 @@ export class StorageDumpComponent {
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { LocalStorageService } from '@ng-catbee/storage';
+import { CatbeeLocalStorageService } from '@ng-catbee/storage';
 
 @Component({
   selector: 'app-user-profile'
 })
 export class UserProfileComponent {
-  private localStorage = inject(LocalStorageService);
+  private localStorage = inject(CatbeeLocalStorageService);
 
   loadUserProfile() {
     // Get multiple values efficiently
@@ -354,13 +354,13 @@ export class UserProfileComponent {
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { LocalStorageService } from '@ng-catbee/storage';
+import { CatbeeLocalStorageService } from '@ng-catbee/storage';
 
 @Component({
   selector: 'app-settings-save'
 })
 export class SettingsSaveComponent {
-  private localStorage = inject(LocalStorageService);
+  private localStorage = inject(CatbeeLocalStorageService);
 
   saveAllSettings(settings: Record<string, string>) {
     // Set multiple values at once
@@ -380,7 +380,7 @@ export class SettingsSaveComponent {
 
 ```typescript
 import { Component, inject, signal } from '@angular/core';
-import { LocalStorageService } from '@ng-catbee/storage';
+import { CatbeeLocalStorageService } from '@ng-catbee/storage';
 
 @Component({
   selector: 'app-storage-usage',
@@ -395,7 +395,7 @@ import { LocalStorageService } from '@ng-catbee/storage';
   `
 })
 export class StorageUsageComponent {
-  private localStorage = inject(LocalStorageService);
+  private localStorage = inject(CatbeeLocalStorageService);
 
   storageSize = signal(0);
   itemCount = signal(0);

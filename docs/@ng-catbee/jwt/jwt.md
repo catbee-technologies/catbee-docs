@@ -23,4 +23,4 @@ A modern, type-safe Angular library for decoding, validating, and managing JSON 
 
 ### API Reference
 
-- [API Documentation](./api-reference) - Complete API reference for JwtService
+- [API Documentation](./api-reference) - Complete API reference for CatbeeJwtService

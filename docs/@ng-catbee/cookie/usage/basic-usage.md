@@ -7,14 +7,14 @@ sidebar_position: 1
 :::tip
 
 ```typescript
-import { CookieService, SsrCookieService } from '@ng-catbee/cookie';
+import { CatbeeCookieService, CatbeeSsrCookieService } from '@ng-catbee/cookie';
 ```
 
-Use `CookieService` in browser contexts and `SsrCookieService` for server-side rendering (SSR) scenarios.
+Use `CatbeeCookieService` in browser contexts and `CatbeeSsrCookieService` for server-side rendering (SSR) scenarios.
 :::
 
 :::warning
-`SsrCookieService` provides only getting cookies from the request headers and does not support setting cookies.
+`CatbeeSsrCookieService` provides only getting cookies from the request headers and does not support setting cookies.
 :::
 
 ## Setting Cookies
@@ -23,7 +23,7 @@ Use `CookieService` in browser contexts and `SsrCookieService` for server-side r
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { CookieService } from '@ng-catbee/cookie';
+import { CatbeeCookieService } from '@ng-catbee/cookie';
 
 @Component({
   selector: 'app-user',
@@ -33,7 +33,7 @@ import { CookieService } from '@ng-catbee/cookie';
   `
 })
 export class UserComponent {
-  private cookieService = inject(CookieService);
+  private cookieService = inject(CatbeeCookieService);
 
   saveUsername() {
     this.cookieService.set('username', 'john_doe');
@@ -45,7 +45,7 @@ export class UserComponent {
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { CookieService } from '@ng-catbee/cookie';
+import { CatbeeCookieService } from '@ng-catbee/cookie';
 
 @Component({
   selector: 'app-session',
@@ -55,7 +55,7 @@ import { CookieService } from '@ng-catbee/cookie';
   `
 })
 export class SessionComponent {
-  private cookieService = inject(CookieService);
+  private cookieService = inject(CatbeeCookieService);
 
   createSession() {
     // Expires in 7 days
@@ -78,7 +78,7 @@ export class SessionComponent {
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { CookieService } from '@ng-catbee/cookie';
+import { CatbeeCookieService } from '@ng-catbee/cookie';
 
 @Component({
   selector: 'app-auth',
@@ -88,7 +88,7 @@ import { CookieService } from '@ng-catbee/cookie';
   `
 })
 export class AuthComponent {
-  private cookieService = inject(CookieService);
+  private cookieService = inject(CatbeeCookieService);
 
   saveAuthToken() {
     this.cookieService.set('authToken', 'secure-token-123', {
@@ -106,7 +106,7 @@ export class AuthComponent {
 
 ```typescript
 import { Component, inject, OnInit } from '@angular/core';
-import { CookieService } from '@ng-catbee/cookie';
+import { CatbeeCookieService } from '@ng-catbee/cookie';
 
 @Component({
   selector: 'app-profile',
@@ -122,7 +122,7 @@ import { CookieService } from '@ng-catbee/cookie';
   `
 })
 export class ProfileComponent implements OnInit {
-  private cookieService = inject(CookieService);
+  private cookieService = inject(CatbeeCookieService);
   username: string | null = null;
 
   ngOnInit() {
@@ -135,7 +135,7 @@ export class ProfileComponent implements OnInit {
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { CookieService } from '@ng-catbee/cookie';
+import { CatbeeCookieService } from '@ng-catbee/cookie';
 
 @Component({
   selector: 'app-settings',
@@ -147,7 +147,7 @@ import { CookieService } from '@ng-catbee/cookie';
   `
 })
 export class SettingsComponent {
-  private cookieService = inject(CookieService);
+  private cookieService = inject(CatbeeCookieService);
 
   get language(): string {
     // Returns existing value or 'en' if not found
@@ -160,7 +160,7 @@ export class SettingsComponent {
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { CookieService } from '@ng-catbee/cookie';
+import { CatbeeCookieService } from '@ng-catbee/cookie';
 
 @Component({
   selector: 'app-welcome',
@@ -177,7 +177,7 @@ import { CookieService } from '@ng-catbee/cookie';
   `
 })
 export class WelcomeComponent {
-  private cookieService = inject(CookieService);
+  private cookieService = inject(CatbeeCookieService);
 
   get isFirstVisit(): boolean {
     return !this.cookieService.has('returning_visitor');
@@ -197,7 +197,7 @@ export class WelcomeComponent {
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { CookieService } from '@ng-catbee/cookie';
+import { CatbeeCookieService } from '@ng-catbee/cookie';
 
 @Component({
   selector: 'app-logout',
@@ -207,7 +207,7 @@ import { CookieService } from '@ng-catbee/cookie';
   `
 })
 export class LogoutComponent {
-  private cookieService = inject(CookieService);
+  private cookieService = inject(CatbeeCookieService);
 
   logout() {
     this.cookieService.delete('authToken');
@@ -220,7 +220,7 @@ export class LogoutComponent {
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { CookieService } from '@ng-catbee/cookie';
+import { CatbeeCookieService } from '@ng-catbee/cookie';
 
 @Component({
   selector: 'app-cleanup',
@@ -230,7 +230,7 @@ import { CookieService } from '@ng-catbee/cookie';
   `
 })
 export class CleanupComponent {
-  private cookieService = inject(CookieService);
+  private cookieService = inject(CatbeeCookieService);
 
   clearCookies() {
     // Must match the path/domain used when setting
@@ -246,7 +246,7 @@ export class CleanupComponent {
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { CookieService } from '@ng-catbee/cookie';
+import { CatbeeCookieService } from '@ng-catbee/cookie';
 
 @Component({
   selector: 'app-reset',
@@ -257,7 +257,7 @@ import { CookieService } from '@ng-catbee/cookie';
   `
 })
 export class ResetComponent {
-  private cookieService = inject(CookieService);
+  private cookieService = inject(CatbeeCookieService);
 
   resetUserData() {
     // Delete specific cookies
@@ -282,7 +282,7 @@ export class ResetComponent {
 
 ```typescript
 import { Component, inject, OnInit } from '@angular/core';
-import { CookieService } from '@ng-catbee/cookie';
+import { CatbeeCookieService } from '@ng-catbee/cookie';
 
 @Component({
   selector: 'app-analytics',
@@ -292,7 +292,7 @@ import { CookieService } from '@ng-catbee/cookie';
   `
 })
 export class AnalyticsComponent implements OnInit {
-  private cookieService = inject(CookieService);
+  private cookieService = inject(CatbeeCookieService);
   userId = '';
 
   ngOnInit() {
@@ -316,7 +316,7 @@ export class AnalyticsComponent implements OnInit {
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { CookieService } from '@ng-catbee/cookie';
+import { CatbeeCookieService } from '@ng-catbee/cookie';
 
 @Component({
   selector: 'app-debug',
@@ -336,7 +336,7 @@ import { CookieService } from '@ng-catbee/cookie';
   `
 })
 export class DebugComponent {
-  private cookieService = inject(CookieService);
+  private cookieService = inject(CatbeeCookieService);
 
   get allCookies(): Record<string, string> {
     return this.cookieService.getAll();
@@ -360,7 +360,7 @@ export class DebugComponent {
 
 ```typescript
 import { Component, inject, OnInit } from '@angular/core';
-import { CookieService } from '@ng-catbee/cookie';
+import { CatbeeCookieService } from '@ng-catbee/cookie';
 
 @Component({
   selector: 'app-cookie-manager',
@@ -377,7 +377,7 @@ import { CookieService } from '@ng-catbee/cookie';
   `
 })
 export class CookieManagerComponent implements OnInit {
-  private cookieService = inject(CookieService);
+  private cookieService = inject(CatbeeCookieService);
   cookies: [string, string][] = [];
 
   ngOnInit() {
@@ -401,7 +401,7 @@ export class CookieManagerComponent implements OnInit {
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { CookieService } from '@ng-catbee/cookie';
+import { CatbeeCookieService } from '@ng-catbee/cookie';
 
 @Component({
   selector: 'app-paths',
@@ -409,7 +409,7 @@ import { CookieService } from '@ng-catbee/cookie';
   template: `...`
 })
 export class PathsComponent {
-  private cookieService = inject(CookieService);
+  private cookieService = inject(CatbeeCookieService);
 
   saveGlobalPreference() {
     // Available across entire site
@@ -431,7 +431,7 @@ export class PathsComponent {
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { CookieService } from '@ng-catbee/cookie';
+import { CatbeeCookieService } from '@ng-catbee/cookie';
 
 @Component({
   selector: 'app-domains',
@@ -439,7 +439,7 @@ import { CookieService } from '@ng-catbee/cookie';
   template: `...`
 })
 export class DomainsComponent {
-  private cookieService = inject(CookieService);
+  private cookieService = inject(CatbeeCookieService);
 
   saveForCurrentDomain() {
     // Only for current subdomain (e.g., app.example.com)

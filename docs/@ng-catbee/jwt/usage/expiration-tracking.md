@@ -10,7 +10,7 @@ sidebar_position: 4
 
 ```typescript
 import { Component, inject, OnInit, OnDestroy, signal } from '@angular/core';
-import { JwtService } from '@ng-catbee/jwt';
+import { CatbeeJwtService } from '@ng-catbee/jwt';
 import { AuthService } from './auth.service';
 import { Subject, takeUntil } from 'rxjs';
 
@@ -41,7 +41,7 @@ import { Subject, takeUntil } from 'rxjs';
   `]
 })
 export class TokenCountdownComponent implements OnInit, OnDestroy {
-  private jwtService = inject(JwtService);
+  private jwtService = inject(CatbeeJwtService);
   private authService = inject(AuthService);
   private destroy$ = new Subject<void>();
 
@@ -86,7 +86,7 @@ export class TokenCountdownComponent implements OnInit, OnDestroy {
 
 ```typescript
 import { Component, inject, OnInit, OnDestroy, signal } from '@angular/core';
-import { JwtService } from '@ng-catbee/jwt';
+import { CatbeeJwtService } from '@ng-catbee/jwt';
 import { AuthService } from './auth.service';
 import { Subject, takeUntil } from 'rxjs';
 
@@ -126,7 +126,7 @@ import { Subject, takeUntil } from 'rxjs';
   `]
 })
 export class TokenProgressComponent implements OnInit, OnDestroy {
-  private jwtService = inject(JwtService);
+  private jwtService = inject(CatbeeJwtService);
   private authService = inject(AuthService);
   private destroy$ = new Subject<void>();
 
@@ -174,13 +174,13 @@ export class TokenProgressComponent implements OnInit, OnDestroy {
 
 ```typescript
 import { Injectable, inject, OnDestroy } from '@angular/core';
-import { JwtService } from '@ng-catbee/jwt';
+import { CatbeeJwtService } from '@ng-catbee/jwt';
 import { AuthService } from './auth.service';
 import { Subject, takeUntil, switchMap, timer } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class TokenRefreshService implements OnDestroy {
-  private jwtService = inject(JwtService);
+  private jwtService = inject(CatbeeJwtService);
   private authService = inject(AuthService);
   private destroy$ = new Subject<void>();
   private readonly REFRESH_THRESHOLD = 300; // Refresh 5 minutes before expiration
@@ -232,7 +232,7 @@ export class TokenRefreshService implements OnDestroy {
 
 ```typescript
 import { Component, inject, OnInit, OnDestroy } from '@angular/core';
-import { JwtService } from '@ng-catbee/jwt';
+import { CatbeeJwtService } from '@ng-catbee/jwt';
 import { AuthService } from './auth.service';
 import { NotificationService } from './notification.service';
 import { Subject, takeUntil } from 'rxjs';
@@ -243,7 +243,7 @@ import { Subject, takeUntil } from 'rxjs';
   template: ``
 })
 export class ExpirationNotifierComponent implements OnInit, OnDestroy {
-  private jwtService = inject(JwtService);
+  private jwtService = inject(CatbeeJwtService);
   private authService = inject(AuthService);
   private notificationService = inject(NotificationService);
   private destroy$ = new Subject<void>();
@@ -296,13 +296,13 @@ export class ExpirationNotifierComponent implements OnInit, OnDestroy {
 
 ```typescript
 import { Injectable, inject } from '@angular/core';
-import { JwtService } from '@ng-catbee/jwt';
+import { CatbeeJwtService } from '@ng-catbee/jwt';
 import { AuthService } from './auth.service';
 import { fromEvent, merge, debounceTime, filter } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class SessionExtensionService {
-  private jwtService = inject(JwtService);
+  private jwtService = inject(CatbeeJwtService);
   private authService = inject(AuthService);
   private readonly EXTENSION_THRESHOLD = 600; // Extend if less than 10 minutes remaining
 

@@ -17,14 +17,14 @@ This section contains practical examples for common cookie management use cases.
 :::tip
 
 ```typescript
-import { CookieService, SsrCookieService } from '@ng-catbee/cookie';
+import { CatbeeCookieService, CatbeeSsrCookieService } from '@ng-catbee/cookie';
 ```
 
-Use `CookieService` in browser contexts and `SsrCookieService` for server-side rendering (SSR) scenarios.
+Use `CatbeeCookieService` in browser contexts and `CatbeeSsrCookieService` for server-side rendering (SSR) scenarios.
 :::
 
 :::warning
-`SsrCookieService` provides only getting cookies from the request headers and does not support setting cookies.
+`CatbeeSsrCookieService` provides only getting cookies from the request headers and does not support setting cookies.
 :::
 
 ## Common Use Cases
