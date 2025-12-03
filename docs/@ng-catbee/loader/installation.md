@@ -1,31 +1,15 @@
 ---
 id: installation
-title: Installation
+title: Installation and Configuration
 sidebar_position: 2
 ---
 
-# Installation
-
-Learn how to install and configure the @ng-catbee/loader package in your Angular application.
-
 ## Installation
 
-Install the package using npm:
+Install the package via npm:
 
 ```bash
 npm install @ng-catbee/loader
-```
-
-Or using yarn:
-
-```bash
-yarn add @ng-catbee/loader
-```
-
-Or using pnpm:
-
-```bash
-pnpm add @ng-catbee/loader
 ```
 
 ## Import Animation Styles

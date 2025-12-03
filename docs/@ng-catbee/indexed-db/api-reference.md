@@ -8,6 +8,21 @@ sidebar_position: 4
 
 The main service for managing IndexedDB operations with type safety and RxJS observables.
 
+:::tip Service Aliases
+
+```typescript
+import { CatbeeIndexedDBService } from '@ng-catbee/indexed-db';
+```
+
+You can also import the service using the shorter alias:
+
+```typescript
+import { IndexedDBService } from '@ng-catbee/indexed-db';
+```
+
+Both `CatbeeIndexedDBService` and `IndexedDBService` refer to the same service.
+:::
+
 ## API Summary
 
 - ### Observables

@@ -10,7 +10,7 @@ sidebar_position: 2
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { LocalStorageService } from '@ng-catbee/storage';
+import { CatbeeLocalStorageService } from '@ng-catbee/storage';
 
 interface UserSettings {
   theme: string;
@@ -31,7 +31,7 @@ interface UserSettings {
   `
 })
 export class SettingsComponent {
-  private localStorage = inject(LocalStorageService);
+  private localStorage = inject(CatbeeLocalStorageService);
   currentSettings: UserSettings | null = null;
 
   saveSettings() {
@@ -57,7 +57,7 @@ export class SettingsComponent {
 
 ```typescript
 import { Component, inject, OnInit } from '@angular/core';
-import { LocalStorageService } from '@ng-catbee/storage';
+import { CatbeeLocalStorageService } from '@ng-catbee/storage';
 
 interface AppConfig {
   apiUrl: string;
@@ -71,7 +71,7 @@ interface AppConfig {
   standalone: true
 })
 export class AppConfigComponent implements OnInit {
-  private localStorage = inject(LocalStorageService);
+  private localStorage = inject(CatbeeLocalStorageService);
   config!: AppConfig;
 
   ngOnInit() {
@@ -97,7 +97,7 @@ export class AppConfigComponent implements OnInit {
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { LocalStorageService } from '@ng-catbee/storage';
+import { CatbeeLocalStorageService } from '@ng-catbee/storage';
 
 interface UserProfile {
   id: string;
@@ -124,7 +124,7 @@ interface UserProfile {
   selector: 'app-profile'
 })
 export class ProfileComponent {
-  private localStorage = inject(LocalStorageService);
+  private localStorage = inject(CatbeeLocalStorageService);
 
   saveProfile(profile: UserProfile) {
     this.localStorage.setJson('userProfile', profile);
@@ -142,7 +142,7 @@ export class ProfileComponent {
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { LocalStorageService } from '@ng-catbee/storage';
+import { CatbeeLocalStorageService } from '@ng-catbee/storage';
 
 @Component({
   selector: 'app-tags',
@@ -161,7 +161,7 @@ import { LocalStorageService } from '@ng-catbee/storage';
   `
 })
 export class TagsComponent {
-  private localStorage = inject(LocalStorageService);
+  private localStorage = inject(CatbeeLocalStorageService);
   tags: string[] = [];
 
   ngOnInit() {
@@ -187,7 +187,7 @@ export class TagsComponent {
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { LocalStorageService } from '@ng-catbee/storage';
+import { CatbeeLocalStorageService } from '@ng-catbee/storage';
 
 interface TodoItem {
   id: number;
@@ -214,7 +214,7 @@ interface TodoItem {
   `
 })
 export class TodosComponent {
-  private localStorage = inject(LocalStorageService);
+  private localStorage = inject(CatbeeLocalStorageService);
   todos: TodoItem[] = [];
 
   ngOnInit() {
@@ -253,7 +253,7 @@ export class TodosComponent {
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { LocalStorageService } from '@ng-catbee/storage';
+import { CatbeeLocalStorageService } from '@ng-catbee/storage';
 
 @Component({
   selector: 'app-features',
@@ -271,7 +271,7 @@ import { LocalStorageService } from '@ng-catbee/storage';
   `
 })
 export class FeaturesComponent {
-  private localStorage = inject(LocalStorageService);
+  private localStorage = inject(CatbeeLocalStorageService);
 
   // Recognizes: true, false, 1, 0, yes, no, on, off
   showNewUI = () => this.localStorage.getBooleanWithDefault('newUI', false);
@@ -292,7 +292,7 @@ export class FeaturesComponent {
 
 ```typescript
 import { Component, inject, signal, OnInit } from '@angular/core';
-import { LocalStorageService } from '@ng-catbee/storage';
+import { CatbeeLocalStorageService } from '@ng-catbee/storage';
 
 @Component({
   selector: 'app-cookie-banner',
@@ -308,7 +308,7 @@ import { LocalStorageService } from '@ng-catbee/storage';
   `
 })
 export class CookieBannerComponent implements OnInit {
-  private localStorage = inject(LocalStorageService);
+  private localStorage = inject(CatbeeLocalStorageService);
   hasConsent = signal(false);
 
   ngOnInit() {
@@ -335,7 +335,7 @@ export class CookieBannerComponent implements OnInit {
 
 ```typescript
 import { Component, inject, signal } from '@angular/core';
-import { LocalStorageService } from '@ng-catbee/storage';
+import { CatbeeLocalStorageService } from '@ng-catbee/storage';
 
 @Component({
   selector: 'app-counter',
@@ -350,7 +350,7 @@ import { LocalStorageService } from '@ng-catbee/storage';
   `
 })
 export class CounterComponent {
-  private localStorage = inject(LocalStorageService);
+  private localStorage = inject(CatbeeLocalStorageService);
   count = signal(0);
 
   ngOnInit() {
@@ -382,7 +382,7 @@ export class CounterComponent {
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { LocalStorageService } from '@ng-catbee/storage';
+import { CatbeeLocalStorageService } from '@ng-catbee/storage';
 
 interface ProductRating {
   productId: string;
@@ -394,7 +394,7 @@ interface ProductRating {
   selector: 'app-rating'
 })
 export class RatingComponent {
-  private localStorage = inject(LocalStorageService);
+  private localStorage = inject(CatbeeLocalStorageService);
 
   saveRating(productId: string, rating: number) {
     // Store individual rating
@@ -423,7 +423,7 @@ export class RatingComponent {
 
 ```typescript
 import { Component, inject, signal } from '@angular/core';
-import { LocalStorageService } from '@ng-catbee/storage';
+import { CatbeeLocalStorageService } from '@ng-catbee/storage';
 
 type Theme = 'light' | 'dark' | 'auto';
 
@@ -460,7 +460,7 @@ type Theme = 'light' | 'dark' | 'auto';
   `
 })
 export class ThemeSwitcherComponent {
-  private localStorage = inject(LocalStorageService);
+  private localStorage = inject(CatbeeLocalStorageService);
   theme = signal<Theme>('light');
 
   ngOnInit() {
@@ -490,7 +490,7 @@ export class ThemeSwitcherComponent {
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { LocalStorageService } from '@ng-catbee/storage';
+import { CatbeeLocalStorageService } from '@ng-catbee/storage';
 
 type Language = 'en' | 'es' | 'fr' | 'de' | 'ja';
 
@@ -508,7 +508,7 @@ type Language = 'en' | 'es' | 'fr' | 'de' | 'ja';
   `
 })
 export class LanguageSelectorComponent {
-  private localStorage = inject(LocalStorageService);
+  private localStorage = inject(CatbeeLocalStorageService);
   currentLanguage: Language = 'en';
 
   ngOnInit() {
@@ -540,7 +540,7 @@ export class LanguageSelectorComponent {
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { LocalStorageService } from '@ng-catbee/storage';
+import { CatbeeLocalStorageService } from '@ng-catbee/storage';
 
 type UserRole = 'guest' | 'user' | 'moderator' | 'admin';
 
@@ -548,7 +548,7 @@ type UserRole = 'guest' | 'user' | 'moderator' | 'admin';
   selector: 'app-role-manager'
 })
 export class RoleManagerComponent {
-  private localStorage = inject(LocalStorageService);
+  private localStorage = inject(CatbeeLocalStorageService);
 
   saveUserRole(role: UserRole) {
     this.localStorage.set('userRole', role);

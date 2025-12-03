@@ -4,9 +4,24 @@ title: API Reference
 sidebar_position: 4
 ---
 
-## LocalStorageService & SessionStorageService
+## CatbeeLocalStorageService & CatbeeSessionStorageService
 
-Both services share the same API. The only difference is that `LocalStorageService` persists data across browser sessions, while `SessionStorageService` data is cleared when the browser tab is closed.
+Both services share the same API. The only difference is that `CatbeeLocalStorageService` persists data across browser sessions, while `CatbeeSessionStorageService` data is cleared when the browser tab is closed.
+
+:::tip Service Aliases
+
+```typescript
+import { CatbeeLocalStorageService, CatbeeSessionStorageService } from '@ng-catbee/storage';
+```
+
+You can also import the services using the shorter aliases:
+
+```typescript
+import { LocalStorageService, SessionStorageService } from '@ng-catbee/storage';
+```
+
+Both pairs refer to the same services respectively.
+:::
 
 ## API Summary
 

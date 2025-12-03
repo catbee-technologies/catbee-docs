@@ -11,11 +11,11 @@ sidebar_position: 2
 ```typescript
 import { inject } from '@angular/core';
 import { Router, type CanActivateFn } from '@angular/router';
-import { JwtService } from '@ng-catbee/jwt';
+import { CatbeeJwtService } from '@ng-catbee/jwt';
 import { AuthService } from './auth.service';
 
 export const authGuard: CanActivateFn = () => {
-  const jwtService = inject(JwtService);
+  const jwtService = inject(CatbeeJwtService);
   const authService = inject(AuthService);
   const router = inject(Router);
 
@@ -61,12 +61,12 @@ export const routes: Routes = [
 ```typescript
 import { inject } from '@angular/core';
 import { Router, type CanActivateFn } from '@angular/router';
-import { JwtService } from '@ng-catbee/jwt';
+import { CatbeeJwtService } from '@ng-catbee/jwt';
 import { AuthService } from './auth.service';
 
 export const roleGuard = (allowedRoles: string[]): CanActivateFn => {
   return () => {
-    const jwtService = inject(JwtService);
+    const jwtService = inject(CatbeeJwtService);
     const authService = inject(AuthService);
     const router = inject(Router);
 
@@ -114,12 +114,12 @@ export const routes: Routes = [
 ```typescript
 import { inject } from '@angular/core';
 import { Router, type CanActivateFn } from '@angular/router';
-import { JwtService } from '@ng-catbee/jwt';
+import { CatbeeJwtService } from '@ng-catbee/jwt';
 import { AuthService } from './auth.service';
 
 export const permissionGuard = (requiredPermissions: string[]): CanActivateFn => {
   return () => {
-    const jwtService = inject(JwtService);
+    const jwtService = inject(CatbeeJwtService);
     const authService = inject(AuthService);
     const router = inject(Router);
 
@@ -172,12 +172,12 @@ export const routes: Routes = [
 ```typescript
 import { inject } from '@angular/core';
 import { Router, type CanActivateFn } from '@angular/router';
-import { JwtService } from '@ng-catbee/jwt';
+import { CatbeeJwtService } from '@ng-catbee/jwt';
 import { AuthService } from './auth.service';
 
 export const tokenFreshnessGuard = (maxAgeMinutes: number): CanActivateFn => {
   return () => {
-    const jwtService = inject(JwtService);
+    const jwtService = inject(CatbeeJwtService);
     const authService = inject(AuthService);
     const router = inject(Router);
 
@@ -215,7 +215,7 @@ export const tokenFreshnessGuard = (maxAgeMinutes: number): CanActivateFn => {
 ```typescript
 import { inject } from '@angular/core';
 import { Router, type CanActivateFn } from '@angular/router';
-import { JwtService } from '@ng-catbee/jwt';
+import { CatbeeJwtService } from '@ng-catbee/jwt';
 import { AuthService } from './auth.service';
 
 export const comprehensiveGuard = (
@@ -227,7 +227,7 @@ export const comprehensiveGuard = (
   }
 ): CanActivateFn => {
   return () => {
-    const jwtService = inject(JwtService);
+    const jwtService = inject(CatbeeJwtService);
     const authService = inject(AuthService);
     const router = inject(Router);
 

@@ -1,6 +1,6 @@
 ---
 id: installation
-title: Installation
+title: Installation and Configuration
 sidebar_position: 2
 ---
 
@@ -94,7 +94,7 @@ The library works without configuration. Just inject the services:
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { LocalStorageService, SessionStorageService } from '@ng-catbee/storage';
+import { CatbeeLocalStorageService, CatbeeSessionStorageService } from '@ng-catbee/storage';
 
 @Component({
   selector: 'app-root',
@@ -102,8 +102,8 @@ import { LocalStorageService, SessionStorageService } from '@ng-catbee/storage';
   template: `...`
 })
 export class AppComponent {
-  private localStorage = inject(LocalStorageService);
-  private sessionStorage = inject(SessionStorageService);
+  private localStorage = inject(CatbeeLocalStorageService);
+  private sessionStorage = inject(CatbeeSessionStorageService);
 
   saveData() {
     this.localStorage.set('key', 'value');

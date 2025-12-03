@@ -10,7 +10,7 @@ sidebar_position: 3
 
 ```typescript
 import { Component, inject, OnInit, OnDestroy } from '@angular/core';
-import { LocalStorageService } from '@ng-catbee/storage';
+import { CatbeeLocalStorageService } from '@ng-catbee/storage';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
@@ -24,7 +24,7 @@ import { Subject, takeUntil } from 'rxjs';
   `
 })
 export class ThemeWatcherComponent implements OnInit, OnDestroy {
-  private localStorage = inject(LocalStorageService);
+  private localStorage = inject(CatbeeLocalStorageService);
   private destroy$ = new Subject<void>();
 
   currentTheme = 'light';
@@ -64,7 +64,7 @@ export class ThemeWatcherComponent implements OnInit, OnDestroy {
 
 ```typescript
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { LocalStorageService } from '@ng-catbee/storage';
+import { CatbeeLocalStorageService } from '@ng-catbee/storage';
 
 @Component({
   selector: 'app-settings-watcher',
@@ -78,7 +78,7 @@ import { LocalStorageService } from '@ng-catbee/storage';
   `
 })
 export class SettingsWatcherComponent implements OnInit {
-  private localStorage = inject(LocalStorageService);
+  private localStorage = inject(CatbeeLocalStorageService);
   fontSize = signal(16);
 
   ngOnInit() {
@@ -111,7 +111,7 @@ export class SettingsWatcherComponent implements OnInit {
 
 ```typescript
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { LocalStorageService } from '@ng-catbee/storage';
+import { CatbeeLocalStorageService } from '@ng-catbee/storage';
 
 interface StorageEvent {
   key: string | null;
@@ -141,7 +141,7 @@ interface StorageEvent {
   `
 })
 export class StorageMonitorComponent implements OnInit {
-  private localStorage = inject(LocalStorageService);
+  private localStorage = inject(CatbeeLocalStorageService);
   events = signal<StorageEvent[]>([]);
 
   ngOnInit() {
@@ -166,7 +166,7 @@ export class StorageMonitorComponent implements OnInit {
 
 ```typescript
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { LocalStorageService } from '@ng-catbee/storage';
+import { CatbeeLocalStorageService } from '@ng-catbee/storage';
 
 interface CartItem {
   id: number;
@@ -192,7 +192,7 @@ interface CartItem {
   `
 })
 export class CartSyncComponent implements OnInit {
-  private localStorage = inject(LocalStorageService);
+  private localStorage = inject(CatbeeLocalStorageService);
   cartItems = signal<CartItem[]>([]);
 
   ngOnInit() {
@@ -236,7 +236,7 @@ export class CartSyncComponent implements OnInit {
 
 ```typescript
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { LocalStorageService } from '@ng-catbee/storage';
+import { CatbeeLocalStorageService } from '@ng-catbee/storage';
 
 interface Notification {
   id: number;
@@ -261,7 +261,7 @@ interface Notification {
   `
 })
 export class NotificationsComponent implements OnInit {
-  private localStorage = inject(LocalStorageService);
+  private localStorage = inject(CatbeeLocalStorageService);
   notifications = signal<Notification[]>([]);
   unreadCount = signal(0);
 
@@ -300,7 +300,7 @@ export class NotificationsComponent implements OnInit {
 ```typescript
 import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { LocalStorageService } from '@ng-catbee/storage';
+import { CatbeeLocalStorageService } from '@ng-catbee/storage';
 import { debounceTime } from 'rxjs';
 
 @Component({
@@ -318,7 +318,7 @@ import { debounceTime } from 'rxjs';
 })
 export class FormAutosaveComponent implements OnInit {
   private fb = inject(FormBuilder);
-  private localStorage = inject(LocalStorageService);
+  private localStorage = inject(CatbeeLocalStorageService);
 
   saveStatus = '';
   form!: FormGroup;
@@ -356,7 +356,7 @@ export class FormAutosaveComponent implements OnInit {
 
 ```typescript
 import { Component, inject, OnInit, computed, signal } from '@angular/core';
-import { LocalStorageService } from '@ng-catbee/storage';
+import { CatbeeLocalStorageService } from '@ng-catbee/storage';
 
 interface UserPreferences {
   fontSize: number;
@@ -377,7 +377,7 @@ interface UserPreferences {
   `
 })
 export class TypographyComponent implements OnInit {
-  private localStorage = inject(LocalStorageService);
+  private localStorage = inject(CatbeeLocalStorageService);
 
   prefs = signal<UserPreferences>({
     fontSize: 16,
@@ -420,7 +420,7 @@ export class TypographyComponent implements OnInit {
 
 ```typescript
 import { Component, inject, signal } from '@angular/core';
-import { LocalStorageService } from '@ng-catbee/storage';
+import { CatbeeLocalStorageService } from '@ng-catbee/storage';
 
 @Component({
   selector: 'app-data-loader',
@@ -439,7 +439,7 @@ import { LocalStorageService } from '@ng-catbee/storage';
   `
 })
 export class DataLoaderComponent {
-  private localStorage = inject(LocalStorageService);
+  private localStorage = inject(CatbeeLocalStorageService);
 
   loading = signal(false);
   error = signal<string | null>(null);

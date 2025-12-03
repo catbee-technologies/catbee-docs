@@ -11,11 +11,11 @@ sidebar_position: 3
 ```typescript
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { JwtService } from '@ng-catbee/jwt';
+import { CatbeeJwtService } from '@ng-catbee/jwt';
 import { AuthService } from './auth.service';
 
 export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
-  const jwtService = inject(JwtService);
+  const jwtService = inject(CatbeeJwtService);
   const authService = inject(AuthService);
 
   const token = authService.getToken();
@@ -56,13 +56,13 @@ export const appConfig: ApplicationConfig = {
 ```typescript
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { JwtService } from '@ng-catbee/jwt';
+import { CatbeeJwtService } from '@ng-catbee/jwt';
 import { AuthService } from './auth.service';
 
 const PUBLIC_URLS = ['/api/auth/login', '/api/auth/register', '/api/public'];
 
 export const selectiveJwtInterceptor: HttpInterceptorFn = (req, next) => {
-  const jwtService = inject(JwtService);
+  const jwtService = inject(CatbeeJwtService);
   const authService = inject(AuthService);
 
   // Skip token for public URLs
@@ -93,11 +93,11 @@ export const selectiveJwtInterceptor: HttpInterceptorFn = (req, next) => {
 import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { catchError, switchMap, throwError } from 'rxjs';
-import { JwtService } from '@ng-catbee/jwt';
+import { CatbeeJwtService } from '@ng-catbee/jwt';
 import { AuthService } from './auth.service';
 
 export const refreshTokenInterceptor: HttpInterceptorFn = (req, next) => {
-  const jwtService = inject(JwtService);
+  const jwtService = inject(CatbeeJwtService);
   const authService = inject(AuthService);
 
   const token = authService.getToken();
@@ -147,14 +147,14 @@ export const refreshTokenInterceptor: HttpInterceptorFn = (req, next) => {
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { tap } from 'rxjs';
-import { JwtService } from '@ng-catbee/jwt';
+import { CatbeeJwtService } from '@ng-catbee/jwt';
 import { AuthService } from './auth.service';
 import { NotificationService } from './notification.service';
 
 const WARNING_THRESHOLD_SECONDS = 300; // 5 minutes
 
 export const expirationWarningInterceptor: HttpInterceptorFn = (req, next) => {
-  const jwtService = inject(JwtService);
+  const jwtService = inject(CatbeeJwtService);
   const authService = inject(AuthService);
   const notificationService = inject(NotificationService);
 
@@ -183,11 +183,11 @@ export const expirationWarningInterceptor: HttpInterceptorFn = (req, next) => {
 ```typescript
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { JwtService } from '@ng-catbee/jwt';
+import { CatbeeJwtService } from '@ng-catbee/jwt';
 import { AuthService } from './auth.service';
 
 export const customHeadersInterceptor: HttpInterceptorFn = (req, next) => {
-  const jwtService = inject(JwtService);
+  const jwtService = inject(CatbeeJwtService);
   const authService = inject(AuthService);
 
   const token = authService.getToken();
@@ -222,11 +222,11 @@ export const customHeadersInterceptor: HttpInterceptorFn = (req, next) => {
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { tap } from 'rxjs';
-import { JwtService } from '@ng-catbee/jwt';
+import { CatbeeJwtService } from '@ng-catbee/jwt';
 import { AuthService } from './auth.service';
 
 export const tokenLoggingInterceptor: HttpInterceptorFn = (req, next) => {
-  const jwtService = inject(JwtService);
+  const jwtService = inject(CatbeeJwtService);
   const authService = inject(AuthService);
 
   const token = authService.getToken();

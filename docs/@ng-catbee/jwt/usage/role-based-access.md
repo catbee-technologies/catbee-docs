@@ -12,7 +12,7 @@ sidebar_position: 5
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { JwtService } from '@ng-catbee/jwt';
+import { CatbeeJwtService } from '@ng-catbee/jwt';
 import { Observable, tap } from 'rxjs';
 
 interface LoginResponse {
@@ -21,7 +21,7 @@ interface LoginResponse {
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private jwtService = inject(JwtService);
+  private jwtService = inject(CatbeeJwtService);
   private http = inject(HttpClient);
   private router = inject(Router);
 
@@ -123,7 +123,7 @@ export class AuthService {
 
 ```typescript
 import { Component, inject, computed } from '@angular/core';
-import { JwtService } from '@ng-catbee/jwt';
+import { CatbeeJwtService } from '@ng-catbee/jwt';
 import { AuthService } from './auth.service';
 
 @Component({
@@ -159,7 +159,7 @@ import { AuthService } from './auth.service';
 })
 export class DashboardComponent {
   private authService = inject(AuthService);
-  private jwtService = inject(JwtService);
+  private jwtService = inject(CatbeeJwtService);
 
   private role = computed(() => {
     const token = this.authService.getToken();
@@ -178,7 +178,7 @@ export class DashboardComponent {
 
 ```typescript
 import { Directive, inject, Input, TemplateRef, ViewContainerRef, effect } from '@angular/core';
-import { JwtService } from '@ng-catbee/jwt';
+import { CatbeeJwtService } from '@ng-catbee/jwt';
 import { AuthService } from './auth.service';
 
 @Directive({
@@ -188,7 +188,7 @@ import { AuthService } from './auth.service';
 export class HasPermissionDirective {
   private templateRef = inject(TemplateRef<any>);
   private viewContainer = inject(ViewContainerRef);
-  private jwtService = inject(JwtService);
+  private jwtService = inject(CatbeeJwtService);
   private authService = inject(AuthService);
 
   @Input() set hasPermission(permission: string | string[]) {
@@ -245,7 +245,7 @@ export class ContentComponent {}
 
 ```typescript
 import { Directive, inject, Input, TemplateRef, ViewContainerRef } from '@angular/core';
-import { JwtService } from '@ng-catbee/jwt';
+import { CatbeeJwtService } from '@ng-catbee/jwt';
 import { AuthService } from './auth.service';
 
 @Directive({
@@ -255,7 +255,7 @@ import { AuthService } from './auth.service';
 export class HasRoleDirective {
   private templateRef = inject(TemplateRef<any>);
   private viewContainer = inject(ViewContainerRef);
-  private jwtService = inject(JwtService);
+  private jwtService = inject(CatbeeJwtService);
   private authService = inject(AuthService);
 
   @Input() set hasRole(role: string | string[]) {
@@ -312,7 +312,7 @@ export class AdminPanelComponent {}
 
 ```typescript
 import { Injectable, inject } from '@angular/core';
-import { JwtService } from '@ng-catbee/jwt';
+import { CatbeeJwtService } from '@ng-catbee/jwt';
 import { AuthService } from './auth.service';
 
 interface AccessRule {
@@ -323,7 +323,7 @@ interface AccessRule {
 
 @Injectable({ providedIn: 'root' })
 export class AccessControlService {
-  private jwtService = inject(JwtService);
+  private jwtService = inject(CatbeeJwtService);
   private authService = inject(AuthService);
 
   canAccess(rule: AccessRule): boolean {

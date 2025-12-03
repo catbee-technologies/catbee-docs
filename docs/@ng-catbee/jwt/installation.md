@@ -4,8 +4,6 @@ title: Installation
 sidebar_position: 2
 ---
 
-## Installation
-
 Install the package via npm:
 
 ```bash
@@ -14,7 +12,7 @@ npm install @ng-catbee/jwt
 
 ## Zero Configuration
 
-This library works out of the box with zero configuration. Simply inject the `JwtService` and start using it.
+This library works out of the box with zero configuration. Simply inject the `CatbeeJwtService` and start using it.
 
 ### Standalone Apps (Angular 17+)
 
@@ -22,7 +20,7 @@ No additional setup required. Just inject the service directly:
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { JwtService } from '@ng-catbee/jwt';
+import { CatbeeJwtService } from '@ng-catbee/jwt';
 
 @Component({
   selector: 'app-root',
@@ -30,7 +28,7 @@ import { JwtService } from '@ng-catbee/jwt';
   template: `...`
 })
 export class AppComponent {
-  private jwtService = inject(JwtService);
+  private jwtService = inject(CatbeeJwtService);
 
   decodeToken(token: string) {
     return this.jwtService.decodePayload(token);
@@ -44,14 +42,14 @@ The service is provided in root by default, so no module imports needed:
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { JwtService } from '@ng-catbee/jwt';
+import { CatbeeJwtService } from '@ng-catbee/jwt';
 
 @Component({
   selector: 'app-root',
   template: `...`
 })
 export class AppComponent {
-  private jwtService = inject(JwtService);
+  private jwtService = inject(CatbeeJwtService);
 }
 ```
 

@@ -7,14 +7,14 @@ sidebar_position: 2
 :::tip
 
 ```typescript
-import { CookieService, SsrCookieService } from '@ng-catbee/cookie';
+import { CatbeeCookieService, CatbeeSsrCookieService } from '@ng-catbee/cookie';
 ```
 
-Use `CookieService` in browser contexts and `SsrCookieService` for server-side rendering (SSR) scenarios.
+Use `CatbeeCookieService` in browser contexts and `CatbeeSsrCookieService` for server-side rendering (SSR) scenarios.
 :::
 
 :::warning
-`SsrCookieService` provides only getting cookies from the request headers and does not support setting cookies.
+`CatbeeSsrCookieService` provides only getting cookies from the request headers and does not support setting cookies.
 :::
 
 ## JSON Cookies
@@ -23,7 +23,7 @@ Use `CookieService` in browser contexts and `SsrCookieService` for server-side r
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { CookieService } from '@ng-catbee/cookie';
+import { CatbeeCookieService } from '@ng-catbee/cookie';
 
 interface UserPreferences {
   theme: 'light' | 'dark' | 'auto';
@@ -59,7 +59,7 @@ interface UserPreferences {
   `
 })
 export class PreferencesComponent {
-  private cookieService = inject(CookieService);
+  private cookieService = inject(CatbeeCookieService);
 
   preferences: UserPreferences = {
     theme: 'light',
@@ -111,7 +111,7 @@ export class PreferencesComponent {
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { CookieService } from '@ng-catbee/cookie';
+import { CatbeeCookieService } from '@ng-catbee/cookie';
 
 interface ShoppingCart {
   items: CartItem[];
@@ -151,7 +151,7 @@ interface CartItem {
   `
 })
 export class ShoppingCartComponent {
-  private cookieService = inject(CookieService);
+  private cookieService = inject(CatbeeCookieService);
 
   cart: ShoppingCart = {
     items: [],
@@ -214,7 +214,7 @@ export class ShoppingCartComponent {
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { CookieService } from '@ng-catbee/cookie';
+import { CatbeeCookieService } from '@ng-catbee/cookie';
 
 @Component({
   selector: 'app-recent-searches',
@@ -240,7 +240,7 @@ import { CookieService } from '@ng-catbee/cookie';
   `
 })
 export class RecentSearchesComponent {
-  private cookieService = inject(CookieService);
+  private cookieService = inject(CatbeeCookieService);
   searches: string[] = [];
   maxSearches = 10;
 
@@ -305,7 +305,7 @@ export class RecentSearchesComponent {
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { CookieService } from '@ng-catbee/cookie';
+import { CatbeeCookieService } from '@ng-catbee/cookie';
 
 interface RecentItem {
   id: string;
@@ -331,7 +331,7 @@ interface RecentItem {
   `
 })
 export class RecentItemsComponent {
-  private cookieService = inject(CookieService);
+  private cookieService = inject(CatbeeCookieService);
   recentItems: RecentItem[] = [];
 
   ngOnInit() {
@@ -379,7 +379,7 @@ export class RecentItemsComponent {
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { CookieService } from '@ng-catbee/cookie';
+import { CatbeeCookieService } from '@ng-catbee/cookie';
 
 @Component({
   selector: 'app-feature-flags',
@@ -409,7 +409,7 @@ import { CookieService } from '@ng-catbee/cookie';
   `
 })
 export class FeatureFlagsComponent {
-  private cookieService = inject(CookieService);
+  private cookieService = inject(CatbeeCookieService);
 
   betaFeatures = false;
   darkMode = false;
@@ -456,7 +456,7 @@ export class FeatureFlagsComponent {
 
 ```typescript
 import { Component, inject, OnInit } from '@angular/core';
-import { CookieService } from '@ng-catbee/cookie';
+import { CatbeeCookieService } from '@ng-catbee/cookie';
 
 @Component({
   selector: 'app-cookie-banner',
@@ -472,7 +472,7 @@ import { CookieService } from '@ng-catbee/cookie';
   `
 })
 export class CookieBannerComponent implements OnInit {
-  private cookieService = inject(CookieService);
+  private cookieService = inject(CatbeeCookieService);
 
   cookiesAccepted = false;
   showBanner = true;
@@ -515,7 +515,7 @@ export class CookieBannerComponent implements OnInit {
 
 ```typescript
 import { Component, inject, OnInit } from '@angular/core';
-import { CookieService } from '@ng-catbee/cookie';
+import { CatbeeCookieService } from '@ng-catbee/cookie';
 
 @Component({
   selector: 'app-page-analytics',
@@ -529,7 +529,7 @@ import { CookieService } from '@ng-catbee/cookie';
   `
 })
 export class PageAnalyticsComponent implements OnInit {
-  private cookieService = inject(CookieService);
+  private cookieService = inject(CatbeeCookieService);
 
   pageViews = 0;
   visitCount = 0;
@@ -577,7 +577,7 @@ export class PageAnalyticsComponent implements OnInit {
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { CookieService } from '@ng-catbee/cookie';
+import { CatbeeCookieService } from '@ng-catbee/cookie';
 
 @Component({
   selector: 'app-rating',
@@ -601,7 +601,7 @@ import { CookieService } from '@ng-catbee/cookie';
   `
 })
 export class RatingComponent {
-  private cookieService = inject(CookieService);
+  private cookieService = inject(CatbeeCookieService);
 
   hasRated = false;
   userRating = 0;
@@ -646,7 +646,7 @@ export class RatingComponent {
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { CookieService } from '@ng-catbee/cookie';
+import { CatbeeCookieService } from '@ng-catbee/cookie';
 
 type Theme = 'light' | 'dark' | 'auto';
 
@@ -666,7 +666,7 @@ type Theme = 'light' | 'dark' | 'auto';
   `
 })
 export class ThemeSelectorComponent {
-  private cookieService = inject(CookieService);
+  private cookieService = inject(CatbeeCookieService);
 
   readonly themes: readonly Theme[] = ['light', 'dark', 'auto'];
   currentTheme: Theme = 'light';
@@ -705,7 +705,7 @@ export class ThemeSelectorComponent {
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { CookieService } from '@ng-catbee/cookie';
+import { CatbeeCookieService } from '@ng-catbee/cookie';
 
 type Language = 'en' | 'es' | 'fr' | 'de' | 'ja';
 
@@ -723,7 +723,7 @@ type Language = 'en' | 'es' | 'fr' | 'de' | 'ja';
   `
 })
 export class LanguageSelectorComponent {
-  private cookieService = inject(CookieService);
+  private cookieService = inject(CatbeeCookieService);
 
   readonly languageCodes: readonly Language[] = ['en', 'es', 'fr', 'de', 'ja'];
 
@@ -765,7 +765,7 @@ export class LanguageSelectorComponent {
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { CookieService } from '@ng-catbee/cookie';
+import { CatbeeCookieService } from '@ng-catbee/cookie';
 
 type UserRole = 'guest' | 'user' | 'moderator' | 'admin';
 
@@ -793,7 +793,7 @@ type UserRole = 'guest' | 'user' | 'moderator' | 'admin';
   `
 })
 export class UserDashboardComponent {
-  private cookieService = inject(CookieService);
+  private cookieService = inject(CatbeeCookieService);
 
   readonly roles: readonly UserRole[] = ['guest', 'user', 'moderator', 'admin'];
 

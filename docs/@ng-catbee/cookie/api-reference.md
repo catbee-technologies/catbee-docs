@@ -4,21 +4,29 @@ title: API Reference
 sidebar_position: 4
 ---
 
-# CookieService
+# CatbeeCookieService
 
 The main service for managing browser cookies with type safety and SSR compatibility.
 
-:::tip
+:::tip Service Aliases
+
+```typescript
+import { CatbeeCookieService, CatbeeSsrCookieService } from '@ng-catbee/cookie';
+```
+
+You can also import the services using the shorter aliases:
 
 ```typescript
 import { CookieService, SsrCookieService } from '@ng-catbee/cookie';
 ```
 
-Use `CookieService` in browser contexts and `SsrCookieService` for server-side rendering (SSR) scenarios.
+Both pairs refer to the same services respectively.
 :::
 
 :::warning
-`SsrCookieService` provides only getting cookies from the request headers and does not support setting cookies.
+Use `CatbeeSsrCookieService` or `SsrCookieService` for server-side rendering (SSR) scenarios.
+
+`CatbeeSsrCookieService` provides only getting cookies from the request headers and does not support setting cookies.
 :::
 
 ## API Summary
@@ -67,7 +75,36 @@ interface CookieOptions {
   sameSite?: 'Lax' | 'Strict' | 'None';
   /** Partitioned cookie (CHIPS) @default undefined */
   partitioned?: boolean;
+  /** Cookie priority (Chrome-specific) @default 'Medium' */
+  priority?: 'Low' | 'Medium' | 'High';
 }
+```
+
+### Priority Attribute
+
+The `priority` attribute is a Chrome-specific extension that allows you to specify the priority of a cookie. This helps browsers decide which cookies to keep when storage limits are reached.
+
+**Values:**
+
+- `'Low'` - Cookie will be evicted first when storage is full
+- `'Medium'` - Default priority (balanced approach)
+- `'High'` - Cookie will be kept as long as possible
+
+**Example:**
+
+```typescript
+// Set a high-priority authentication cookie
+cookieService.set('authToken', 'xyz789', {
+  priority: 'High',
+  secure: true,
+  sameSite: 'Strict'
+});
+
+// Set a low-priority tracking cookie
+cookieService.set('analytics', 'track123', {
+  priority: 'Low',
+  expires: 30
+});
 ```
 
 ---
@@ -779,7 +816,7 @@ console.log('Cookie entries:', cookieEntries);
 // [['username', 'john'], ['theme', 'dark'], ['sessionId', 'abc123']]
 
 // Iterate over entries
-for (const [name, value] of cookieEntries) {
+for (const [name, value] of cookieService.entries()) {
   console.log(`${name}: ${value}`);
 }
 ```

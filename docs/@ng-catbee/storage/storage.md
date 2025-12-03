@@ -22,4 +22,4 @@ A modern, type-safe Angular library for simplified interaction with web storage 
 
 ### API Reference
 
-- [API Documentation](./api-reference) - Complete API reference for LocalStorageService and SessionStorageService
+- [API Documentation](./api-reference) - Complete API reference for CatbeeLocalStorageService and CatbeeSessionStorageService

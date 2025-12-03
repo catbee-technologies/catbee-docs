@@ -60,13 +60,13 @@ export const appConfig: ApplicationConfig = {
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { LocalStorageService } from '@ng-catbee/storage';
+import { CatbeeLocalStorageService } from '@ng-catbee/storage';
 
 @Component({
   selector: 'app-mixed-encoding'
 })
 export class MixedEncodingComponent {
-  private localStorage = inject(LocalStorageService);
+  private localStorage = inject(CatbeeLocalStorageService);
 
   saveData() {
     // Save with encoding (default behavior)
@@ -92,7 +92,7 @@ export class MixedEncodingComponent {
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { LocalStorageService } from '@ng-catbee/storage';
+import { CatbeeLocalStorageService } from '@ng-catbee/storage';
 
 interface AppSettings {
   ui: {
@@ -122,7 +122,7 @@ interface AppSettings {
   `
 })
 export class SettingsUpdaterComponent {
-  private localStorage = inject(LocalStorageService);
+  private localStorage = inject(CatbeeLocalStorageService);
 
   private defaultSettings: AppSettings = {
     ui: { theme: 'light', sidebar: true, density: 'comfortable' },
@@ -174,7 +174,7 @@ export class SettingsUpdaterComponent {
 ```typescript
 import { Component, inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { LocalStorageService } from '@ng-catbee/storage';
+import { CatbeeLocalStorageService } from '@ng-catbee/storage';
 
 @Component({
   selector: 'app-ssr-safe',
@@ -190,7 +190,7 @@ import { LocalStorageService } from '@ng-catbee/storage';
   `
 })
 export class SsrSafeComponent {
-  private localStorage = inject(LocalStorageService);
+  private localStorage = inject(CatbeeLocalStorageService);
   private platformId = inject(PLATFORM_ID);
 
   isBrowser = isPlatformBrowser(this.platformId);
@@ -216,13 +216,13 @@ export class SsrSafeComponent {
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { LocalStorageService } from '@ng-catbee/storage';
+import { CatbeeLocalStorageService } from '@ng-catbee/storage';
 
 @Component({
   selector: 'app-validated-input'
 })
 export class ValidatedInputComponent {
-  private localStorage = inject(LocalStorageService);
+  private localStorage = inject(CatbeeLocalStorageService);
 
   saveEmail(email: string) {
     // Validate before saving
@@ -268,7 +268,7 @@ export class ValidatedInputComponent {
 
 ```typescript
 import { Injectable, inject } from '@angular/core';
-import { LocalStorageService } from '@ng-catbee/storage';
+import { CatbeeLocalStorageService } from '@ng-catbee/storage';
 
 interface UserDataV1 {
   name: string;
@@ -284,7 +284,7 @@ interface UserDataV2 {
 
 @Injectable({ providedIn: 'root' })
 export class MigrationService {
-  private localStorage = inject(LocalStorageService);
+  private localStorage = inject(CatbeeLocalStorageService);
   private readonly CURRENT_VERSION = 2;
 
   migrateUserData() {
@@ -328,7 +328,7 @@ export class MigrationService {
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { LocalStorageService } from '@ng-catbee/storage';
+import { CatbeeLocalStorageService } from '@ng-catbee/storage';
 
 @Component({
   selector: 'app-data-portability',
@@ -342,7 +342,7 @@ import { LocalStorageService } from '@ng-catbee/storage';
   `
 })
 export class DataPortabilityComponent {
-  private localStorage = inject(LocalStorageService);
+  private localStorage = inject(CatbeeLocalStorageService);
 
   exportData() {
     const entries = this.localStorage.entries();
@@ -396,13 +396,13 @@ export class DataPortabilityComponent {
 
 ```typescript
 import { Component, inject } from '@angular/core';
-import { LocalStorageService } from '@ng-catbee/storage';
+import { CatbeeLocalStorageService } from '@ng-catbee/storage';
 
 @Component({
   selector: 'app-batch-processor'
 })
 export class BatchProcessorComponent {
-  private localStorage = inject(LocalStorageService);
+  private localStorage = inject(CatbeeLocalStorageService);
 
   batchSaveUserPreferences(prefs: Record<string, any>) {
     const batch: Record<string, string> = {};
@@ -465,7 +465,7 @@ export class BatchProcessorComponent {
 
 ```typescript
 import { Component, inject, signal, OnInit } from '@angular/core';
-import { LocalStorageService } from '@ng-catbee/storage';
+import { CatbeeLocalStorageService } from '@ng-catbee/storage';
 
 @Component({
   selector: 'app-storage-quota',
@@ -490,7 +490,7 @@ import { LocalStorageService } from '@ng-catbee/storage';
   `
 })
 export class StorageQuotaComponent implements OnInit {
-  private localStorage = inject(LocalStorageService);
+  private localStorage = inject(CatbeeLocalStorageService);
 
   currentSize = signal(0);
   maxSize = 5 * 1024 * 1024; // Approximate 5MB limit

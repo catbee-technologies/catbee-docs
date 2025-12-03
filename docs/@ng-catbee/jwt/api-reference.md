@@ -4,9 +4,24 @@ title: API Reference
 sidebar_position: 4
 ---
 
-## JwtService
+## CatbeeJwtService
 
 The main service for JWT operations.
+
+:::tip Service Aliases
+
+```typescript
+import { CatbeeJwtService } from '@ng-catbee/jwt';
+```
+
+You can also import the service using the shorter alias:
+
+```typescript
+import { JwtService } from '@ng-catbee/jwt';
+```
+
+Both `CatbeeJwtService` and `JwtService` refer to the same service.
+:::
 
 ---
 
