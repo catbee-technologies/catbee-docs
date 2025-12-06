@@ -77,7 +77,7 @@ To open issues:
 Since this is a docs-only repository, security issues are rare.  
 If you discover something concerning (private data, config leak, etc.):
 
-Contact: **hprasath.dev@gmail.com**
+Contact: **security@catbee.in**
 
 More info:  
 👉 **[SECURITY.md](./SECURITY.md)**

@@ -18,7 +18,7 @@ Please open a regular GitHub issue.
 Although this repository does not contain application code, if you believe you’ve found a **security-related issue** that could affect the documentation site (for example, build pipeline, deployment, or configuration exposure):
 
 - Please **do not** create a public issue.
-- Instead email: **hprasath.dev@gmail.com** with details.
+- Instead email: **security@catbee.in** with details.
 
 ## Scope
 
@@ -33,4 +33,4 @@ For security policies related to actual packages (e.g., `@catbee/*`, `@ng-catbee
 ## Contact
 
 For concerns about this documentation site:  
-**hprasath.dev@gmail.com**
+**support@catbee.in**

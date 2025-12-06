@@ -2,7 +2,11 @@
   "name": "catbee-docs",
   "version": "2.0.0",
   "private": true,
-  "author": "Hari G <hprasath.dev@gmail.com>",
+  "author": "Hari G <harig@catbee.in>",
+  "maintainers": [
+    "Hari G <harig@catbee.in>",
+    "Bavi R <bavithra@catbee.in>"
+  ],
   "scripts": {
     "prepare": "husky",
     "docusaurus": "docusaurus",

@@ -112,7 +112,7 @@ By contributing, you agree to adhere to these standards.
 <br/>
 Read the full Code of Conduct here: **[CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)**
 <br/>
-Reports or concerns: **hprasath.dev@gmail.com**
+Reports or concerns: **info@catbee.in**
 
 ---
 
