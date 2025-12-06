@@ -12,7 +12,7 @@ const config: Config = {
     v4: true
   },
 
-  url: 'https://catbee.npm.hprasath.com',
+  url: 'https://catbee.in',
   baseUrl: '/',
 
   headTags: [
@@ -56,14 +56,14 @@ const config: Config = {
       tagName: 'meta',
       attributes: {
         property: 'og:url',
-        content: 'https://catbee.npm.hprasath.com'
+        content: 'https://catbee.in'
       }
     },
     {
       tagName: 'meta',
       attributes: {
         property: 'og:image',
-        content: 'https://catbee.npm.hprasath.com/favicon/android-chrome-512x512.png'
+        content: 'https://catbee.in/favicon/android-chrome-512x512.png'
       }
     },
     {
@@ -92,7 +92,7 @@ const config: Config = {
       tagName: 'meta',
       attributes: {
         name: 'twitter:image',
-        content: 'https://catbee.npm.hprasath.com/favicon/android-chrome-512x512.png'
+        content: 'https://catbee.in/favicon/android-chrome-512x512.png'
       }
     },
     {
@@ -113,7 +113,7 @@ const config: Config = {
       tagName: 'link',
       attributes: {
         rel: 'canonical',
-        href: 'https://catbee.npm.hprasath.com'
+        href: 'https://catbee.in'
       }
     },
     {
@@ -163,9 +163,9 @@ const config: Config = {
         name: 'Catbee Docs',
         description:
           'Catbee Docs - A collection of reusable utility modules for Angular, Node.js and TypeScript projects.',
-        url: 'https://catbee.npm.hprasath.com',
+        url: 'https://catbee.in',
         codeRepository: 'https://github.com/catbee-technologies',
-        license: 'https://catbee.npm.hprasath.com/license',
+        license: 'https://catbee.in/license',
         programmingLanguage: 'TypeScript',
         author: {
           '@type': 'Organization',
