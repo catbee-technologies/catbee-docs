@@ -1,4 +1,4 @@
-const packageConfig: Record<string, string> = {
+export const packageVersionConfig: Record<string, string> = {
   '@catbee/utils': '1.x.x',
   '@ng-catbee/cookie': '21',
   '@ng-catbee/indexed-db': '21',
@@ -8,4 +8,4 @@ const packageConfig: Record<string, string> = {
   '@ng-catbee/storage': '21'
 };
 
-export default packageConfig;
+export const packages = Object.keys(packageVersionConfig);

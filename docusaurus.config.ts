@@ -2,195 +2,30 @@
 import { themes as prismThemes } from 'prism-react-renderer';
 import type { Config } from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
-import packageConfig from './versions.config';
+import headTags from './src/headtags';
+import navbar from './src/navbar';
+import footer from './src/footer';
 
 const config: Config = {
-  title: 'Catbee Docs',
-  tagline: 'Documentation for Catbee Packages and Tools',
+  title: 'Catbee',
+  tagline: 'Production-Grade Utilities for Angular & TypeScript',
   favicon: 'favicon/favicon.ico',
-  future: {
-    v4: true
-  },
-
+  future: { v4: true },
   url: 'https://catbee.in',
   baseUrl: '/',
-
-  headTags: [
-    {
-      tagName: 'meta',
-      attributes: {
-        name: 'description',
-        content: 'Catbee Docs - A collection of reusable utility modules for Angular, Node.js and TypeScript projects.'
-      }
-    },
-    {
-      tagName: 'meta',
-      attributes: {
-        name: 'keywords',
-        content:
-          'catbee, utils, angular, node.js, typescript, javascript, utilities, library, npm, express, modular, tree-shakable, production-ready'
-      }
-    },
-    {
-      tagName: 'meta',
-      attributes: {
-        property: 'og:title',
-        content: 'Catbee Docs - A collection of reusable utility modules for Angular, Node.js and TypeScript projects.'
-      }
-    },
-    {
-      tagName: 'meta',
-      attributes: {
-        property: 'og:description',
-        content: 'Catbee Docs - Utilities for Angular, Node.js & TypeScript.'
-      }
-    },
-    {
-      tagName: 'meta',
-      attributes: {
-        property: 'og:type',
-        content: 'website'
-      }
-    },
-    {
-      tagName: 'meta',
-      attributes: {
-        property: 'og:url',
-        content: 'https://catbee.in'
-      }
-    },
-    {
-      tagName: 'meta',
-      attributes: {
-        property: 'og:image',
-        content: 'https://catbee.in/favicon/android-chrome-512x512.png'
-      }
-    },
-    {
-      tagName: 'meta',
-      attributes: {
-        name: 'twitter:card',
-        content: 'summary_large_image'
-      }
-    },
-    {
-      tagName: 'meta',
-      attributes: {
-        name: 'twitter:title',
-        content:
-          'Reusable utility modules for Angular, Node.js and TypeScript, designed for performance and simplicity.'
-      }
-    },
-    {
-      tagName: 'meta',
-      attributes: {
-        name: 'twitter:description',
-        content: 'Reusable utility modules for Node.js and TypeScript, designed for performance and simplicity.'
-      }
-    },
-    {
-      tagName: 'meta',
-      attributes: {
-        name: 'twitter:image',
-        content: 'https://catbee.in/favicon/android-chrome-512x512.png'
-      }
-    },
-    {
-      tagName: 'meta',
-      attributes: {
-        name: 'viewport',
-        content: 'width=device-width, initial-scale=1'
-      }
-    },
-    {
-      tagName: 'link',
-      attributes: {
-        rel: 'icon',
-        href: '/favicon/favicon.ico'
-      }
-    },
-    {
-      tagName: 'link',
-      attributes: {
-        rel: 'canonical',
-        href: 'https://catbee.in'
-      }
-    },
-    {
-      tagName: 'meta',
-      attributes: {
-        name: 'theme-color',
-        content: '#000'
-      }
-    },
-    {
-      tagName: 'link',
-      attributes: {
-        rel: 'manifest',
-        href: '/site.webmanifest'
-      }
-    },
-    {
-      tagName: 'link',
-      attributes: {
-        rel: 'apple-touch-icon',
-        sizes: '180x180',
-        href: '/favicon/apple-touch-icon.png'
-      }
-    },
-    {
-      tagName: 'meta',
-      attributes: {
-        name: 'robots',
-        content: 'index, follow'
-      }
-    },
-    {
-      tagName: 'meta',
-      attributes: {
-        name: 'algolia-site-verification',
-        content: 'C6E636047538A2FF'
-      }
-    },
-    {
-      tagName: 'script',
-      attributes: {
-        type: 'application/ld+json'
-      },
-      innerHTML: JSON.stringify({
-        '@context': 'https://schema.org',
-        '@type': 'SoftwareSourceCode',
-        name: 'Catbee Docs',
-        description:
-          'Catbee Docs - A collection of reusable utility modules for Angular, Node.js and TypeScript projects.',
-        url: 'https://catbee.in',
-        codeRepository: 'https://github.com/catbee-technologies',
-        license: 'https://catbee.in/license',
-        programmingLanguage: 'TypeScript',
-        author: {
-          '@type': 'Organization',
-          name: 'Catbee Technologies'
-        }
-      })
-    }
-  ],
-
+  headTags,
   organizationName: 'catbee-technologies',
   projectName: '@catbee/utils',
-
   onBrokenLinks: 'throw',
-
   markdown: {
     hooks: {
       onBrokenMarkdownLinks: 'warn'
     }
   },
-
   i18n: {
     defaultLocale: 'en',
     locales: ['en']
   },
-
   presets: [
     [
       'classic',
@@ -214,7 +49,7 @@ const config: Config = {
           onUntruncatedBlogPosts: 'warn'
         },
         theme: {
-          customCss: ['./src/css/styles.css']
+          customCss: ['./src/css/styles.scss']
         }
       } satisfies Preset.Options
     ]
@@ -229,44 +64,12 @@ const config: Config = {
     // announcementBar: {
     //   id: 'new-release-monaco-editor-v21',
     //   content: `🚀 Monaco Editor v21 is now available on <a href="https://www.npmjs.com/package/@ng-catbee/monaco-editor">npm</a>!`,
-    //   backgroundColor: '#6a4fbc',
+    //   backgroundColor: 'var(--catbee-primary-color)',
     //   textColor: '#ffffff',
     //   isCloseable: true
     // },
-    navbar: {
-      title: 'Catbee',
-      logo: {
-        alt: 'Catbee Docs Logo',
-        src: 'favicon/android-chrome-192x192.png'
-      },
-      items: [
-        {
-          type: 'docSidebar',
-          sidebarId: 'docsSidebar',
-          position: 'left',
-          label: 'Docs'
-        },
-        { to: '/license/', label: 'License', position: 'left' },
-        {
-          label: 'GitHub',
-          position: 'right',
-          items: [
-            { href: 'https://github.com/catbee-technologies/catbee-utils', label: 'Catbee Utils' },
-            { href: 'https://github.com/catbee-technologies/ng-catbee', label: 'Ng Catbee' },
-            { href: 'https://github.com/catbee-technologies/catbee-docs', label: 'Catbee Docs' }
-          ]
-        },
-        {
-          label: 'NPM',
-          position: 'right',
-          items: Object.keys(packageConfig).map(pkg => ({ href: `https://www.npmjs.com/package/${pkg}`, label: pkg }))
-        }
-      ]
-    },
-    footer: {
-      style: 'dark',
-      copyright: `Copyright © ${new Date().getFullYear()} Catbee Technologies.`
-    },
+    navbar,
+    footer,
     algolia: {
       appId: 'SULA4ODR5K',
       apiKey: 'c1ca6b1bdecb0c04ec41317e3e0983dc',
@@ -274,11 +77,11 @@ const config: Config = {
       // askAi: 'iUNsiSy95pWK'
     },
     prism: {
-      theme: prismThemes.github,
-      darkTheme: prismThemes.dracula
+      theme: prismThemes.vsLight,
+      darkTheme: prismThemes.oneDark
     }
   } satisfies Preset.ThemeConfig,
-  plugins: ['@docusaurus/plugin-client-redirects']
+  plugins: ['@docusaurus/plugin-client-redirects', 'docusaurus-plugin-sass']
 };
 
 export default config;

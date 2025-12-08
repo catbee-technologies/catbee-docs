@@ -1,14 +1,16 @@
-/**
- * Any CSS included here will be global. The classic template
- * bundles Infima by default. Infima is a CSS framework designed to
- * work well for content-centric websites.
- */
+@use './icons.scss';
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap');
 
 :root {
-  --ifm-color-primary: #6a4fbc;
+  --catbee-primary-color: #6a4fbc;
+  --catbee-primary-color-dark-mode: #9d7eff;
+
+  --catbee-bg-gradient: linear-gradient(135deg, #000000, #000000, #1e3c72);
+  --catbee-bg-gradient-dark-mode: linear-gradient(135deg, #000000, #000000, #1e3c72);
+
+  --ifm-color-primary: var(--catbee-primary-color);
   --ifm-color-primary-dark: #5d42ad;
   --ifm-color-primary-darker: #563ea3;
   --ifm-color-primary-darkest: #473386;
@@ -25,13 +27,7 @@
 }
 
 [data-theme='dark'] {
-  --ifm-color-primary: #9d7eff;
-  --ifm-color-primary-dark: #8560ff;
-  --ifm-color-primary-darker: #7951ff;
-  --ifm-color-primary-darkest: #5924ff;
-  --ifm-color-primary-light: #b59cff;
-  --ifm-color-primary-lighter: #c1abff;
-  --ifm-color-primary-lightest: #e0d8ff;
+  --ifm-color-primary: var(--catbee-primary-color-dark-mode);
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
 
@@ -43,7 +39,8 @@ html[data-theme='dark'] {
   background-color: #0f0f11;
 }
 
-html, body {
+html,
+body {
   font-family: "Inter", sans-serif;
   font-optical-sizing: auto;
   font-weight: 500;
@@ -59,21 +56,6 @@ html, body {
 .button:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-}
-
-.hero--primary {
-  background: linear-gradient(135deg, #6a4fbc, #9d7eff);
-  color: #fff;
-}
-
-.hero__title {
-  font-size: 3rem;
-  font-weight: 800;
-}
-
-.hero__subtitle {
-  font-size: 1.25rem;
-  opacity: 0.9;
 }
 
 nav.navbar {
@@ -128,5 +110,105 @@ html[data-theme='dark'] footer.footer {
 @media (max-width: 768px) {
   .button {
     margin: 0 auto !important;
+  }
+}
+
+/* Navbar Icons */
+.navbar-docs-link::before {
+  content: 'library_books';
+  font-family: 'Material Icons';
+  margin-right: 0.5rem;
+  vertical-align: middle;
+  font-size: 1.2rem;
+}
+
+.navbar-packages-dropdown::before {
+  content: 'widgets';
+  font-family: 'Material Icons';
+  margin-right: 0.5rem;
+  vertical-align: middle;
+  font-size: 1.2rem;
+}
+
+.navbar-license-link::before {
+  content: 'gavel';
+  font-family: 'Material Icons';
+  margin-right: 0.5rem;
+  vertical-align: middle;
+  font-size: 1.2rem;
+}
+
+/* Footer Title Icons - Already in HTML */
+.footer__title {
+  display: flex;
+  align-items: center;
+}
+
+.footer__title .material-icons {
+  color: var(--ifm-color-primary);
+}
+
+/* Footer Title Icons with CSS */
+.footer-title-docs .footer__title::before {
+  content: 'library_books';
+  font-family: 'Material Icons';
+  margin-right: 0.5rem;
+  vertical-align: middle;
+  font-size: 1.2rem;
+  color: var(--ifm-color-primary);
+}
+
+.footer-title-packages .footer__title::before {
+  content: 'widgets';
+  font-family: 'Material Icons';
+  margin-right: 0.5rem;
+  vertical-align: middle;
+  font-size: 1.2rem;
+  color: var(--ifm-color-primary);
+}
+
+.footer-title-community .footer__title::before {
+  content: 'groups';
+  font-family: 'Material Icons';
+  margin-right: 0.5rem;
+  vertical-align: middle;
+  font-size: 1.2rem;
+  color: var(--ifm-color-primary);
+}
+
+.footer-title-resources .footer__title::before {
+  content: 'inventory_2';
+  font-family: 'Material Icons';
+  margin-right: 0.5rem;
+  vertical-align: middle;
+  font-size: 1.2rem;
+  color: var(--ifm-color-primary);
+}
+
+
+.catbeeDemoCodeWindowContent .language-typescript {
+  margin-bottom: 0;
+}
+
+.catbeeHomeCodeContainer {
+  margin-bottom: 0;
+
+  pre {
+    border-radius: 0;
+  }
+}
+
+.footer__links {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+@media screen and (max-width: 1050px) {
+  .footer__links {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    .footer__col:nth-child(3), .footer__col:nth-child(4) {
+      margin-bottom: 0;
+    }
   }
 }
