@@ -298,6 +298,43 @@ export class InlineComponent {
 }
 ```
 
+### Blur Background Effect
+
+```typescript
+import { Component, inject } from '@angular/core';
+import { CatbeeLoader, CatbeeLoaderService } from '@ng-catbee/loader';
+
+@Component({
+  selector: 'app-blur-demo',
+  standalone: true,
+  imports: [CatbeeLoader],
+  template: `
+    <!-- Blur effect is only applied in fullscreen mode -->
+    <ng-catbee-loader
+      name="blur-loader"
+      [fullscreen]="true"
+      [blurBackground]="true"
+      [blurPixels]="10"
+      animation="ball-spin-fade"
+    />
+  `,
+})
+export class BlurDemoComponent {
+  private loaderService = inject(CatbeeLoaderService);
+
+  async showWithBlur() {
+    // Override blur settings at runtime
+    await this.loaderService.show('blur-loader', {
+      blurBackground: true,
+      blurPixels: 15,
+      message: 'Processing with blur effect...'
+    });
+  }
+}
+```
+
+> **Note:** The blur effect (`blurBackground` and `blurPixels`) only applies when `fullscreen` is `true`. This ensures optimal visual appearance and performance.
+
 ## Show and Hide Delays
 
 ### Hide Delay
