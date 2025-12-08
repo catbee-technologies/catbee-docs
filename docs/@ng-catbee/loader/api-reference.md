@@ -37,9 +37,9 @@ import { CatbeeLoader } from '@ng-catbee/loader';
 | `zIndex`          | `number`                         | `999999`                | CSS z-index value for the loader overlay. Adjust if you need to control stacking order.        |
 | `message`         | `string`                         | `null`                  | Optional loading message to display below the loader.                                          |
 | `customTemplate`  | `string`                         | `null`                  | Custom HTML template to replace the default loader. Use for complete customization.            |
-| `blurBackground` | `boolean` | `false` | Apply blur effect to background (fullscreen only) |
-| `blurPixels` | `number` | `5` | Amount of blur in pixels (requires `blurBackground: true`) |
-| `blockScroll` | `boolean` | `true` | Prevent body scrolling when loader is visible (fullscreen only) |
+| `blurBackground`  | `boolean`                        | `false`                 | Apply blur effect to background (fullscreen only)                                              |
+| `blurPixels`      | `number`                         | `5`                     | Amount of blur in pixels (requires `blurBackground: true`)                                     |
+| `blockScroll`     | `boolean`                        | `true`                  | Prevent body scrolling when loader is visible (fullscreen only)                                |
 | `width`           | `string`                         | `'100%'`                | Width of the loader container. Accepts any valid CSS width value.                              |
 | `height`          | `string`                         | `'100%'`                | Height of the loader container. Accepts any valid CSS height value.                            |
 

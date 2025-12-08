@@ -1,0 +1,286 @@
+.catbeeHomeBanner {
+  padding: 4rem 2rem 4rem;
+  text-align: left;
+  background: var(--catbee-bg-gradient);
+  background-size: 400% 400%;
+  animation: gradientShift 30s ease infinite;
+  color: var(--ifm-color-white);
+  position: relative;
+  overflow: hidden;
+  min-height: calc(100dvh - 60px);
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 20% 50%, rgba(106, 79, 188, 0.3) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(157, 126, 255, 0.2) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  // Content Wrapper
+  .catbeeHomeBannerContent {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 3rem;
+    position: relative;
+    z-index: 1;
+
+
+    .catbeeTitle {
+      font-size: 3rem;
+      font-weight: 800;
+    }
+
+    .catbeeTagLine {
+      font-size: 1.5rem;
+      margin-top: 0.75rem;
+      opacity: 0.9;
+      font-weight: 300;
+      letter-spacing: 0.5px;
+    }
+
+    .catbeeDescription {
+      max-width: 600px;
+      font-size: 1.1rem;
+      line-height: 1.6;
+    }
+
+    // Stats Section
+    .catbeeStats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      margin-top: 2.5rem;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+
+      .statItem {
+        text-align: center;
+
+        .statNumber {
+          font-size: 2.5rem;
+          font-weight: 700;
+          background: linear-gradient(135deg, #fff, #9d7eff);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          line-height: 1.2;
+        }
+
+        .statLabel {
+          font-size: 0.9rem;
+          color: rgba(255, 255, 255, 0.8);
+          margin-top: 0.5rem;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+      }
+    }
+
+    // Buttons Section
+    .catbeeHomeButtons {
+      margin-top: 2.5rem;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      align-items: center;
+
+      .catbeeHomePrimaryButton {
+        background: linear-gradient(135deg, var(--catbee-primary-color), var(--catbee-primary-color-dark-mode)) !important;
+        border: none !important;
+        color: white !important;
+        font-weight: 600;
+        padding: 0.85rem 2rem !important;
+        box-shadow: 0 4px 15px rgba(106, 79, 188, 0.4);
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 6px 20px rgba(106, 79, 188, 0.5);
+        }
+      }
+
+      .catbeeHomeSecondaryButton {
+        background: rgba(255, 255, 255, 0.1) !important;
+        border: 2px solid rgba(255, 255, 255, 0.3) !important;
+        color: white !important;
+        font-weight: 600;
+        padding: 0.85rem 2rem !important;
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        &:hover {
+          background: rgba(255, 255, 255, 0.2) !important;
+          border-color: rgba(255, 255, 255, 0.5) !important;
+          transform: translateY(-2px);
+        }
+      }
+
+      .buttonIcon {
+        font-size: 1.2rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+
+
+    // Code Demo Section
+    .catbeeDemoCode {
+      flex: 1;
+      min-width: 400px;
+      max-width: 550px;
+
+      .catbeeDemoCodeWindow {
+        background: rgba(0, 0, 0, 0.4);
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+
+        .catbeeDemoCodeWindowHeader {
+          background: rgba(255, 255, 255, 0.05);
+          padding: 0.75rem 1rem;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+
+          .catbeeDemoCodeWindowDots {
+            display: flex;
+            gap: 0.5rem;
+
+            span {
+              width: 12px;
+              height: 12px;
+              border-radius: 50%;
+
+              &:nth-child(1) {
+                background: #ff5f56;
+              }
+
+              &:nth-child(2) {
+                background: #ffbd2e;
+              }
+
+              &:nth-child(3) {
+                background: #27c93f;
+              }
+            }
+          }
+
+          .catbeeDemoCodeWindowTitle {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-family: var(--ifm-font-family-monospace);
+          }
+        }
+
+        .catbeeDemoCodeWindowContent {
+          background: transparent;
+          margin: 0;
+          font-family: var(--ifm-font-family-monospace);
+          font-size: 0.85rem;
+          line-height: 1.8;
+          overflow-x: auto;
+          max-height: 450px;
+
+          code {
+            color: #e8eaed;
+            display: block;
+            text-align: left;
+          }
+
+          &::-webkit-scrollbar {
+            width: 0;
+          }
+
+          &::-webkit-scrollbar:horizontal {
+            height: 0;
+          }
+
+          &::-webkit-scrollbar-track {
+            background: transparent;
+          }
+
+          &::-webkit-scrollbar-thumb {
+            border-radius: 30px;
+          }
+
+          &::-webkit-scrollbar-thumb:hover {
+            background: #6a0ecc;
+            cursor: pointer;
+          }
+        }
+      }
+    }
+  }
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .catbeeHomeBannerContent {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .catbeeDemoCode {
+    max-width: 100%;
+    min-width: auto;
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .catbeeHomeBanner {
+    padding: 5rem 1.5rem 4rem;
+
+    .catbeeStats {
+      gap: 1.5rem;
+
+      .statNumber {
+        font-size: 2rem;
+      }
+    }
+
+    .catbeeHomeButtons {
+      justify-content: center;
+      width: 100%;
+
+      a {
+        width: 100%;
+      }
+    }
+
+    .catbeeDemoCode {
+      padding: 0;
+    }
+  }
+}

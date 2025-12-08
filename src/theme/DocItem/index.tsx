@@ -1,13 +1,13 @@
 import React from 'react';
 import DocItem from '@theme-original/DocItem';
 import VersionBadge from '@site/src/components/VersionBadge';
-import packageConfig from '@site/versions.config';
+import { packageVersionConfig } from '@site/src/package.config';
 
 export default function DocItemWrapper(props: React.ComponentProps<typeof DocItem>) {
   const content = props.content;
   const source = content?.metadata?.source || '';
 
-  const patterns = Object.entries(packageConfig).flatMap(([pkg, current]) => [
+  const patterns = Object.entries(packageVersionConfig).flatMap(([pkg, current]) => [
     {
       match: new RegExp(`${pkg}/`),
       label: () => `current (v${current})`
