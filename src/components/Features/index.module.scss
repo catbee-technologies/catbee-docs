@@ -43,7 +43,7 @@
       background: var(--ifm-card-background-color);
       border-radius: 16px;
       padding: 2.5rem 2rem;
-      transition: all 0.3s ease;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       border: 2px solid var(--ifm-color-emphasis-200);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
       display: flex;
@@ -52,6 +52,10 @@
       overflow: hidden;
       flex: 1 1 calc(33.333% - 1.5rem);
       min-width: 280px;
+      will-change: transform;
+      backface-visibility: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
 
       &::before {
         content: '';
@@ -63,15 +67,34 @@
         background: linear-gradient(90deg, var(--catbee-primary-color), var(--catbee-primary-color-dark-mode));
         transform: scaleX(0);
         transition: transform 0.3s ease-in;
+        z-index: 1;
+      }
+
+      &::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+          rgba(106, 79, 188, 0.08) 0%,
+          transparent 50%
+        );
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
       }
 
       &:hover {
         border-color: var(--catbee-primary-color);
-        box-shadow: 0 12px 24px rgba(106, 79, 188, 0.2);
-        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(106, 79, 188, 0.25);
+        transform: translateY(-12px) scale(1.02);
+
+        &::after {
+          opacity: 1;
+        }
 
         .featureIconWrapper {
-          transform: scale(1.1) rotate(5deg);
+          transform: scale(1.15) rotate(5deg);
         }
       }
 
@@ -82,13 +105,15 @@
       .featureIconWrapper {
         text-align: center;
         margin-bottom: 1.5rem;
-        transition: transform 0.3s ease;
+        transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        backface-visibility: hidden;
+        -webkit-font-smoothing: antialiased;
 
         $iconSize: 80px;
 
         .featureIcon {
           filter: drop-shadow(0 4px 8px rgba(106, 79, 188, 0.15));
-          transition: transform 0.3s ease;
+          transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
           color: var(--catbee-primary-color);
           font-size: $iconSize !important;
 
@@ -114,6 +139,9 @@
       .featureContent {
         text-align: center;
         flex: 1;
+        backface-visibility: hidden;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
 
         .featureTitle {
           font-size: 1.5rem;
@@ -131,58 +159,67 @@
             color: var(--ifm-heading-color);
             font-weight: 600;
           }
+        }
+      }
 
+      .featureHighlight {
+        display: flex;
+        gap: 0.75rem;
+        justify-content: center;
+        margin-top: 1.5rem;
+        flex-wrap: wrap;
+
+        .badge {
+          background: linear-gradient(135deg, rgba(106, 79, 188, 0.1), rgba(157, 126, 255, 0.1));
+          color: var(--catbee-primary-color);
+          padding: 0.4rem 1rem;
+          border-radius: 20px;
+          font-size: 0.85rem;
+          font-weight: 600;
+          border: 1.5px solid rgba(106, 79, 188, 0.3);
+          display: inline-flex;
+          align-items: center;
+          gap: 0.25rem;
+          transition: all 0.2s ease;
+        }
+      }
+
+      &:hover {
+        .featureHighlight {
+          .badge {
+            background: linear-gradient(135deg, rgba(106, 79, 188, 0.2), rgba(157, 126, 255, 0.2));
+            border-color: rgba(106, 79, 188, 0.5);
+            transform: translateY(-2px);
+          }
         }
       }
     }
   }
 }
 
-/* Feature Highlight Badges */
-.featureCard {
-  .featureHighlight {
-    display: flex;
-    gap: 0.75rem;
-    justify-content: center;
-    margin-top: 1.5rem;
-    flex-wrap: wrap;
+// Dark Theme Overrides
+html[data-theme='dark'] {
+  .featureCard {
+    .featureHighlight {
+      .badge {
+        color: #9d7eff;
+        background: linear-gradient(135deg, rgba(157, 126, 255, 0.15), rgba(106, 79, 188, 0.15));
+        border-color: rgba(157, 126, 255, 0.4);
+      }
+    }
 
-    .badge {
-      background: linear-gradient(135deg, rgba(106, 79, 188, 0.1), rgba(157, 126, 255, 0.1));
-      color: var(--catbee-primary-color);
-      padding: 0.4rem 1rem;
-      border-radius: 20px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      border: 1.5px solid rgba(106, 79, 188, 0.3);
-      display: inline-flex;
-      align-items: center;
-      gap: 0.25rem;
-      transition: all 0.2s ease;
+    &:hover {
+      .featureHighlight {
+        .badge {
+          background: linear-gradient(135deg, rgba(157, 126, 255, 0.25), rgba(106, 79, 188, 0.25));
+          border-color: rgba(157, 126, 255, 0.6);
+        }
+      }
     }
   }
-
-  &:hover .badge {
-    background: linear-gradient(135deg, rgba(106, 79, 188, 0.2), rgba(157, 126, 255, 0.2));
-    border-color: rgba(106, 79, 188, 0.5);
-    transform: translateY(-2px);
-  }
 }
 
-/* Dark Theme Overrides */
-html[data-theme='dark'] .featureCard .featureHighlight .badge {
-  color: #9d7eff;
-  background: linear-gradient(135deg, rgba(157, 126, 255, 0.15), rgba(106, 79, 188, 0.15));
-  border-color: rgba(157, 126, 255, 0.4);
-}
-
-/* Dark Theme Hover Overrides */
-html[data-theme='dark'] .featureCard:hover .featureHighlight .badge {
-  background: linear-gradient(135deg, rgba(157, 126, 255, 0.25), rgba(106, 79, 188, 0.25));
-  border-color: rgba(157, 126, 255, 0.6);
-}
-
-@media (max-width: 1280px) {
+@media screen and (max-width: 1280px) {
   .featuresRow .featureCard {
     flex: 1 1 calc(50% - 1rem);
   }

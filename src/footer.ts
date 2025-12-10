@@ -86,7 +86,7 @@ const footer: DeepPartial<MultiColumnFooter> = {
         },
         {
           label: 'Angular Docs',
-          href: 'https://angular.io/docs'
+          href: 'https://angular.dev/'
         },
         {
           label: 'Node.js Docs',
@@ -108,13 +108,13 @@ const footer: DeepPartial<MultiColumnFooter> = {
     }
   ],
   copyright: `
-        <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1);">
-          <div style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <div>
             <div>
               Copyright © ${new Date().getFullYear()} <strong>Catbee Technologies</strong>. All rights reserved.
             </div>
           </div>
-          <div style="margin-top: 1rem; font-size: 0.85rem; opacity: 0.7;">
+          <div style="margin-top: 1rem; font-size: 0.85rem; opacity: 0.8;">
             Built with ❤️ for the developer community. Open source and free to use under MIT License.
           </div>
         </div>

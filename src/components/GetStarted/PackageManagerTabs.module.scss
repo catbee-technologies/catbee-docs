@@ -1,0 +1,205 @@
+.packageManagerTabs {
+  margin: 2rem 0;
+
+  .tabButtons {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-bottom: 1rem;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 0.5rem;
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    max-width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+
+    .tabButton {
+      position: relative;
+      background: transparent;
+      border: none;
+      color: rgba(255, 255, 255, 0.6);
+      padding: 0.75rem 2rem;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border-radius: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-family: var(--ifm-font-family-monospace);
+
+      &:hover {
+        color: rgba(255, 255, 255, 0.9);
+        background: rgba(255, 255, 255, 0.05);
+      }
+
+      &.active {
+        color: white;
+
+        .activeIndicator {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(135deg, rgba(106, 79, 188, 0.6), rgba(157, 126, 255, 0.6));
+          border-radius: 8px;
+          z-index: -1;
+        }
+      }
+    }
+  }
+
+  .commandDisplay {
+    .commandWrapper {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: rgba(0, 0, 0, 0.4);
+      padding: 0.5rem 1rem;
+      border-radius: 12px;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      font-family: var(--ifm-font-family-monospace);
+      transition: all 0.3s ease;
+
+      &:hover {
+        border-color: rgba(255, 255, 255, 0.4);
+        background: rgba(0, 0, 0, 0.5);
+        box-shadow: 0 4px 20px rgba(106, 79, 188, 0.3);
+      }
+
+      .prompt {
+        color: #9d7eff;
+        font-weight: 700;
+        font-size: 1.2rem;
+        user-select: none;
+      }
+
+      .command {
+        flex: 1;
+        color: white;
+        font-size: 1.05rem;
+        background: transparent;
+        border: none;
+        user-select: all;
+      }
+
+      .copyButton {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 0.5rem;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .material-icons {
+          font-size: 1.2rem;
+        }
+
+        &:hover:not(.copied) {
+          background: rgba(255, 255, 255, 0.2);
+          transform: scale(1.1);
+        }
+
+        &.copied {
+          background: rgba(16, 185, 129, 0.3);
+          border-color: #10b981;
+          animation: pulse 0.3s ease;
+        }
+      }
+    }
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+// Light theme
+html[data-theme='light'] {
+  .packageManagerTabs {
+    .tabButtons {
+      background: rgba(106, 79, 188, 0.06);
+      border: 1px solid rgba(106, 79, 188, 0.15);
+
+      .tabButton {
+        color: rgba(72, 52, 160, 0.6);
+
+        &:hover {
+          color: var(--catbee-primary-color-dark);
+          background: rgba(106, 79, 188, 0.1);
+        }
+
+        &.active {
+          color: white;
+
+          .activeIndicator {
+            background: linear-gradient(135deg, var(--catbee-primary-color), var(--catbee-primary-color-dark));
+          }
+        }
+      }
+    }
+
+    .commandDisplay {
+      .commandWrapper {
+        background: rgba(106, 79, 188, 0.04);
+        border: 2px solid rgba(106, 79, 188, 0.2);
+
+        &:hover {
+          border-color: rgba(106, 79, 188, 0.4);
+          background: rgba(106, 79, 188, 0.08);
+          box-shadow: 0 4px 20px rgba(106, 79, 188, 0.15);
+        }
+
+        .prompt {
+          color: #6a4fbc;
+        }
+
+        .command {
+          color: #2d3748;
+        }
+
+        .copyButton {
+          background: rgba(106, 79, 188, 0.1);
+          border: 1px solid rgba(106, 79, 188, 0.2);
+          color: #4834a0;
+
+          &:hover:not(.copied) {
+            background: rgba(106, 79, 188, 0.2);
+          }
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .packageManagerTabs {
+    .tabButtons {
+      width: 100%;
+
+      .tabButton {
+        flex: 1;
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+      }
+    }
+
+    .commandDisplay {
+      .commandWrapper {
+        .command {
+          font-size: 0.9rem;
+          word-break: break-all;
+        }
+      }
+    }
+  }
+}

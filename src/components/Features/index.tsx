@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import clsx from 'clsx';
 import Heading from '@theme/Heading';
-import { motion } from 'framer-motion';
+import { motion, useMotionValue, useTransform } from 'framer-motion';
 import styles from './index.module.scss';
 
 type FeatureItem = {
@@ -109,15 +109,28 @@ const FeatureList: FeatureItem[] = [
 ];
 
 function Feature({ title, icon, iconType, description }: FeatureItem) {
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    mouseX.set(((e.clientX - rect.left) / rect.width) * 100);
+    mouseY.set(((e.clientY - rect.top) / rect.height) * 100);
+  };
+
   return (
     <motion.div
       className={styles.featureCard}
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 50 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.1 }}
-      whileHover={{ y: -8 }}
-      whileTap={{ y: -8 }}
+      viewport={{ once: true, margin: '-50px' }}
+      transition={{ duration: 0.6, ease: [0.175, 0.885, 0.32, 1.275] }}
+      onMouseMove={handleMouseMove}
+      style={{
+        // @ts-expect-error CSS variables
+        '--mouse-x': useTransform(mouseX, v => `${v}%`),
+        '--mouse-y': useTransform(mouseY, v => `${v}%`)
+      }}
     >
       <div className={styles.featureIconWrapper}>
         {iconType === 'material' ? (
