@@ -1,7 +1,8 @@
 .catbeeGetStartedSection {
   padding: 5rem 2rem;
-  background: var(--catbee-bg-gradient);
-  animation: gradientShift 30s ease infinite;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  background-size: 200% 200%;
+  animation: gradientFlow 15s ease infinite;
   position: relative;
   overflow: hidden;
 
@@ -13,9 +14,26 @@
     right: 0;
     bottom: 0;
     background:
-      radial-gradient(circle at 30% 20%, rgba(106, 79, 188, 0.4) 0%, transparent 50%),
-      radial-gradient(circle at 70% 80%, rgba(157, 126, 255, 0.3) 0%, transparent 50%);
+      radial-gradient(circle at 30% 20%, rgba(106, 79, 188, 0.3) 0%, transparent 45%),
+      radial-gradient(circle at 70% 80%, rgba(157, 126, 255, 0.25) 0%, transparent 45%),
+      radial-gradient(circle at 50% 50%, rgba(64, 81, 137, 0.2) 0%, transparent 55%);
     pointer-events: none;
+    animation: pulseGlow 8s ease-in-out infinite;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background-image: 
+      radial-gradient(circle, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    background-size: 50px 50px;
+    animation: moveGrid 20s linear infinite;
+    pointer-events: none;
+    opacity: 0.3;
   }
 
   .getStartedContent {
@@ -24,11 +42,14 @@
     text-align: center;
     position: relative;
     z-index: 1;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.08);
     padding: 3rem 2.5rem;
     border-radius: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(20px) saturate(180%);
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.2),
+      0 0 0 1px rgba(255, 255, 255, 0.1) inset;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
 
     .getStartedTitle {
@@ -51,38 +72,12 @@
       gap: 1.25rem;
       justify-content: center;
       flex-wrap: wrap;
-      margin-bottom: 2rem;
+      margin: 2.5rem 0 2rem;
 
-      .getStartedPrimaryButton {
-        background: white !important;
-        color: #1e3c72 !important;
-        font-weight: 700;
-        padding: 1rem 2.5rem !important;
-        border: none !important;
-        box-shadow: 0 4px 20px rgba(255, 255, 255, 0.3);
-        transition: all 0.3s ease;
-        font-size: 1.1rem;
-
-        &:hover {
-          transform: translateY(-3px) scale(1.05);
-          box-shadow: 0 6px 25px rgba(255, 255, 255, 0.4);
-        }
-      }
-
-      .getStartedSecondaryButton {
-        background: transparent !important;
-        color: white !important;
-        font-weight: 600;
-        padding: 1rem 2.5rem !important;
-        border: 2px solid rgba(255, 255, 255, 0.5) !important;
-        transition: all 0.3s ease;
-        font-size: 1.1rem;
-
-        &:hover {
-          background: rgba(255, 255, 255, 0.1) !important;
-          border-color: white !important;
-          transform: translateY(-3px);
-        }
+      .buttonIcon {
+        font-size: 1.25rem;
+        margin-right: 0.5rem;
+        vertical-align: middle;
       }
     }
 
@@ -129,6 +124,70 @@
   }
 }
 
+// Light theme (very bright)
+html[data-theme='light'] {
+  .catbeeGetStartedSection {
+    background: linear-gradient(135deg, #ffffff 0%, #f5f7ff 30%, #edf1ff 60%, #e3ebff 100%);
+    
+    &::before {
+      background:
+        radial-gradient(circle at 30% 20%, rgba(102, 126, 234, 0.12) 0%, transparent 45%),
+        radial-gradient(circle at 70% 80%, rgba(106, 79, 188, 0.1) 0%, transparent 45%),
+        radial-gradient(circle at 50% 50%, rgba(157, 126, 255, 0.08) 0%, transparent 55%);
+    }
+
+    &::after {
+      background-image: 
+        radial-gradient(circle, rgba(102, 126, 234, 0.08) 1px, transparent 1px);
+      opacity: 0.4;
+    }
+
+    .getStartedTitle,
+    .getStartedDescription {
+      color: #4a5568;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+
+    .getStartedContent {
+      background: rgba(255, 255, 255, 0.7);
+      border: 1px solid rgba(106, 79, 188, 0.2);
+      box-shadow: 
+        0 8px 32px rgba(106, 79, 188, 0.12),
+        0 0 0 1px rgba(106, 79, 188, 0.08) inset;
+    }
+
+    .getStartedCodeSnippet {
+      background: rgba(106, 79, 188, 0.06);
+      border: 1px solid rgba(106, 79, 188, 0.2);
+
+      .marqueeGroup span {
+        color: #4834a0;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+      }
+    }
+  }
+}
+
+// Dark theme (very dark)
+html[data-theme='dark'] {
+  .catbeeGetStartedSection {
+    background: linear-gradient(135deg, #0a0a0f 0%, #0f0f1a 30%, #13131f 60%, #1a1a2e 100%);
+    
+    &::before {
+      background:
+        radial-gradient(circle at 30% 20%, rgba(157, 126, 255, 0.15) 0%, transparent 45%),
+        radial-gradient(circle at 70% 80%, rgba(106, 79, 188, 0.18) 0%, transparent 45%),
+        radial-gradient(circle at 50% 50%, rgba(102, 126, 234, 0.1) 0%, transparent 55%);
+    }
+
+    &::after {
+      background-image: 
+        radial-gradient(circle, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      opacity: 0.3;
+    }
+  }
+}
+
 @keyframes gradientShift {
   0% {
     background-position: 0% 50%;
@@ -169,8 +228,7 @@
       }
 
       .getStartedButtons {
-        .getStartedPrimaryButton,
-        .getStartedSecondaryButton {
+        a {
           font-size: 1rem;
           padding: 0.9rem 2rem !important;
         }
@@ -199,8 +257,7 @@
         align-items: stretch;
         gap: 1rem;
 
-        .getStartedPrimaryButton,
-        .getStartedSecondaryButton {
+        a {
           width: 100%;
         }
       }
@@ -226,8 +283,7 @@
       }
 
       .getStartedButtons {
-        .getStartedPrimaryButton,
-        .getStartedSecondaryButton {
+        a {
           font-size: 0.95rem;
           padding: 0.85rem 1.75rem !important;
         }

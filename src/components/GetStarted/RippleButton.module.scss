@@ -1,0 +1,86 @@
+.rippleButton {
+  position: relative;
+  overflow: hidden;
+  font-weight: 700;
+  padding: 1rem 2.5rem !important;
+  font-size: 1.1rem;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  display: flex;
+  align-items: center;
+
+  &.primary {
+    background: white !important;
+    color: #1e3c72 !important;
+    border: none !important;
+    box-shadow: 0 4px 20px rgba(255, 255, 255, 0.3);
+    
+    &:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 8px 30px rgba(255, 255, 255, 0.5);
+    }
+    
+    &:active {
+      transform: translateY(-1px) scale(1.02);
+    }
+  }
+  
+  &.secondary {
+    background: transparent !important;
+    color: white !important;
+    border: 2px solid rgba(255, 255, 255, 0.5) !important;
+    
+    &:hover {
+      background: rgba(255, 255, 255, 0.1) !important;
+      border-color: white !important;
+      transform: translateY(-3px);
+      box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+    }
+    
+    &:active {
+      transform: translateY(-1px);
+    }
+  }
+  
+  .ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.6);
+    transform: scale(0);
+    animation: ripple-animation 0.6s ease-out;
+    pointer-events: none;
+  }
+}
+
+@keyframes ripple-animation {
+  to {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+// Light theme
+html[data-theme='light'] {
+  .rippleButton {
+    &.primary {
+      background: linear-gradient(135deg, var(--catbee-primary-color), var(--catbee-primary-color-dark)) !important;
+      color: white !important;
+      box-shadow: 0 4px 20px rgba(106, 79, 188, 0.3);
+      
+      &:hover {
+        box-shadow: 0 8px 30px rgba(106, 79, 188, 0.4);
+      }
+    }
+    
+    &.secondary {
+      background: rgba(106, 79, 188, 0.08) !important;
+      color: var(--catbee-primary-color-dark) !important;
+      border: 2px solid rgba(106, 79, 188, 0.3) !important;
+      
+      &:hover {
+        background: rgba(106, 79, 188, 0.15) !important;
+        border-color: rgba(106, 79, 188, 0.5) !important;
+        box-shadow: 0 4px 15px rgba(106, 79, 188, 0.2);
+      }
+    }
+  }
+}

@@ -1,9 +1,10 @@
 import clsx from 'clsx';
-import Link from '@docusaurus/Link';
 import Heading from '@theme/Heading';
 import { motion } from 'framer-motion';
 import styles from './index.module.scss';
 import { packages } from '@site/src/package.config';
+import PackageManagerTabs from './PackageManagerTabs';
+import RippleButton from './RippleButton';
 
 export default function GetStarted() {
   return (
@@ -11,27 +12,31 @@ export default function GetStarted() {
       <div className='container'>
         <motion.div
           className={styles.getStartedContent}
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-100px' }}
+          transition={{ duration: 0.8, ease: [0.175, 0.885, 0.32, 1] }}
         >
           <Heading as='h2' className={styles.getStartedTitle}>
-            Get Started
+            Get Started in Seconds
           </Heading>
-          <p className={styles.getStartedDescription}>Install any package and start using it in your project.</p>
+          <p className={styles.getStartedDescription}>
+            Choose your package manager and start building amazing applications with Catbee.
+          </p>
+
+          <PackageManagerTabs packageName='@catbee/utils' />
+
           <div className={styles.getStartedButtons}>
-            <Link className={clsx('button button--lg', styles.getStartedPrimaryButton)} to='/docs/'>
-              Get Started Now
-            </Link>
-            <Link
-              className={clsx('button button--lg', styles.getStartedSecondaryButton)}
-              to='https://github.com/catbee-technologies'
-              target='_blank'
-            >
-              View on GitHub
-            </Link>
+            <RippleButton href='/docs/' variant='primary'>
+              <span className={clsx('material-icons', styles.buttonIcon)}>library_books</span>
+              <span>Explore Documentation</span>
+            </RippleButton>
+            <RippleButton href='https://github.com/catbee-technologies' target='_blank' variant='secondary'>
+              <span className={clsx('devicon-github-original', styles.buttonIcon)}></span>
+              <span>View on GitHub</span>
+            </RippleButton>
           </div>
+
           <div className={styles.getStartedCodeSnippet}>
             <div className={styles.marqueeGroup}>
               {packages.map((pkg, idx) => (

@@ -1,0 +1,160 @@
+.installCommand {
+  margin: 2rem 0;
+  max-width: 600px;
+
+  .commandWrapper {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: var(--ifm-code-background);
+    border: 2px solid var(--ifm-color-emphasis-300);
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    font-family: var(--ifm-font-family-monospace);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, 
+        transparent, 
+        rgba(var(--catbee-primary-rgb, 106, 79, 188), 0.05), 
+        transparent
+      );
+      transform: translateX(-100%);
+      transition: transform 0.6s ease;
+    }
+
+    &:hover {
+      border-color: var(--catbee-primary-color);
+      box-shadow: 0 4px 12px rgba(106, 79, 188, 0.15);
+
+      &::before {
+        transform: translateX(100%);
+      }
+    }
+
+    .commandPrompt {
+      color: var(--catbee-primary-color);
+      font-weight: 700;
+      font-size: 1.1rem;
+      user-select: none;
+    }
+
+    .commandText {
+      flex: 1;
+      color: var(--ifm-color-emphasis-900);
+      font-size: 0.95rem;
+      user-select: all;
+      background: transparent;
+      border: none;
+      padding: 0;
+    }
+
+    .copyButton {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: var(--catbee-primary-color);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 0.5rem 1rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+
+      .material-icons {
+        font-size: 1rem;
+      }
+
+      .buttonText {
+        font-family: var(--ifm-font-family-base);
+      }
+
+      &:hover:not(.copied) {
+        background: var(--catbee-primary-color-dark-mode);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(106, 79, 188, 0.3);
+      }
+
+      &:active:not(.copied) {
+        transform: translateY(0);
+      }
+
+      &.copied {
+        background: #10b981;
+        animation: successPulse 0.3s ease;
+      }
+    }
+  }
+}
+
+@keyframes successPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+// Light theme
+html[data-theme='light'] {
+  .installCommand {
+    .commandWrapper {
+      background: rgba(106, 79, 188, 0.04);
+      border: 2px solid rgba(106, 79, 188, 0.2);
+
+      &:hover {
+        border-color: var(--catbee-primary-color);
+        box-shadow: 0 4px 12px rgba(106, 79, 188, 0.15);
+      }
+
+      .commandPrompt {
+        color: var(--catbee-primary-color);
+      }
+
+      .commandText {
+        color: var(--catbee-text-medium);
+      }
+
+      .copyButton {
+        background: linear-gradient(135deg, var(--catbee-primary-color), var(--catbee-primary-color-dark));
+
+        &:hover:not(.copied) {
+          background: linear-gradient(135deg, var(--catbee-primary-color-dark), var(--catbee-primary-color-darker));
+          box-shadow: 0 4px 8px rgba(106, 79, 188, 0.3);
+        }
+      }
+    }
+  }
+}
+
+// Mobile responsiveness
+@media screen and (max-width: 768px) {
+  .installCommand {
+    .commandWrapper {
+      flex-direction: column;
+      align-items: stretch;
+
+      .commandText {
+        font-size: 0.85rem;
+        word-break: break-all;
+      }
+
+      .copyButton {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  }
+}

@@ -1,9 +1,9 @@
 .catbeeHomeBanner {
   padding: 4rem 2rem 4rem;
   text-align: left;
-  background: var(--catbee-bg-gradient);
-  background-size: 400% 400%;
-  animation: gradientShift 30s ease infinite;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  background-size: 200% 200%;
+  animation: gradientFlow 15s ease infinite;
   color: var(--ifm-color-white);
   position: relative;
   overflow: hidden;
@@ -16,9 +16,32 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(circle at 20% 50%, rgba(106, 79, 188, 0.3) 0%, transparent 50%),
-      radial-gradient(circle at 80% 80%, rgba(157, 126, 255, 0.2) 0%, transparent 50%);
+    background: 
+      radial-gradient(circle at 20% 30%, rgba(106, 79, 188, 0.3) 0%, transparent 40%),
+      radial-gradient(circle at 80% 70%, rgba(157, 126, 255, 0.25) 0%, transparent 40%),
+      radial-gradient(circle at 50% 50%, rgba(64, 81, 137, 0.2) 0%, transparent 50%);
     pointer-events: none;
+    animation: pulseGlow 8s ease-in-out infinite;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: 
+      repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 10px,
+        rgba(255, 255, 255, 0.02) 10px,
+        rgba(255, 255, 255, 0.02) 20px
+      );
+    animation: movePattern 20s linear infinite;
+    pointer-events: none;
+    opacity: 0.5;
   }
 
   // Content Wrapper
@@ -92,11 +115,11 @@
       align-items: center;
 
       .catbeeHomePrimaryButton {
-        background: linear-gradient(135deg, var(--catbee-primary-color), var(--catbee-primary-color-dark-mode)) !important;
-        border: none !important;
-        color: white !important;
+        background: linear-gradient(135deg, var(--catbee-primary-color), var(--catbee-primary-color-dark-mode));
+        border: none;
+        color: white;
         font-weight: 600;
-        padding: 0.85rem 2rem !important;
+        padding: 0.85rem 2rem;
         box-shadow: 0 4px 15px rgba(106, 79, 188, 0.4);
         transition: all 0.3s ease;
         display: inline-flex;
@@ -111,11 +134,11 @@
       }
 
       .catbeeHomeSecondaryButton {
-        background: rgba(255, 255, 255, 0.1) !important;
-        border: 2px solid rgba(255, 255, 255, 0.3) !important;
-        color: white !important;
+        background: rgba(255, 255, 255, 0.1);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        color: white;
         font-weight: 600;
-        padding: 0.85rem 2rem !important;
+        padding: 0.85rem 2rem;
         backdrop-filter: blur(10px);
         transition: all 0.3s ease;
         display: inline-flex;
@@ -124,8 +147,8 @@
         flex: 1;
 
         &:hover {
-          background: rgba(255, 255, 255, 0.2) !important;
-          border-color: rgba(255, 255, 255, 0.5) !important;
+          background: rgba(255, 255, 255, 0.2);
+          border-color: rgba(255, 255, 255, 0.5);
           transform: translateY(-2px);
         }
       }
@@ -197,34 +220,13 @@
           font-family: var(--ifm-font-family-monospace);
           font-size: 0.85rem;
           line-height: 1.8;
-          overflow-x: auto;
+          overflow: hidden;
           max-height: 450px;
 
           code {
             color: #e8eaed;
             display: block;
             text-align: left;
-          }
-
-          &::-webkit-scrollbar {
-            width: 0;
-          }
-
-          &::-webkit-scrollbar:horizontal {
-            height: 0;
-          }
-
-          &::-webkit-scrollbar-track {
-            background: transparent;
-          }
-
-          &::-webkit-scrollbar-thumb {
-            border-radius: 30px;
-          }
-
-          &::-webkit-scrollbar-thumb:hover {
-            background: #6a0ecc;
-            cursor: pointer;
           }
         }
       }
@@ -243,6 +245,140 @@
 
   100% {
     background-position: 0% 50%;
+  }
+}
+
+// Animations
+@keyframes gradientFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+@keyframes movePattern {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(50px, 50px);
+  }
+}
+
+html[data-theme='light'] {
+  .catbeeHomeBanner {
+    background: linear-gradient(135deg, #ffffff 0%, #f0f4ff 30%, #e6eeff 60%, #dce7ff 100%);
+    
+    &::before {
+      background: 
+        radial-gradient(circle at 20% 30%, rgba(106, 79, 188, 0.12) 0%, transparent 45%),
+        radial-gradient(circle at 80% 70%, rgba(157, 126, 255, 0.1) 0%, transparent 45%),
+        radial-gradient(circle at 50% 50%, rgba(102, 126, 234, 0.08) 0%, transparent 55%);
+    }
+
+    &::after {
+      background: 
+        repeating-linear-gradient(
+          45deg,
+          transparent,
+          transparent 10px,
+          rgba(106, 79, 188, 0.03) 10px,
+          rgba(106, 79, 188, 0.03) 20px
+        );
+    }
+
+    .catbeeTitle,
+    .catbeeTagLine,
+    .catbeeDescription {
+      color: #1a1a2e;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+
+    .statNumber {
+      background: linear-gradient(135deg, var(--catbee-primary-color), var(--catbee-secondary-color)) !important;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text !important;
+      filter: drop-shadow(0 2px 4px rgba(106, 79, 188, 0.2));
+    }
+
+    .statLabel {
+      color: var(--catbee-text-medium) !important;
+      font-weight: 600;
+    }
+
+    .catbeeStats {
+      border-top: 1px solid rgba(106, 79, 188, 0.25);
+    }
+
+    .catbeeHomePrimaryButton {
+      background: linear-gradient(135deg, var(--catbee-primary-color), var(--catbee-primary-color-dark)) !important;
+      box-shadow: 0 4px 15px rgba(106, 79, 188, 0.3);
+      color: white !important;
+
+      &:hover {
+        box-shadow: 0 6px 20px rgba(106, 79, 188, 0.4);
+      }
+    }
+
+    .catbeeHomeSecondaryButton {
+      background: linear-gradient(135deg, rgba(106, 79, 188, 0.12), rgba(139, 92, 246, 0.12)) !important;
+      border: 2px solid rgba(106, 79, 188, 0.4) !important;
+      color: var(--catbee-primary-color-darker) !important;
+      font-weight: 700;
+
+      &:hover {
+        background: linear-gradient(135deg, rgba(106, 79, 188, 0.2), rgba(139, 92, 246, 0.2)) !important;
+        border-color: rgba(106, 79, 188, 0.6) !important;
+        color: var(--catbee-primary-color-darkest) !important;
+      }
+
+      .buttonIcon {
+        color: var(--catbee-accent-color);
+      }
+    }
+
+    .catbeeDemoCodeWindowHeader {
+      background: rgb(0 0 0 / 20%) !important;
+    }
+  }
+}
+
+html[data-theme='dark'] {
+  .catbeeHomeBanner {
+    background: linear-gradient(135deg, #0a0a0f 0%, #0f0f1a 30%, #13131f 60%, #1a1a2e 100%);
+    
+    &::before {
+      background: 
+        radial-gradient(circle at 20% 30%, rgba(157, 126, 255, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(106, 79, 188, 0.18) 0%, transparent 40%),
+        radial-gradient(circle at 50% 50%, rgba(102, 126, 234, 0.1) 0%, transparent 50%);
+    }
+
+    &::after {
+      background: 
+        repeating-linear-gradient(
+          45deg,
+          transparent,
+          transparent 10px,
+          rgba(157, 126, 255, 0.015) 10px,
+          rgba(157, 126, 255, 0.015) 20px
+        );
+    }
   }
 }
 

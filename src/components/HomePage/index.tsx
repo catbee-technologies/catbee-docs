@@ -4,7 +4,26 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Heading from '@theme/Heading';
 import { motion } from 'framer-motion';
 import CodeBlock from '@theme/CodeBlock';
+import { useInView } from '../../hooks/useInView';
+import { useCountUp } from '../../hooks/useCountUp';
 import styles from './index.module.scss';
+
+function AnimatedStat({ end, suffix = '', label }: { end: number; suffix?: string; label: string }) {
+  const [ref, isInView] = useInView({ threshold: 0.3, triggerOnce: true });
+  const count = useCountUp({ end, duration: 2000, shouldStart: isInView });
+
+  const displayValue = suffix === '%' ? Math.round(count) : count >= 7 ? '7+' : Math.round(count);
+
+  return (
+    <div className={styles.statItem} ref={ref}>
+      <div className={styles.statNumber}>
+        {displayValue}
+        {suffix}
+      </div>
+      <div className={styles.statLabel}>{label}</div>
+    </div>
+  );
+}
 
 export default function HomePage() {
   const { siteConfig } = useDocusaurusContext();
@@ -24,18 +43,9 @@ export default function HomePage() {
               typed, and optimized for minimal bundle impact.
             </p>
             <div className={styles.catbeeStats}>
-              <div className={styles.statItem}>
-                <div className={styles.statNumber}>7+</div>
-                <div className={styles.statLabel}>Packages</div>
-              </div>
-              <div className={styles.statItem}>
-                <div className={styles.statNumber}>100%</div>
-                <div className={styles.statLabel}>Type Safe</div>
-              </div>
-              <div className={styles.statItem}>
-                <div className={styles.statNumber}>0</div>
-                <div className={styles.statLabel}>Dependencies</div>
-              </div>
+              <AnimatedStat end={7} label='Packages' />
+              <AnimatedStat end={100} suffix='%' label='Type Safe' />
+              <AnimatedStat end={0} label='Dependencies' />
             </div>
             <div className={styles.catbeeHomeButtons}>
               <Link id='explore-docs' className={clsx('button button--lg', styles.catbeeHomePrimaryButton)} to='/docs/'>
@@ -65,35 +75,29 @@ export default function HomePage() {
               </div>
               <div className={styles.catbeeDemoCodeWindowContent}>
                 <CodeBlock className='catbeeHomeCodeContainer' language='typescript'>
-                  {`// Example usage of Catbee packages
-import { ExpressServer, ServerConfigBuilder } from '@catbee/utils';
+                  {`import { ServerConfigBuilder, ExpressServer } from '@catbee/utils';
+
 const config = new ServerConfigBuilder()
-  .withGlobalPrefix('/api/v1')
   .withPort(3000)
+  .withCors({ origin: '*' })
+  .enableRateLimit({ max: 50, windowMs: 60000 })
+  .enableRequestLogging({ ignorePaths: ['/healthz', '/metrics'] })
+  .withHealthCheck({ path: '/health', detailed: true })
+  .enableOpenApi('./openapi.yaml', { mountPath: '/docs' })
+  .withGlobalHeaders({ 'X-Powered-By': 'Catbee' })
+  .withGlobalPrefix('/api')
+  .withRequestId({ headerName: 'X-Request-Id', exposeHeader: true })
+  .enableResponseTime({ addHeader: true, logOnComplete: true })
   .build();
+
 const server = new ExpressServer(config);
-server.start();
 
-// Example usage of ng-catbee/cookie
-import { Component, inject } from '@angular/core';
-import { CatbeeCookieService } from '@ng-catbee/cookie';
+server.registerHealthCheck('database', async () => await checkDatabaseConnection());
+server.useMiddleware(loggingMiddleware, errorMiddleware);
 
-@Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
-})
-export class AppComponent {
-  private readonly cookie = inject(CatbeeCookieService);
-
-  setSessionCookie() {
-    this.cookie.set('session_id', 'abc123', {
-      path: '/',
-      secure: true,
-      sameSite: 'Lax'
-    });
-  }
-}`}
+await server.start();
+server.enableGracefulShutdown();
+`}
                 </CodeBlock>
               </div>
             </div>
