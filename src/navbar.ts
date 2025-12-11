@@ -22,20 +22,32 @@ const navbar: DeepPartial<Navbar> = {
       position: 'left',
       className: 'navbar-packages-dropdown',
       items: [
-        {
-          label: '@catbee/utils',
-          to: '/docs/@catbee/utils/intro/'
-        },
+        ...packages
+          .filter(pkg => pkg.startsWith('@catbee'))
+          .map(pkg => ({
+            label: pkg,
+            to: `/docs/${pkg}/intro/`
+          })),
         {
           type: 'html',
           value: '<hr style="margin: 0.3rem 0;">'
         },
         ...packages
-          .filter(pkg => pkg !== '@catbee/utils')
+          .filter(pkg => pkg.startsWith('@ng-catbee'))
           .map(pkg => ({
             label: pkg,
             to: `/docs/${pkg}/intro/`
           }))
+      ]
+    },
+    {
+      type: 'dropdown',
+      label: 'Tools',
+      position: 'left',
+      className: 'navbar-tools-dropdown',
+      items: [
+        { href: 'https://ide.catbee.in', label: 'JS/TS Online Compiler' },
+        { href: 'https://diff.catbee.in', label: 'Diff Checker' }
       ]
     },
     { to: '/license/', label: 'License', position: 'left', className: 'navbar-license-link' },

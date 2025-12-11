@@ -247,6 +247,7 @@ html[data-theme='dark'] {
 /* Navbar Icons */
 .navbar-docs-link,
 .navbar-packages-dropdown,
+.navbar-tools-dropdown,
 .navbar-license-link {
   display: flex;
   align-items: center;
@@ -288,6 +289,19 @@ html[data-theme='dark'] {
 
   &.navbar-license-link:hover::before {
     transform: scale(1.2) rotate(10deg);
+  }
+
+  &.navbar-tools-dropdown::before {
+    content: 'build';
+    font-family: 'Material Icons';
+    margin-right: 0.5rem;
+    vertical-align: middle;
+    font-size: 1.2rem;
+    transition: transform 0.3s ease;
+  }
+
+  &.navbar-tools-dropdown:hover::before {
+    transform: scale(1.2) rotate(-10deg);
   }
 }
 
