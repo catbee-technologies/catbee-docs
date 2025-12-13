@@ -48,11 +48,11 @@
     "@docusaurus/module-type-aliases": "^3.9.2",
     "@docusaurus/tsconfig": "^3.9.2",
     "@docusaurus/types": "^3.9.2",
-    "@ng-catbee/monaco-editor": "^20.1.3",
-    "@types/eslint__js": "^8.42.3",
+    "@ng-catbee/monaco-editor": "^21.0.1",
+    "@types/eslint__js": "^9.14.0",
     "@types/eslint-plugin-jsx-a11y": "^6.10.1",
     "@typescript-eslint/parser": "^8.46.4",
-    "eslint": "^8.57.1",
+    "eslint": "^9.39.2",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-mdx": "^3.6.2",
@@ -78,6 +78,6 @@
     ]
   },
   "engines": {
-    "node": ">=18.0"
+    "node": ">=24.12.0"
   }
 }
