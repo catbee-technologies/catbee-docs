@@ -6,7 +6,7 @@ const navbar: DeepPartial<Navbar> = {
   title: 'Catbee',
   logo: {
     alt: 'Catbee Logo',
-    src: 'favicon/android-chrome-192x192.png'
+    src: '/media/favicon/apple-touch-icon.png'
   },
   items: [
     {

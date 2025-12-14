@@ -23,6 +23,12 @@
       "options": {
         "printWidth": 9999
       }
+    },
+    {
+      "files": "src/headtags.ts",
+      "options": {
+        "printWidth": 9999
+      }
     }
   ]
 }
