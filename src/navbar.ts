@@ -3,10 +3,10 @@ import { packages } from './package.config';
 import { DeepPartial } from './types';
 
 const navbar: DeepPartial<Navbar> = {
-  title: 'Catbee',
+  title: 'CatBee',
   logo: {
     alt: 'Catbee Logo',
-    src: 'favicon/android-chrome-192x192.png'
+    src: '/media/favicon/apple-touch-icon.png'
   },
   items: [
     {

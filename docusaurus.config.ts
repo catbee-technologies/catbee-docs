@@ -7,9 +7,9 @@ import navbar from './src/navbar';
 import footer from './src/footer';
 
 const config: Config = {
-  title: 'Catbee',
+  title: 'CatBee',
   tagline: 'Production-Grade Utilities for Angular & TypeScript',
-  favicon: 'favicon/favicon.ico',
+  favicon: '/media/favicon/favicon.ico',
   future: { v4: true },
   url: 'https://catbee.in',
   baseUrl: '/',
