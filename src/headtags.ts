@@ -39,7 +39,7 @@ const headTags: HtmlTagObject[] = [
   { tagName: 'link', attributes: { rel: 'manifest', href: '/site.webmanifest' } },
 
   /* Theme */
-  { tagName: 'meta', attributes: { name: 'theme-color', content: '#ffffff' } },
+  { tagName: 'meta', attributes: { name: 'theme-color', content: '#000000' } },
   { tagName: 'meta', attributes: { name: 'application-name', content: title } },
   { tagName: 'meta', attributes: { name: 'apple-mobile-web-app-title', content: title } },
 
