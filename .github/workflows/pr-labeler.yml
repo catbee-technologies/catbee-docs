@@ -25,7 +25,7 @@ jobs:
 
     steps:
       - name: Run labeler
-        uses: actions/labeler@v5
+        uses: actions/labeler@v6
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -35,6 +35,6 @@ jobs:
 
     steps:
       - name: Apply size labels
-        uses: pascalgn/size-label-action@v0.5.0
+        uses: pascalgn/size-label-action@v0.5.5
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
