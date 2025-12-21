@@ -115,7 +115,7 @@ const footer: DeepPartial<MultiColumnFooter> = {
             </div>
           </div>
           <div style="margin-top: 1rem; font-size: 0.85rem; opacity: 0.8;">
-            Built with ❤️ for the developer community. Open source and free to use under MIT License.
+            Built with ♡ for the developer community. Open source and free to use under MIT License.
           </div>
         </div>
       `

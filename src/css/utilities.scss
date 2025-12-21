@@ -1,0 +1,443 @@
+// ============================================
+// Catbee Design - Utility Mixins
+// ============================================
+
+$catbee-primary-color: var(--catbee-primary-color);
+$catbee-primary-color-dark: var(--catbee-primary-color-dark);
+$catbee-primary-color-darker: var(--catbee-primary-color-darker);
+$catbee-primary-color-darkest: var(--catbee-primary-color-darkest);
+$catbee-primary-color-dark-mode: var(--catbee-primary-color-dark-mode);
+$catbee-secondary-color: var(--catbee-secondary-color);
+$catbee-accent-color: var(--catbee-accent-color);
+$catbee-text-dark: var(--catbee-text-dark);
+$catbee-text-medium: var(--catbee-text-medium);
+$catbee-text-light: var(--catbee-text-light);
+$catbee-bg-gradient: var(--catbee-bg-gradient);
+$catbee-bg-gradient-dark-mode: var(--catbee-bg-gradient-dark-mode);
+
+// ============================================
+// Common Styling Mixins
+// ============================================
+
+// Primary gradient (used for titles, buttons, etc.)
+@mixin primary-gradient($angle: 135deg) {
+  background: linear-gradient($angle, var(--catbee-primary-color), var(--catbee-primary-color-dark-mode));
+}
+
+// Gradient text effect
+@mixin gradient-text($angle: 135deg) {
+  @include primary-gradient($angle);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+// Common card styles
+@mixin card-base($padding: 2rem,
+  $radius: 16px,
+  $border-width: 2px,
+  $border-color: var(--ifm-color-emphasis-200)) {
+  background: var(--ifm-card-background-color);
+  border-radius: $radius;
+  padding: $padding;
+  border: $border-width solid $border-color;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+// Interactive card with hover effects
+@mixin card-interactive($padding: 2rem,
+  $radius: 16px,
+  $lift: -6px,
+  $scale: 1.02) {
+  @include card-base($padding, $radius);
+  cursor: pointer;
+  overflow: hidden;
+
+  &:hover {
+    transform: translateY($lift) scale($scale);
+    border-color: var(--catbee-primary-color);
+  }
+}
+
+// Common shadow styles
+@mixin shadow-sm {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), 0 1px 4px rgba(0, 0, 0, 0.02);
+}
+
+@mixin shadow-md {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+@mixin shadow-lg {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+@mixin shadow-xl {
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1), 0 6px 16px rgba(0, 0, 0, 0.06);
+}
+
+// Primary color shadow (for buttons, interactive elements)
+@mixin shadow-primary($opacity: 0.25) {
+  box-shadow: 0 4px 24px rgba(106, 79, 188, $opacity), 0 2px 8px rgba(157, 126, 255, $opacity * 0.6);
+}
+
+@mixin shadow-primary-hover($opacity: 0.35) {
+  box-shadow: 0 8px 32px rgba(106, 79, 188, $opacity), 0 4px 16px rgba(157, 126, 255, $opacity * 0.6);
+}
+
+@mixin shadow-primary-lg($opacity: 0.25) {
+  box-shadow: 0 20px 40px rgba(106, 79, 188, $opacity);
+}
+
+// Smooth transition presets
+@mixin transition-base($property: all, $duration: 0.3s, $timing: ease) {
+  transition-property: $property;
+  transition-duration: $duration;
+  transition-timing-function: $timing;
+}
+@mixin transition-smooth($property: all, $duration: 0.3s) {
+  @include transition-base($property, $duration, cubic-bezier(0.4, 0, 0.2, 1));
+}
+@mixin transition-bounce($property: all, $duration: 0.4s) {
+  @include transition-base($property, $duration, cubic-bezier(0.175, 0.885, 0.32, 1.275));
+}
+
+// Icon wrapper styles (commonly used)
+@mixin icon-wrapper($size: 3rem,
+  $bg-opacity: 0.1,
+  $radius: 12px) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: $size;
+  height: $size;
+  background: rgba(106, 79, 188, $bg-opacity);
+  border-radius: $radius;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+  .material-icons {
+    font-size: calc($size * 0.6);
+    color: var(--catbee-primary-color);
+  }
+}
+
+// Hover lift effect (common pattern)
+@mixin hover-lift($distance: -6px, $scale: 1.02) {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover {
+    transform: translateY($distance) scale($scale);
+  }
+}
+
+// Hover scale effect
+@mixin hover-scale($scale: 1.05, $rotate: 0deg) {
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+  &:hover {
+    transform: scale($scale) rotate($rotate);
+  }
+}
+
+// Button base styles
+@mixin button-base($padding: 0.85rem 2rem,
+  $radius: .75rem,
+  $font-weight: 600) {
+  padding: $padding;
+  border-radius: $radius;
+  font-weight: $font-weight;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+// Primary button with gradient
+@mixin button-primary {
+  @include button-base;
+  @include primary-gradient(135deg);
+  @include shadow-primary(0.25);
+  color: white;
+
+  &:hover {
+    @include shadow-primary-hover(0.35);
+    transform: translateY(-2px);
+    color: white;
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+// Glass morphism effect
+@mixin glass-effect($opacity: 0.1,
+  $blur: 10px,
+  $border-opacity: 0.2) {
+  background: rgba(255, 255, 255, $opacity);
+  backdrop-filter: blur($blur);
+  border: 1px solid rgba(255, 255, 255, $border-opacity);
+}
+
+// Responsive text sizes
+@mixin heading-xl {
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+@mixin heading-lg {
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+@mixin heading-md {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+// Utility classes
+.gradient-text {
+  @include gradient-text();
+}
+
+.shadow-primary {
+  @include shadow-primary();
+}
+
+.shadow-primary-hover {
+  @include shadow-primary-hover();
+}
+
+.card-base {
+  @include card-base();
+}
+
+.card-interactive {
+  @include card-interactive();
+}
+
+.hover-lift {
+  @include hover-lift();
+}
+
+.button-primary {
+  @include button-primary();
+}
+
+// ============================================
+// Additional Utility Mixins
+// ============================================
+
+// Flexbox utilities
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+// Typography utilities
+@mixin text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@mixin line-clamp($lines: 2) {
+  display: -webkit-box;
+  -webkit-line-clamp: $lines;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+// Position utilities
+@mixin absolute-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+@mixin cover {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+// Scrollbar styling
+@mixin custom-scrollbar($width: 8px, $track-color: transparent, $thumb-color: rgba(0, 0, 0, 0.3)) {
+  &::-webkit-scrollbar {
+    width: $width;
+    height: $width;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: $track-color;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $thumb-color;
+    border-radius: calc($width / 2);
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.5);
+    }
+  }
+}
+
+// Reset utilities
+@mixin reset-button {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+@mixin reset-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+// ============================================
+// ::before Hover Animations
+// ============================================
+
+// Horizontal width expansion (left to right / right to left)
+@mixin before-expand-horizontal($height: 4px, $color: var(--catbee-primary-color), $origin: left) {
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: $height;
+    background: $color;
+    transform: scaleX(0);
+    transform-origin: $origin;
+    transition: transform 0.3s ease;
+  }
+
+  &:hover::before {
+    transform: scaleX(1);
+  }
+}
+
+// Center horizontal expansion (both directions)
+@mixin before-expand-horizontal-center($height: 4px, $color: var(--catbee-primary-color)) {
+  position: relative;
+
+  &::before {
+    background: $color;
+    content: '';
+    height: $height;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transform: scaleX(0);
+    transition: transform 0.3s ease-in;
+    z-index: 1;
+  }
+
+  &:hover::before {
+    transform: scaleX(1);
+  }
+}
+
+// Vertical height expansion (top to bottom)
+@mixin before-expand-vertical($width: 4px, $color: var(--catbee-primary-color), $origin: top) {
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: $width;
+    background: $color;
+    transform: scaleY(0);
+    transform-origin: $origin;
+    transition: transform 0.3s ease;
+  }
+
+  &:hover::before {
+    transform: scaleY(1);
+  }
+}
+
+// Center vertical expansion (both directions)
+@mixin before-expand-vertical-center($width: 4px, $color: var(--catbee-primary-color)) {
+  position: relative;
+
+  &::before {
+    background: $color;
+    content: '';
+    width: $width;
+    top: 0;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    transform: scaleY(0);
+    transition: transform 0.3s ease-in;
+    z-index: 1;
+  }
+
+  &:hover::before {
+    transform: scaleY(1);
+  }
+}
+
+// Overlay fade-in effect
+@mixin before-overlay-fade($color: rgba(255, 255, 255, 0.1), $radius: 0) {
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: $color;
+    border-radius: $radius;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+
+  &:hover::before {
+    opacity: 1;
+  }
+}
+
+// Material Icons will be used in css content
+@mixin material-icons ($icon: '', $size: 1.5rem, $color: var(--ifm-color-primary)) {
+  content: $icon;
+  font-family: 'Material Icons';
+  font-size: $size;
+  color: $color;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}

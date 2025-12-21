@@ -1,52 +1,9 @@
+@use '../../css/utilities.scss' as *;
+
 .catbeePackagesSection {
-  padding: 5rem 2rem;
   background: linear-gradient(180deg, transparent 0%, var(--ifm-background-color) 100%);
   position: relative;
   overflow: hidden;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 120%;
-    height: 100%;
-    background: radial-gradient(ellipse at center, rgba(106, 79, 188, 0.05) 0%, transparent 70%);
-    pointer-events: none;
-  }
-
-  .sectionTitle {
-    text-align: center;
-    font-size: 2.75rem;
-    margin-bottom: 1rem;
-    background: linear-gradient(135deg, var(--catbee-primary-color), var(--catbee-primary-color-dark-mode));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
-
-    .titleIcon {
-      font-size: 3rem;
-      background: linear-gradient(135deg, var(--catbee-primary-color), var(--catbee-primary-color-dark-mode));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-  }
-
-  .sectionSubtitle {
-    text-align: center;
-    font-size: 1.2rem;
-    color: var(--ifm-color-emphasis-700);
-    margin-bottom: 4rem;
-    max-width: 700px;
-    margin-left: auto;
-    margin-right: auto;
-  }
 
   .packagesGrid {
     display: grid;
@@ -59,6 +16,8 @@
   }
 
   .packageCard {
+    @include before-expand-horizontal($height: 4px,
+      $color: var(--package-gradient, linear-gradient(90deg, var(--catbee-primary-color), var(--catbee-primary-color-dark-mode))));
     background: var(--ifm-card-background-color);
     border-radius: 20px;
     padding: 2rem;
@@ -67,88 +26,14 @@
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     text-decoration: none;
     color: inherit;
-    display: flex;
-    flex-direction: column;
-    position: relative;
+    @include flex-column;
     overflow: hidden;
     cursor: pointer;
     height: 100%;
 
-    &::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: var(--package-gradient, linear-gradient(90deg, var(--catbee-primary-color), var(--catbee-primary-color-dark-mode)));
-      transform: scaleX(0);
-      transform-origin: left;
-      transition: transform 0.4s ease;
-    }
-
-    &::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(
-        600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
-        color-mix(in srgb, var(--package-color, var(--catbee-primary-color)) 20%, transparent) 0%, 
-        transparent 40%
-      );
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    &:hover {
-      transform: translateY(-6px) scale(1.02);
-      border-color: var(--package-color, var(--catbee-primary-color));
-      box-shadow: 
-        0 20px 40px color-mix(in srgb, var(--package-color, var(--catbee-primary-color)) 25%, transparent),
-        0 0 0 1px color-mix(in srgb, var(--package-color, var(--catbee-primary-color)) 20%, transparent);
-
-      &::before {
-        transform: scaleX(1);
-      }
-
-      &::after {
-        opacity: 1;
-      }
-
-      .packageIconWrapper {
-        transform: scale(1.15) rotate(5deg);
-        background: color-mix(in srgb, var(--package-color, var(--catbee-primary-color)) 25%, transparent);
-        border-color: var(--package-color, var(--catbee-primary-color));
-        box-shadow: 
-          0 8px 20px color-mix(in srgb, var(--package-color, var(--catbee-primary-color)) 30%, transparent),
-          0 0 40px color-mix(in srgb, var(--package-color, var(--catbee-primary-color)) 20%, transparent);
-
-        &::before {
-          opacity: 1;
-        }
-        
-        .packageIcon {
-          filter: drop-shadow(0 4px 12px color-mix(in srgb, var(--package-color, var(--catbee-primary-color)) 50%, transparent));
-        }
-      }
-
-      .packageBadge {
-        opacity: 1;
-        transform: translate(0, 0);
-      }
-
-      .packageArrow {
-        transform: translateX(8px);
-        opacity: 1;
-      }
-    }
-
     .packageHeader {
-      display: flex;
+      @include flex-between;
       align-items: flex-start;
-      justify-content: space-between;
       margin-bottom: 1.5rem;
       position: relative;
       z-index: 1;
@@ -156,11 +41,9 @@
       .packageIconWrapper {
         width: 80px;
         height: 80px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: color-mix(in srgb, var(--package-color, var(--catbee-primary-color)) 15%, transparent);
-        border: 2px solid color-mix(in srgb, var(--package-color, var(--catbee-primary-color)) 25%, transparent);
+        @include flex-center;
+        background: color-mix(in srgb, var(--package-color, #9d7eff) 20%, transparent);
+        border: 2px solid color-mix(in srgb, var(--package-color, #9d7eff) 30%, transparent);
         border-radius: 16px;
         transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
         position: relative;
@@ -178,13 +61,12 @@
         }
 
         .packageIcon {
-          font-size: 2.5rem !important;
-          color: var(--package-color, var(--catbee-primary-color));
+          font-size: 2.5rem;
           transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-          filter: drop-shadow(0 0 0 transparent);
+          color: var(--package-color, var(--catbee-primary-color));
 
           &.material-icons {
-            font-size: 3rem !important;
+            font-size: 3rem;
           }
         }
       }
@@ -195,13 +77,11 @@
         width: 32px;
         height: 32px;
         border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        @include flex-center;
         opacity: 0;
         transform: translate(8px, -8px);
-        transition: all 0.3s ease;
-        
+        @include transition-base;
+
         .material-icons {
           font-size: 18px;
         }
@@ -236,60 +116,98 @@
       z-index: 1;
 
       .packageTags {
-        display: flex;
+        @include flex-center;
+        justify-content: flex-start;
         gap: 0.5rem;
         flex-wrap: wrap;
         flex: 1;
 
         .tag {
-          background: color-mix(in srgb, var(--package-color, var(--catbee-primary-color)) 12%, transparent);
-          color: var(--package-color, var(--catbee-primary-color));
+          background: color-mix(in srgb, var(--package-color, #9d7eff) 15%, transparent);
+          color: color-mix(in srgb, var(--package-color, #9d7eff) 100%, white 20%);
           padding: 0.35rem 0.9rem;
           border-radius: 20px;
           font-size: 0.8rem;
           font-weight: 600;
-          border: 1.5px solid color-mix(in srgb, var(--package-color, var(--catbee-primary-color)) 30%, transparent);
+          border: 1.5px solid color-mix(in srgb, var(--package-color, #9d7eff) 35%, transparent);
           transition: all 0.2s ease;
           white-space: nowrap;
         }
       }
+    }
 
-      .packageArrow {
-        color: var(--package-color, var(--catbee-primary-color));
-        opacity: 0.5;
-        transform: translateX(0);
-        transition: all 0.3s ease;
 
-        .material-icons {
-          font-size: 24px;
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+          color-mix(in srgb, var(--package-color, var(--catbee-primary-color)) 20%, transparent) 0%,
+          transparent 40%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    &:hover {
+      transform: translateY(-6px) scale(1.02);
+      border-color: var(--package-color, var(--catbee-primary-color));
+      box-shadow:
+        0 20px 40px color-mix(in srgb, var(--package-color, var(--catbee-primary-color)) 25%, transparent),
+        0 0 0 1px color-mix(in srgb, var(--package-color, var(--catbee-primary-color)) 20%, transparent);
+
+      &::before {
+        transform: scaleX(1);
+      }
+
+      &::after {
+        opacity: 1;
+      }
+
+      .packageIconWrapper {
+        transform: scale(1.15) rotate(5deg);
+        border-color: var(--package-color, var(--catbee-primary-color));
+        box-shadow: 0 8px 20px color-mix(in srgb, var(--package-color, var(--catbee-primary-color)) 30%, #0000), 0 0 40px color-mix(in srgb, var(--package-color, var(--catbee-primary-color)) 20%, #0000);
+
+        &::before {
+          opacity: 1;
         }
+      }
+
+      .packageBadge {
+        opacity: 1;
+        transform: translate(0, 0);
       }
     }
   }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120%;
+    height: 100%;
+    background: radial-gradient(ellipse at center, rgba(106, 79, 188, 0.05) 0%, transparent 70%);
+    pointer-events: none;
+  }
 }
 
-html[data-theme='dark'] {
+html[data-theme='light'] {
   .catbeePackagesSection {
-    .packageCard {
-      .packageIconWrapper {
-        background: color-mix(in srgb, var(--package-color, #9d7eff) 20%, transparent);
-        border-color: color-mix(in srgb, var(--package-color, #9d7eff) 30%, transparent);
-      }
-
-      .packageTags {
-        .tag {
-          background: color-mix(in srgb, var(--package-color, #9d7eff) 15%, transparent);
-          color: color-mix(in srgb, var(--package-color, #9d7eff) 100%, white 20%);
-          border-color: color-mix(in srgb, var(--package-color, #9d7eff) 35%, transparent);
+    .packagesGrid {
+      .packageCard {
+        .packageFooter {
+          .packageTags {
+            .tag {
+              background: color-mix(in srgb, var(--package-color, var(--catbee-primary-color)) 12%, transparent);
+              color: var(--package-color, var(--catbee-primary-color));
+              border-color: color-mix(in srgb, var(--package-color, var(--catbee-primary-color)) 30%, transparent);
+            }
+          }
         }
-      }
-
-      .packageArrow {
-        color: var(--package-color, #9d7eff);
-      }
-
-      .packageIcon {
-        color: color-mix(in srgb, var(--package-color, #9d7eff) 100%, white 10%);
       }
     }
   }
@@ -297,23 +215,6 @@ html[data-theme='dark'] {
 
 @media screen and (max-width: 996px) {
   .catbeePackagesSection {
-    padding: 3rem 1.5rem;
-
-    .sectionTitle {
-      font-size: 2.25rem;
-      flex-direction: column;
-      gap: 0.5rem;
-
-      .titleIcon {
-        font-size: 2.75rem;
-      }
-    }
-
-    .sectionSubtitle {
-      font-size: 1.1rem;
-      margin-bottom: 2.5rem;
-    }
-
     .packagesGrid {
       grid-template-columns: 1fr;
       gap: 1.5rem;
@@ -335,39 +236,8 @@ html[data-theme='dark'] {
   }
 }
 
-@media screen and (max-width: 768px) {
-  .catbeePackagesSection {
-    .sectionTitle {
-      font-size: 2rem;
-
-      .titleIcon {
-        font-size: 2.5rem;
-      }
-    }
-
-    .sectionSubtitle {
-      font-size: 1rem;
-    }
-  }
-}
-
 @media screen and (max-width: 550px) {
   .catbeePackagesSection {
-    padding: 2rem 0;
-
-    .sectionTitle {
-      font-size: 1.75rem;
-
-      .titleIcon {
-        font-size: 2rem;
-      }
-    }
-
-    .sectionSubtitle {
-      font-size: 0.95rem;
-      margin-bottom: 2rem;
-    }
-
     .packageCard {
       padding: 1.5rem;
 
@@ -376,10 +246,10 @@ html[data-theme='dark'] {
         height: 70px;
 
         .packageIcon {
-          font-size: 2rem !important;
+          font-size: 2rem;
 
           &.material-icons {
-            font-size: 2.5rem !important;
+            font-size: 2.5rem;
           }
         }
       }

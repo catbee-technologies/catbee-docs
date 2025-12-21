@@ -1,0 +1,70 @@
+@use '../../css/utilities.scss' as *;
+
+.catbeeButton {
+  position: relative;
+  overflow: hidden;
+  font-weight: 700;
+  padding: 1rem 2.5rem;
+  font-size: 1.1rem;
+  @include transition-bounce;
+  @include flex-center;
+
+  &.primary {
+    background: white;
+    color: #1e3c72;
+    border: none;
+    box-shadow: 0 4px 20px rgba(255, 255, 255, 0.3);
+    
+    &:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 8px 30px rgba(255, 255, 255, 0.5);
+    }
+    
+    &:active {
+      transform: translateY(-1px) scale(1.02);
+    }
+  }
+  
+  &.secondary {
+    background: transparent;
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    
+    &:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: white;
+      transform: translateY(-3px);
+      box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+    }
+    
+    &:active {
+      transform: translateY(-1px);
+    }
+  }
+}
+
+html[data-theme='light'] {
+  .catbeeButton {
+    &.primary {
+      @include primary-gradient(135deg);
+      color: white;
+      @include shadow-primary(0.3);
+      
+      &:hover {
+        @include shadow-primary-hover(0.4);
+      }
+    }
+    
+    &.secondary {
+      background: rgba(106, 79, 188, 0.08);
+      color: var(--catbee-primary-color-dark);
+      border: 2px solid rgba(106, 79, 188, 0.3);
+      
+      &:hover {
+        background: rgba(106, 79, 188, 0.15);
+        border-color: rgba(106, 79, 188, 0.5);
+        @include shadow-primary(0.2);
+      }
+    }
+  }
+}

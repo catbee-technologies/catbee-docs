@@ -1,40 +1,11 @@
+@use '../../css/utilities.scss' as *;
+
 .catbeeGetStartedSection {
-  padding: 5rem 2rem;
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  background: linear-gradient(135deg, #0a0a0f 0%, #0f0f1a 30%, #13131f 60%, #1a1a2e 100%);
   background-size: 200% 200%;
   animation: gradientFlow 15s ease infinite;
   position: relative;
   overflow: hidden;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background:
-      radial-gradient(circle at 30% 20%, rgba(106, 79, 188, 0.3) 0%, transparent 45%),
-      radial-gradient(circle at 70% 80%, rgba(157, 126, 255, 0.25) 0%, transparent 45%),
-      radial-gradient(circle at 50% 50%, rgba(64, 81, 137, 0.2) 0%, transparent 55%);
-    pointer-events: none;
-    animation: pulseGlow 8s ease-in-out infinite;
-  }
-
-  &::after {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background-image: 
-      radial-gradient(circle, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-    background-size: 50px 50px;
-    animation: moveGrid 20s linear infinite;
-    pointer-events: none;
-    opacity: 0.3;
-  }
 
   .getStartedContent {
     max-width: 800px;
@@ -47,7 +18,7 @@
     border-radius: 20px;
     border: 1px solid rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(20px) saturate(180%);
-    box-shadow: 
+    box-shadow:
       0 8px 32px rgba(0, 0, 0, 0.2),
       0 0 0 1px rgba(255, 255, 255, 0.1) inset;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
@@ -68,9 +39,8 @@
     }
 
     .getStartedButtons {
-      display: flex;
+      @include flex-center;
       gap: 1.25rem;
-      justify-content: center;
       flex-wrap: wrap;
       margin: 2.5rem 0 2rem;
 
@@ -97,14 +67,9 @@
           hsl(0 0% 0% / 1) 90%,
           hsl(0 0% 0% / 0));
 
-      &:hover .marqueeGroup {
-        animation-play-state: paused;
-      }
-
       .marqueeGroup {
         flex-shrink: 0;
-        display: flex;
-        align-items: center;
+        @include flex-center;
         justify-content: space-around;
         gap: 1.5rem;
         min-width: 100%;
@@ -117,30 +82,51 @@
           font-weight: 600;
           text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
           white-space: nowrap;
-          user-select:all;
+          user-select: all;
         }
+      }
+
+      &:hover .marqueeGroup {
+        animation-play-state: paused;
       }
     }
   }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+      radial-gradient(circle at 30% 20%, rgba(157, 126, 255, 0.15) 0%, transparent 45%),
+      radial-gradient(circle at 70% 80%, rgba(106, 79, 188, 0.18) 0%, transparent 45%),
+      radial-gradient(circle at 50% 50%, rgba(102, 126, 234, 0.1) 0%, transparent 55%);
+    pointer-events: none;
+    animation: pulseGlow 8s ease-in-out infinite;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background-image:
+      radial-gradient(circle, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    background-size: 50px 50px;
+    animation: moveGrid 20s linear infinite;
+    pointer-events: none;
+    opacity: 0.3;
+  }
 }
 
-// Light theme (very bright)
+// Light theme
 html[data-theme='light'] {
   .catbeeGetStartedSection {
     background: linear-gradient(135deg, #ffffff 0%, #f5f7ff 30%, #edf1ff 60%, #e3ebff 100%);
-    
-    &::before {
-      background:
-        radial-gradient(circle at 30% 20%, rgba(102, 126, 234, 0.12) 0%, transparent 45%),
-        radial-gradient(circle at 70% 80%, rgba(106, 79, 188, 0.1) 0%, transparent 45%),
-        radial-gradient(circle at 50% 50%, rgba(157, 126, 255, 0.08) 0%, transparent 55%);
-    }
-
-    &::after {
-      background-image: 
-        radial-gradient(circle, rgba(102, 126, 234, 0.08) 1px, transparent 1px);
-      opacity: 0.4;
-    }
 
     .getStartedTitle,
     .getStartedDescription {
@@ -151,7 +137,7 @@ html[data-theme='light'] {
     .getStartedContent {
       background: rgba(255, 255, 255, 0.7);
       border: 1px solid rgba(106, 79, 188, 0.2);
-      box-shadow: 
+      box-shadow:
         0 8px 32px rgba(106, 79, 188, 0.12),
         0 0 0 1px rgba(106, 79, 188, 0.08) inset;
     }
@@ -165,26 +151,30 @@ html[data-theme='light'] {
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
       }
     }
-  }
-}
 
-// Dark theme (very dark)
-html[data-theme='dark'] {
-  .catbeeGetStartedSection {
-    background: linear-gradient(135deg, #0a0a0f 0%, #0f0f1a 30%, #13131f 60%, #1a1a2e 100%);
-    
     &::before {
       background:
-        radial-gradient(circle at 30% 20%, rgba(157, 126, 255, 0.15) 0%, transparent 45%),
-        radial-gradient(circle at 70% 80%, rgba(106, 79, 188, 0.18) 0%, transparent 45%),
-        radial-gradient(circle at 50% 50%, rgba(102, 126, 234, 0.1) 0%, transparent 55%);
+        radial-gradient(circle at 30% 20%, rgba(102, 126, 234, 0.12) 0%, transparent 45%),
+        radial-gradient(circle at 70% 80%, rgba(106, 79, 188, 0.1) 0%, transparent 45%),
+        radial-gradient(circle at 50% 50%, rgba(157, 126, 255, 0.08) 0%, transparent 55%);
     }
 
     &::after {
-      background-image: 
-        radial-gradient(circle, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-      opacity: 0.3;
+      background-image:
+        radial-gradient(circle, rgba(102, 126, 234, 0.08) 1px, transparent 1px);
+      opacity: 0.4;
     }
+  }
+}
+
+@keyframes pulseGlow {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.6;
   }
 }
 
@@ -214,8 +204,6 @@ html[data-theme='dark'] {
 
 @media screen and (max-width: 996px) {
   .catbeeGetStartedSection {
-    padding: 4rem 1.5rem;
-
     .getStartedContent {
       padding: 2.5rem 2rem;
 
@@ -230,7 +218,7 @@ html[data-theme='dark'] {
       .getStartedButtons {
         a {
           font-size: 1rem;
-          padding: 0.9rem 2rem !important;
+          padding: 0.9rem 2rem;
         }
       }
     }
@@ -239,8 +227,6 @@ html[data-theme='dark'] {
 
 @media screen and (max-width: 768px) {
   .catbeeGetStartedSection {
-    padding: 3rem 1.5rem;
-
     .getStartedContent {
       padding: 2rem 1.5rem;
 
@@ -267,8 +253,6 @@ html[data-theme='dark'] {
 
 @media screen and (max-width: 550px) {
   .catbeeGetStartedSection {
-    padding: 2rem 0;
-
     .getStartedContent {
       padding: 1.5rem 1.25rem;
 
@@ -285,7 +269,7 @@ html[data-theme='dark'] {
       .getStartedButtons {
         a {
           font-size: 0.95rem;
-          padding: 0.85rem 1.75rem !important;
+          padding: 0.85rem 1.75rem;
         }
       }
 

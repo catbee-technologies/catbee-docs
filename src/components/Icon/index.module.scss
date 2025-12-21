@@ -1,0 +1,24 @@
+@use '../../css/utilities.scss' as *;
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+
+  &.small {
+    font-size: 1rem;
+  }
+
+  &.medium {
+    font-size: 1.5rem;
+  }
+
+  &.large {
+    font-size: 2rem;
+  }
+
+  &.xlarge {
+    font-size: 3rem;
+  }
+}
