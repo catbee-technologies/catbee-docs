@@ -1,14 +1,20 @@
+import type { ReactNode } from 'react';
 import clsx from 'clsx';
 import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Heading from '@theme/Heading';
 import { motion } from 'framer-motion';
 import CodeBlock from '@theme/CodeBlock';
-import { useInView } from '../../hooks/useInView';
-import { useCountUp } from '../../hooks/useCountUp';
+import useInView from '@site/src/hooks/useInView';
+import useCountUp from '@site/src/hooks/useCountUp';
+import CatbeeIcon from '@site/src/components/Icon';
 import styles from './index.module.scss';
 
-function AnimatedStat({ end, suffix = '', label }: { end: number; suffix?: string; label: string }) {
+export function AnimatedStat({
+  end,
+  suffix = '',
+  label
+}: Readonly<{ end: number; suffix?: string; label: string }>): ReactNode {
   const [ref, isInView] = useInView({ threshold: 0.3, triggerOnce: true });
   const count = useCountUp({ end, duration: 2000, shouldStart: isInView });
 
@@ -25,7 +31,7 @@ function AnimatedStat({ end, suffix = '', label }: { end: number; suffix?: strin
   );
 }
 
-export default function HomePage() {
+export default function HomePage(): ReactNode {
   const { siteConfig } = useDocusaurusContext();
   return (
     <header className={clsx('hero', styles.catbeeHomeBanner)}>
@@ -49,11 +55,11 @@ export default function HomePage() {
             </div>
             <div className={styles.catbeeHomeButtons}>
               <Link id='explore-docs' className={clsx('button button--lg', styles.catbeeHomePrimaryButton)} to='/docs/'>
-                <span className={clsx('material-icons', styles.buttonIcon)}>library_books</span>
+                <CatbeeIcon name='library_books' className={styles.buttonIcon} />
                 <span>Explore Documentation</span>
               </Link>
               <Link className={clsx('button button--lg', styles.catbeeHomeSecondaryButton)} to='/docs/@ng-catbee/'>
-                <i className={clsx('devicon-angular-plain', styles.buttonIcon)}></i>
+                <CatbeeIcon name='devicon-angular-plain' className={styles.buttonIcon} />
                 <span>Angular Packages</span>
               </Link>
             </div>
@@ -67,9 +73,12 @@ export default function HomePage() {
             <div className={styles.catbeeDemoCodeWindow}>
               <div className={styles.catbeeDemoCodeWindowHeader}>
                 <div className={styles.catbeeDemoCodeWindowDots}>
-                  <span></span>
-                  <span></span>
-                  <span></span>
+                  {/* <CatbeeIcon name='close' className={styles.windowDot} />
+                  <CatbeeIcon name='remove' className={styles.windowDot} />
+                  <CatbeeIcon name='open_in_full' className={styles.windowDot} /> */}
+                  <span className={styles.windowDot} />
+                  <span className={styles.windowDot} />
+                  <span className={styles.windowDot} />
                 </div>
                 <div className={styles.catbeeDemoCodeWindowTitle}>catbee.ts</div>
               </div>

@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 
-interface UseInViewOptions {
+export interface UseInViewOptions {
   threshold?: number;
   rootMargin?: string;
   triggerOnce?: boolean;
 }
 
-export function useInView<T extends HTMLElement = HTMLDivElement>(
+export default function useInView<T extends HTMLElement = HTMLDivElement>(
   options: UseInViewOptions = {}
 ): [React.RefObject<T>, boolean] {
   const { threshold = 0.1, rootMargin = '0px', triggerOnce = true } = options;

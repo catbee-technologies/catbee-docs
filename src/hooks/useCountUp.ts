@@ -7,7 +7,7 @@ interface UseCountUpOptions {
   shouldStart?: boolean;
 }
 
-export function useCountUp({ end, duration = 2000, start = 0, shouldStart = true }: UseCountUpOptions): number {
+export default function useCountUp({ end, duration = 2000, start = 0, shouldStart = true }: UseCountUpOptions): number {
   const [count, setCount] = useState(start);
   const startTimeRef = useRef<number | null>(null);
   const rafRef = useRef<number | null>(null);

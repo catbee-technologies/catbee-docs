@@ -1,8 +1,12 @@
-import clsx from 'clsx';
+import type { ReactNode } from 'react';
 import Heading from '@theme/Heading';
-import { motion, useMotionValue, useTransform } from 'framer-motion';
-import styles from './index.module.scss';
+import { motion } from 'framer-motion';
 import { packages } from '@site/src/package.config';
+import Link from '@docusaurus/Link';
+import MouseTrackingWrapper from '@site/src/components/MouseTrackingWrapper';
+import CatbeeIcon from '@site/src/components/Icon';
+import styles from './index.module.scss';
+import CatbeeSection from '../Section';
 
 const packageMetadata: Record<
   string,
@@ -27,7 +31,7 @@ const packageMetadata: Record<
   '@ng-catbee/cookie': {
     description:
       'Type-safe cookie management with SSR support. Handle authentication, preferences, and session data effortlessly.',
-    icon: 'material-icons:cookie',
+    icon: 'cookie',
     link: '/docs/@ng-catbee/cookie/intro/',
     tags: ['Angular', 'SSR', 'Auth'],
     color: '#f59e0b',
@@ -36,7 +40,7 @@ const packageMetadata: Record<
   '@ng-catbee/indexed-db': {
     description:
       'Reactive IndexedDB wrapper with RxJS observables. Perfect for offline-first applications and large datasets.',
-    icon: 'material-icons:storage',
+    icon: 'storage',
     link: '/docs/@ng-catbee/indexed-db/intro/',
     tags: ['Angular', 'Database', 'Offline'],
     color: '#8b5cf6',
@@ -44,7 +48,7 @@ const packageMetadata: Record<
   },
   '@ng-catbee/jwt': {
     description: 'Decode and validate JWT tokens with ease. Built-in security checks and expiration handling.',
-    icon: 'material-icons:verified_user',
+    icon: 'verified_user',
     link: '/docs/@ng-catbee/jwt/intro/',
     tags: ['Angular', 'Security', 'Auth'],
     color: '#10b981',
@@ -53,7 +57,7 @@ const packageMetadata: Record<
   '@ng-catbee/loader': {
     description:
       'Professional loading indicators with 50+ animations. Blur backgrounds, customizable overlays, and more.',
-    icon: 'material-icons:hourglass_empty',
+    icon: 'hourglass_empty',
     link: '/docs/@ng-catbee/loader/intro/',
     tags: ['Angular', 'UI', 'UX'],
     color: '#ec4899',
@@ -61,7 +65,7 @@ const packageMetadata: Record<
   },
   '@ng-catbee/monaco-editor': {
     description: 'Seamless Monaco Editor integration for Angular. Build powerful code editors and IDEs in minutes.',
-    icon: 'material-icons:code',
+    icon: 'code',
     link: '/docs/@ng-catbee/monaco-editor/intro/',
     tags: ['Angular', 'Editor', 'IDE'],
     color: '#06b6d4',
@@ -70,7 +74,7 @@ const packageMetadata: Record<
   '@ng-catbee/storage': {
     description:
       'Reactive Web Storage API with RxJS and signals. Type-safe localStorage and sessionStorage operations.',
-    icon: 'material-icons:save',
+    icon: 'save',
     link: '/docs/@ng-catbee/storage/intro/',
     tags: ['Angular', 'Storage', 'Reactive'],
     color: '#3b82f6',
@@ -85,23 +89,7 @@ const packagesArr = packages
     ...packageMetadata[pkgName]
   }));
 
-function PackageCard({ pkg, idx }: { pkg: (typeof packagesArr)[0]; idx: number }) {
-  const mouseX = useMotionValue(50);
-  const mouseY = useMotionValue(50);
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
-    mouseX.set(x);
-    mouseY.set(y);
-  };
-
-  const handleMouseLeave = () => {
-    mouseX.set(50);
-    mouseY.set(50);
-  };
-
+function PackageCard({ pkg, idx }: Readonly<{ pkg: (typeof packagesArr)[0]; idx: number }>): ReactNode {
   return (
     <motion.div
       initial={{ opacity: 0, y: 40, scale: 0.95 }}
@@ -113,75 +101,62 @@ function PackageCard({ pkg, idx }: { pkg: (typeof packagesArr)[0]; idx: number }
         ease: [0.175, 0.885, 0.32, 1.275]
       }}
     >
-      <motion.a
-        href={pkg.link}
-        className={styles.packageCard}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-        style={
-          {
-            '--package-color': pkg.color,
-            '--package-gradient': pkg.gradient,
-            '--mouse-x': useTransform(mouseX, v => `${v}%`),
-            '--mouse-y': useTransform(mouseY, v => `${v}%`)
-          } as React.CSSProperties
-        }
-      >
-        <div className={styles.packageHeader}>
-          <div className={styles.packageIconWrapper}>
-            {pkg.icon.startsWith('material-icons:') ? (
-              <span className={clsx('material-icons', styles.packageIcon)}>
-                {pkg.icon.replace('material-icons:', '')}
-              </span>
-            ) : (
-              <i className={clsx(pkg.icon, styles.packageIcon)}></i>
-            )}
+      <Link href={pkg.link} style={{ textDecoration: 'none', color: 'inherit' }}>
+        <MouseTrackingWrapper
+          initialX={50}
+          initialY={50}
+          resetOnLeave={true}
+          className={styles.packageCard}
+          style={
+            {
+              '--package-color': pkg.color,
+              '--package-gradient': pkg.gradient
+            } as React.CSSProperties
+          }
+        >
+          <div className={styles.packageHeader}>
+            <div className={styles.packageIconWrapper}>
+              <CatbeeIcon name={pkg.icon} className={styles.packageIcon} />
+            </div>
+            <div className={styles.packageBadge}>
+              <CatbeeIcon name='open_in_new' />
+            </div>
           </div>
-          <div className={styles.packageBadge}>
-            <span className='material-icons'>open_in_new</span>
-          </div>
-        </div>
 
-        <Heading as='h3' className={styles.packageTitle}>
-          {pkg.title}
-        </Heading>
-        <p className={styles.packageDescription}>{pkg.description}</p>
+          <Heading as='h3' className={styles.packageTitle}>
+            {pkg.title}
+          </Heading>
+          <p className={styles.packageDescription}>{pkg.description}</p>
 
-        <div className={styles.packageFooter}>
-          <div className={styles.packageTags}>
-            <span className='material-icons'>arrow_forward</span>
+          <div className={styles.packageFooter}>
+            <div className={styles.packageTags}>
+              {pkg.tags.map((tag, tagIdx) => (
+                <span key={tagIdx} className={styles.tag}>
+                  {tag}
+                </span>
+              ))}
+            </div>
           </div>
-        </div>
-      </motion.a>
+        </MouseTrackingWrapper>
+      </Link>
     </motion.div>
   );
 }
 
 export default function Packages() {
   return (
-    <section id='catbeePackagesSection' className={styles.catbeePackagesSection}>
-      <div className='container'>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-        >
-          <Heading as='h2' className={styles.sectionTitle}>
-            <span className={clsx('material-icons', styles.titleIcon)}>widgets</span>
-            Explore Our Packages
-          </Heading>
-          <p className={styles.sectionSubtitle}>
-            Specialized tools for every part of your application. Click any package to dive into the documentation.
-          </p>
-        </motion.div>
-
-        <div className={styles.packagesGrid}>
-          {packagesArr.map((pkg, idx) => (
-            <PackageCard key={idx} pkg={pkg} idx={idx} />
-          ))}
-        </div>
+    <CatbeeSection
+      id='catbeePackagesSection'
+      title='Explore Our Packages'
+      description='Specialized tools for every part of your application. Click any package to dive into the documentation.'
+      icon='widgets'
+      className={styles.catbeePackagesSection}
+    >
+      <div className={styles.packagesGrid}>
+        {packagesArr.map((pkg, idx) => (
+          <PackageCard key={idx} pkg={pkg} idx={idx} />
+        ))}
       </div>
-    </section>
+    </CatbeeSection>
   );
 }

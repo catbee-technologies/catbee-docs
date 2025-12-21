@@ -1,0 +1,86 @@
+@use '../../css/utilities.scss' as *;
+
+.catbeeSection {
+  padding: 5rem 2rem;
+
+  .catbeeSectionHeader {
+    text-align: center;
+    margin-bottom: 4rem;
+
+    .catbeeSectionTitle {
+      @include gradient-text();
+      font-size: 2.75rem;
+      margin-bottom: 1rem;
+
+      .catbeeSectionTitleIcon {
+        vertical-align: middle;
+        margin-right: 0.5rem;
+        font-size: 2.5rem;
+        color: var(--catbee-primary-color);
+      }
+    }
+
+    .catbeeSectionDescription {
+      font-size: 1.2rem;
+      color: var(--ifm-color-emphasis-700);
+      max-width: 700px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+  }
+}
+
+@media screen and (max-width: 996px) {
+  .catbeeSection {
+    padding: 3rem 1.5rem;
+
+    .catbeeSectionHeader {
+      margin-bottom: 3rem;
+
+      .catbeeSectionTitle {
+        font-size: 2.25rem;
+      }
+
+      .catbeeSectionDescription {
+        font-size: 1.1rem;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .catbeeSection {
+    .catbeeSectionHeader {
+      .catbeeSectionTitle {
+        font-size: 2rem;
+      }
+
+      .catbeeSectionDescription {
+        font-size: 1rem;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 550px) {
+  .catbeeSection {
+    padding: 2rem 0;
+
+    .catbeeSectionHeader {
+      margin-bottom: 2rem;
+
+      .catbeeSectionTitle {
+        font-size: 1.75rem;
+        line-height: 1.3;
+
+        .catbeeSectionTitleIcon {
+          font-size: 2rem;
+        }
+      }
+
+      .catbeeSectionDescription {
+        font-size: 0.95rem;
+      }
+    }
+  }
+}

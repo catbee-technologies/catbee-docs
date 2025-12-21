@@ -1,7 +1,9 @@
 import { useState } from 'react';
+import type { ReactNode } from 'react';
 import { motion } from 'framer-motion';
 import clsx from 'clsx';
-import styles from './PackageManagerTabs.module.scss';
+import InstallCommand from '@site/src/components/InstallCommand';
+import styles from './index.module.scss';
 
 type PackageManager = 'npm' | 'yarn' | 'pnpm';
 
@@ -9,24 +11,15 @@ interface PackageManagerTabsProps {
   packageName?: string;
 }
 
-export default function PackageManagerTabs({ packageName = '@ng-catbee/cookie' }: PackageManagerTabsProps) {
+export default function PackageManagerTabs({
+  packageName = '@ng-catbee/cookie'
+}: Readonly<PackageManagerTabsProps>): ReactNode {
   const [activeTab, setActiveTab] = useState<PackageManager>('npm');
-  const [copied, setCopied] = useState(false);
 
   const commands: Record<PackageManager, string> = {
     npm: `npm install ${packageName}`,
     yarn: `yarn add ${packageName}`,
     pnpm: `pnpm add ${packageName}`
-  };
-
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(commands[activeTab]);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
-      console.error('Failed to copy:', err);
-    }
   };
 
   return (
@@ -57,21 +50,7 @@ export default function PackageManagerTabs({ packageName = '@ng-catbee/cookie' }
         transition={{ duration: 0.2 }}
         className={styles.commandDisplay}
       >
-        <div className={styles.commandWrapper}>
-          <span className={styles.prompt}>$</span>
-          <code className={styles.command}>{commands[activeTab]}</code>
-          <button
-            className={clsx(styles.copyButton, copied && styles.copied)}
-            onClick={handleCopy}
-            aria-label='Copy command'
-          >
-            {copied ? (
-              <span className='material-icons'>check</span>
-            ) : (
-              <span className='material-icons'>content_copy</span>
-            )}
-          </button>
-        </div>
+        <InstallCommand command={commands[activeTab]} className={styles.installCommand} />
       </motion.div>
     </div>
   );

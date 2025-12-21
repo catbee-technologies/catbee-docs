@@ -1,13 +1,18 @@
 import { useState } from 'react';
+import type { ReactNode } from 'react';
 import clsx from 'clsx';
+import CatbeeIcon from '@site/src/components/Icon';
 import styles from './index.module.scss';
 
-interface InstallCommandProps {
+export interface InstallCommandProps {
   command?: string;
   className?: string;
 }
 
-export default function InstallCommand({ command = 'npm install @ng-catbee/cookie', className }: InstallCommandProps) {
+export default function InstallCommand({
+  command = 'npm install @ng-catbee/cookie',
+  className
+}: Readonly<InstallCommandProps>): ReactNode {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
@@ -30,17 +35,7 @@ export default function InstallCommand({ command = 'npm install @ng-catbee/cooki
           onClick={handleCopy}
           aria-label='Copy installation command'
         >
-          {copied ? (
-            <>
-              <span className='material-icons'>check</span>
-              <span className={styles.buttonText}>Copied!</span>
-            </>
-          ) : (
-            <>
-              <span className='material-icons'>content_copy</span>
-              <span className={styles.buttonText}>Copy</span>
-            </>
-          )}
+          {copied ? <CatbeeIcon name='check' /> : <CatbeeIcon name='content_copy' />}
         </button>
       </div>
     </div>

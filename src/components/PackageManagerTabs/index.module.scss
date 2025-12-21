@@ -1,0 +1,101 @@
+@use '../../css/utilities.scss' as *;
+
+.packageManagerTabs {
+  margin: 2rem 0;
+
+  .tabButtons {
+    @include flex-center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 0.5rem;
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    max-width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+
+    .tabButton {
+      position: relative;
+      background: transparent;
+      border: none;
+      color: rgba(255, 255, 255, 0.6);
+      padding: 0.75rem 2rem;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      @include transition-base;
+      border-radius: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-family: var(--ifm-font-family-monospace);
+
+      &:hover {
+        color: rgba(255, 255, 255, 0.9);
+        background: rgba(255, 255, 255, 0.05);
+      }
+
+      &.active {
+        color: white;
+
+        .activeIndicator {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(135deg, rgba(106, 79, 188, 0.6), rgba(157, 126, 255, 0.6));
+          border-radius: 8px;
+          z-index: -1;
+        }
+      }
+    }
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+// Light theme
+html[data-theme='light'] {
+  .packageManagerTabs {
+    .tabButtons {
+      background: rgba(106, 79, 188, 0.06);
+      border: 1px solid rgba(106, 79, 188, 0.15);
+
+      .tabButton {
+        color: rgba(72, 52, 160, 0.6);
+
+        &:hover {
+          background: rgba(106, 79, 188, 0.1);
+        }
+
+        &.active {
+          color: white;
+
+          .activeIndicator {
+            background: linear-gradient(135deg, var(--catbee-primary-color), var(--catbee-primary-color-dark));
+          }
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .packageManagerTabs {
+    .tabButtons {
+      width: 100%;
+
+      .tabButton {
+        flex: 1;
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+      }
+    }
+  }
+}

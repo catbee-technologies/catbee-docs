@@ -6,6 +6,7 @@ import Link from '@docusaurus/Link';
 import { motion, AnimatePresence } from 'framer-motion';
 import styles from './license.module.scss';
 import RawLicense from './raw-license';
+import CatbeeIcon from '@site/src/components/Icon';
 
 export default function License(): ReactNode {
   const [showRaw, setShowRaw] = useState(() => {
@@ -58,7 +59,7 @@ export default function License(): ReactNode {
           aria-label={showRaw ? 'View Designed License' : 'View Raw License'}
           whileTap={{ scale: 0.95 }}
         >
-          <span className='material-icons'>{showRaw ? 'palette' : 'code'}</span>
+          <CatbeeIcon name={showRaw ? 'palette' : 'code'} />
           <span>{showRaw ? 'View Designed License' : 'View Raw License'}</span>
         </motion.button>
       </div>
@@ -105,7 +106,7 @@ export default function License(): ReactNode {
 
                   <motion.div className={styles.permissionsSection} variants={itemVariants}>
                     <Heading as='h2' className={styles.sectionTitle}>
-                      <span className='material-icons'>check_circle</span>
+                      <CatbeeIcon name='check_circle' />
                       What You Can Do
                     </Heading>
                     <div className={styles.permissionsGrid}>
@@ -122,7 +123,7 @@ export default function License(): ReactNode {
                           animate={{ opacity: 1 }}
                           transition={{ delay: 0.2 + idx * 0.1 }}
                         >
-                          <span className='material-icons'>{item.icon}</span>
+                          <CatbeeIcon name={item.icon} />
                           <Heading as='h3'>{item.title}</Heading>
                           <p>{item.desc}</p>
                         </motion.div>
@@ -146,7 +147,7 @@ export default function License(): ReactNode {
 
                   <motion.div className={styles.disclaimerSection} variants={itemVariants}>
                     <Heading as='h2' className={styles.sectionTitle}>
-                      <span className='material-icons'>warning</span>
+                      <CatbeeIcon name='warning' />
                       Disclaimer
                     </Heading>
                     <div className={styles.disclaimerBox}>
@@ -179,7 +180,7 @@ export default function License(): ReactNode {
                       }
                     ].map(item => (
                       <div key={item.title} className={styles.infoCard}>
-                        <span className='material-icons'>{item.icon}</span>
+                        <CatbeeIcon name={item.icon} />
                         <div>
                           <Heading as='h3'>{item.title}</Heading>
                           <p>{item.desc}</p>
