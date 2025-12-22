@@ -9,7 +9,7 @@
   color: var(--ifm-color-white);
   position: relative;
   overflow: hidden;
-  min-height: calc(100dvh - 60px);
+  min-height: calc(100dvh - var(--catbee-navbar-height));
 
   .catbeeHomeBannerContent {
     @include flex-between;

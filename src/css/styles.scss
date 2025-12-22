@@ -18,6 +18,8 @@
   --catbee-bg-gradient: linear-gradient(135deg, #000000, #000000, #1e3c72);
   --catbee-bg-gradient-dark-mode: linear-gradient(135deg, #000000, #000000, #1e3c72);
 
+  --catbee-navbar-height: 60px;
+
   --ifm-color-primary: var(--catbee-primary-color);
   --ifm-color-primary-dark: #5d42ad;
   --ifm-color-primary-darker: #563ea3;
@@ -87,9 +89,24 @@ body {
   }
 }
 
+.DocSearch-Input {
+  padding-right: 3.5rem;
+}
+
+.DocSearch-Title {
+  line-height: unset;
+  word-break: break-word;
+}
+
 /* Media Queries */
 @media screen and (max-width: 768px) {
   .button {
     margin: 0 auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .DocSearch-Modal {
+    margin: var(--catbee-navbar-height) auto auto !important // Its required
   }
 }
