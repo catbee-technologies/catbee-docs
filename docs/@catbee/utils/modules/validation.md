@@ -1,9 +1,10 @@
 ---
 id: validation
 pagination_next: null
+slug: ../validation
 ---
 
-# Validation Utilities
+# Validation
 
 Comprehensive suite of validators for strings, numbers, arrays, objects, dates, patterns, and more. Includes type guards, range checks, format checks, and multi-validator helpers. All methods are fully typed.
 
@@ -12,7 +13,7 @@ Comprehensive suite of validators for strings, numbers, arrays, objects, dates, 
 - [**`isPort(str: string | number): boolean`**](#isport) - Checks if a value is a valid port number (1-65535).
 - [**`isEmail(str: string): boolean`**](#isemail) - Checks if a string is a valid email address.
 - [**`isUUID(str: string): boolean`**](#isuuid) - Checks if a string is a valid UUID (versions 1-5).
-- [**`isURL(str: string): boolean`**](#isurl) - Checks if a string is a valid URL.
+- [**`isURL(str: string, allowedProtocols = ['http', 'https', 'ws', 'wss']): boolean`**](#isurl) - Checks if a string is a valid URL.
 - [**`isPhone(str: string): boolean`**](#isphone) - Checks if a string is a valid international phone number.
 - [**`isAlphanumeric(str: string): boolean`**](#isalphanumeric) - Checks if a string contains only letters and numbers.
 - [**`isNumeric(value: string | number): boolean`**](#isnumeric) - Checks if a value is numeric.
@@ -26,9 +27,9 @@ Comprehensive suite of validators for strings, numbers, arrays, objects, dates, 
 - [**`isIPv6(str: string): boolean`**](#isipv6) - Checks if a string is a valid IPv6 address.
 - [**`isCreditCard(str: string): boolean`**](#iscreditcard) - Checks if a string is a valid credit card number.
 - [**`isValidJSON(str: string): boolean`**](#isvalidjson) - Checks if a string is valid JSON.
-- [**`isArray<T>(value: unknown, itemGuard?: (item: unknown) => item is T): boolean`**](#isarray) - Checks if a value is an array.
-- [**`isObject(value: unknown): boolean`**](#isobject) - Checks if a value is an object.
-- [**`hasRequiredProps(obj: object, requiredProps: string[]): boolean`**](#hasrequiredprops) - Checks if an object has all required properties.
+- [**`isArray<T>(value: unknown, itemGuard?: (item: unknown) => item is T): value is T[]`**](#isarray) - Checks if a value is an array.
+- [**`isBase64(str: string): boolean`**](#isbase64) - Checks if a string is a valid base64 encoded string.
+- [**`hasRequiredProps(obj: Record<string, unknown>, requiredProps: string[]): boolean`**](#hasrequiredprops) - Checks if an object has all required properties.
 - [**`isDateInRange(date: Date, minDate?: Date, maxDate?: Date): boolean`**](#isdateinrange) - Checks if a date is within a range.
 - [**`matchesPattern(str: string, pattern: RegExp): boolean`**](#matchespattern) - Checks if a string matches a regex pattern.
 - [**`validateAll(value: unknown, validators: Array<(value: unknown) => boolean>): boolean`**](#validateall) - Validates a value against multiple validators.
@@ -58,7 +59,7 @@ function isPort(value: string | number): boolean;
 **Example:**
 
 ```ts
-import { isPort } from '@catbee/utils';
+import { isPort } from '@catbee/utils/validation';
 
 isPort(8080); // true
 isPort('65536'); // false
@@ -87,7 +88,7 @@ function isEmail(value: string): boolean;
 **Example:**
 
 ```ts
-import { isEmail } from '@catbee/utils';
+import { isEmail } from '@catbee/utils/validation';
 
 isEmail('user@example.com'); // true
 ```
@@ -101,12 +102,13 @@ Checks if a string is a valid UUID (versions 1-5).
 **Method Signature:**
 
 ```ts
-function isUUID(value: string): boolean;
+function isURL(str: string, allowedProtocols: string[] = ['http', 'https', 'ws', 'wss']): boolean;
 ```
 
 **Parameters:**
 
-- `value`: The value to check (string).
+- `str`: The value to check (string).
+- `allowedProtocols`: Array of allowed URL protocols (default: `['http', 'https', 'ws', 'wss']`).
 
 **Returns:**
 
@@ -115,7 +117,7 @@ function isUUID(value: string): boolean;
 **Example:**
 
 ```ts
-import { isUUID } from '@catbee/utils';
+import { isUUID } from '@catbee/utils/validation';
 
 isUUID('550e8400-e29b-41d4-a716-446655440000'); // true
 ```
@@ -129,23 +131,26 @@ Checks if a string is a valid URL.
 **Method Signature:**
 
 ```ts
-function isURL(value: string): boolean;
+function isURL(str: string, allowedProtocols: string[] = ['http', 'https', 'ws', 'wss']): boolean;
 ```
 
 **Parameters:**
 
-- `value`: The value to check (string).
+- `str`: The value to check (string).
+- `allowedProtocols`: Array of allowed URL protocols (default: `['http', 'https', 'ws', 'wss']`).
 
 **Returns:**
 
-- `true` if the value is a valid URL, otherwise `false`.
+- `true` if the value is a valid URL with an allowed protocol, otherwise `false`.
 
 **Example:**
 
 ```ts
-import { isURL } from '@catbee/utils';
+import { isURL } from '@catbee/utils/validation';
 
 isURL('https://example.com'); // true
+isURL('ftp://example.com'); // false (ftp not in default allowed protocols)
+isURL('ftp://example.com', ['ftp']); // true (ftp is allowed)
 ```
 
 ---
@@ -171,7 +176,7 @@ function isPhone(value: string): boolean;
 **Example:**
 
 ```ts
-import { isPhone } from '@catbee/utils';
+import { isPhone } from '@catbee/utils/validation';
 
 isPhone('+1-800-555-1234'); // true
 ```
@@ -199,7 +204,7 @@ function isAlphanumeric(value: string): boolean;
 **Example:**
 
 ```ts
-import { isAlphanumeric } from '@catbee/utils';
+import { isAlphanumeric } from '@catbee/utils/validation';
 
 isAlphanumeric('abc123'); // true
 ```
@@ -227,7 +232,7 @@ function isNumeric(value: string | number): boolean;
 **Example:**
 
 ```ts
-import { isNumeric } from '@catbee/utils';
+import { isNumeric } from '@catbee/utils/validation';
 
 isNumeric('42'); // true
 isNumeric('abc'); // false
@@ -256,7 +261,7 @@ function isHexColor(value: string): boolean;
 **Example:**
 
 ```ts
-import { isHexColor } from '@catbee/utils';
+import { isHexColor } from '@catbee/utils/validation';
 
 isHexColor('#fff'); // true
 isHexColor('#123abc'); // true
@@ -285,7 +290,7 @@ function isISODate(value: string): boolean;
 **Example:**
 
 ```ts
-import { isISODate } from '@catbee/utils';
+import { isISODate } from '@catbee/utils/validation';
 
 isISODate('2023-01-01T12:00:00Z'); // true
 ```
@@ -315,7 +320,7 @@ function isLengthBetween(str: string, min: number, max: number): boolean;
 **Example:**
 
 ```ts
-import { isLengthBetween } from '@catbee/utils';
+import { isLengthBetween } from '@catbee/utils/validation';
 
 isLengthBetween('abc', 2, 5); // true
 ```
@@ -345,7 +350,7 @@ function isNumberBetween(value: number, min: number, max: number): boolean;
 **Example:**
 
 ```ts
-import { isNumberBetween } from '@catbee/utils';
+import { isNumberBetween } from '@catbee/utils/validation';
 
 isNumberBetween(5, 1, 10); // true
 ```
@@ -373,7 +378,7 @@ function isAlpha(value: string): boolean;
 **Example:**
 
 ```ts
-import { isAlpha } from '@catbee/utils';
+import { isAlpha } from '@catbee/utils/validation';
 
 isAlpha('abcDEF'); // true
 ```
@@ -401,7 +406,7 @@ function isStrongPassword(value: string): boolean;
 **Example:**
 
 ```ts
-import { isStrongPassword } from '@catbee/utils';
+import { isStrongPassword } from '@catbee/utils/validation';
 
 isStrongPassword('Abc123!@#'); // true
 ```
@@ -429,7 +434,7 @@ function isIPv4(value: string): boolean;
 **Example:**
 
 ```ts
-import { isIPv4 } from '@catbee/utils';
+import { isIPv4 } from '@catbee/utils/validation';
 
 isIPv4('192.168.1.1'); // true
 ```
@@ -457,7 +462,7 @@ function isIPv6(value: string): boolean;
 **Example:**
 
 ```ts
-import { isIPv6 } from '@catbee/utils';
+import { isIPv6 } from '@catbee/utils/validation';
 
 isIPv6('2001:0db8:85a3:0000:0000:8a2e:0370:7334'); // true
 ```
@@ -485,7 +490,7 @@ function isCreditCard(value: string): boolean;
 **Example:**
 
 ```ts
-import { isCreditCard } from '@catbee/utils';
+import { isCreditCard } from '@catbee/utils/validation';
 
 isCreditCard('4111111111111111'); // true
 ```
@@ -513,7 +518,7 @@ function isValidJSON(value: string): boolean;
 **Example:**
 
 ```ts
-import { isValidJSON } from '@catbee/utils';
+import { isValidJSON } from '@catbee/utils/validation';
 
 isValidJSON('{"a":1}'); // true
 ```
@@ -542,37 +547,38 @@ function isArray<T>(value: unknown, itemGuard?: (item: unknown) => item is T): v
 **Example:**
 
 ```ts
-import { isArray } from '@catbee/utils';
+import { isArray } from '@catbee/utils/validation';
 
 isArray([1, 2, 3], (x): x is number => typeof x === 'number'); // true
 ```
 
 ---
 
-### `isObject()`
+### `isBase64()`
 
-Checks if a value is a non-null object.
+Checks if a string is a valid base64 encoded string.
 
 **Method Signature:**
 
 ```ts
-function isObject(value: unknown): value is Record<string, unknown>;
+function isBase64(str: string): boolean;
 ```
 
 **Parameters:**
 
-- `value`: The value to check (unknown).
+- `str`: The value to check (string).
 
 **Returns:**
 
-- `true` if the value is a non-null object, otherwise `false`.
+- `true` if the value is a valid base64 encoded string, otherwise `false`.
 
 **Example:**
 
 ```ts
-import { isObject } from '@catbee/utils';
+import { isBase64 } from '@catbee/utils/validation';
 
-isObject({ a: 1 }); // true
+isBase64('SGVsbG8gV29ybGQ='); // true
+isBase64('Hello World'); // false
 ```
 
 ---
@@ -599,7 +605,7 @@ function hasRequiredProps(obj: Record<string, unknown>, requiredProps: string[])
 **Example:**
 
 ```ts
-import { hasRequiredProps } from '@catbee/utils';
+import { hasRequiredProps } from '@catbee/utils/validation';
 
 hasRequiredProps({ a: 1, b: 2 }, ['a', 'b']); // true
 ```
@@ -629,7 +635,7 @@ function isDateInRange(date: Date, minDate?: Date, maxDate?: Date): boolean;
 **Example:**
 
 ```ts
-import { isDateInRange } from '@catbee/utils';
+import { isDateInRange } from '@catbee/utils/validation';
 
 isDateInRange(new Date(), new Date('2020-01-01'), new Date('2030-01-01')); // true
 ```
@@ -658,7 +664,7 @@ function matchesPattern(str: string, pattern: RegExp): boolean;
 **Example:**
 
 ```ts
-import { matchesPattern } from '@catbee/utils';
+import { matchesPattern } from '@catbee/utils/validation';
 
 matchesPattern('abc123', /^[a-z]+\d+$/); // true
 ```
@@ -687,6 +693,6 @@ function validateAll(value: unknown, validators: Array<(value: unknown) => boole
 **Example:**
 
 ```ts
-import { validateAll, isAlpha } from '@catbee/utils';
+import { validateAll, isAlpha } from '@catbee/utils/validation';
 validateAll('abc', [isAlpha, str => str.length > 2]); // true
 ```

@@ -1,4 +1,8 @@
-# Performance Utilities
+---
+slug: ../performance
+---
+
+# Performance
 
 A collection of utilities for measuring, tracking, and optimizing performance in Node.js applications. Includes timing functions for synchronous and asynchronous code, memoization with TTL and cache size, decorators for timing, and memory usage tracking. All methods are fully typed.
 
@@ -17,8 +21,8 @@ A collection of utilities for measuring, tracking, and optimizing performance in
 ```ts
 export interface TimingOptions {
   label?: string;
-  log?: boolean;
-  logLevel?: 'trace' | 'debug' | 'info' | 'warn' | 'error';
+  log?: boolean;                                              // default: false
+  logLevel?: 'trace' | 'debug' | 'info' | 'warn' | 'error';   // default: 'debug'
 }
 
 export interface TimingResult {
@@ -34,10 +38,10 @@ export interface TimingResult {
 
 ```ts
 {
-  ttl?: number;
-  maxSize?: number;
-  cacheKey?: (...args: any[]) => string;
-  autoCleanupMs?: number;
+  ttl?: number;                           // default: undefined (no expiration)
+  maxSize?: number;                       // default: undefined (unlimited)
+  cacheKey?: (...args: any[]) => string;  // default: JSON.stringify
+  autoCleanupMs?: number;                 // default: undefined (no auto cleanup)
 }
 ```
 
@@ -62,13 +66,13 @@ Measures the execution time of a synchronous function.
 **Method Signature:**
 
 ```ts
-function timeSync<T>(fn: () => T, options?: TimingOptions): { result: T; timing: TimingResult };
+function timeSync<T>(fn: () => T, options: TimingOptions = {}): { result: T; timing: TimingResult };
 ```
 
 **Parameters:**
 
 - `fn`: The synchronous function to time.
-- `options`: Optional timing options.
+- `options`: Optional timing options (default: {}).
   - `label`: A label for the timing operation.
   - `log`: Whether to log the timing result.
   - `logLevel`: The log level to use if logging is enabled.
@@ -80,7 +84,7 @@ function timeSync<T>(fn: () => T, options?: TimingOptions): { result: T; timing:
 **Example:**
 
 ```ts
-import { timeSync } from '@catbee/utils';
+import { timeSync } from '@catbee/utils/performance';
 
 const { result, timing } = timeSync(
   () => {
@@ -104,13 +108,13 @@ Measures the execution time of an asynchronous function.
 **Method Signature:**
 
 ```ts
-function timeAsync<T>(fn: () => Promise<T>, options?: TimingOptions): Promise<{ result: T; timing: TimingResult }>;
+function timeAsync<T>(fn: () => Promise<T>, options: TimingOptions = {}): Promise<{ result: T; timing: TimingResult }>;
 ```
 
 **Parameters:**
 
 - `fn`: The asynchronous function to time.
-- `options`: Optional timing options.
+- `options`: Optional timing options (default: {}).
   - `label`: A label for the timing operation.
   - `log`: Whether to log the timing result.
   - `logLevel`: The log level to use if logging is enabled.
@@ -122,7 +126,7 @@ function timeAsync<T>(fn: () => Promise<T>, options?: TimingOptions): Promise<{ 
 **Example:**
 
 ```ts
-import { timeAsync } from '@catbee/utils';
+import { timeAsync } from '@catbee/utils/performance';
 
 const { result, timing } = await timeAsync(
   async () => {
@@ -144,12 +148,12 @@ Method decorator for timing function execution.
 **Method Signature:**
 
 ```ts
-function timed(options?: TimingOptions): MethodDecorator;
+function timed(options: TimingOptions = {}): MethodDecorator;
 ```
 
 **Parameters:**
 
-- `options`: Optional timing options.
+- `options`: Optional timing options (default: {}).
   - `label`: A label for the timing operation.
   - `log`: Whether to log the timing result.
   - `logLevel`: The log level to use if logging is enabled.
@@ -161,7 +165,7 @@ function timed(options?: TimingOptions): MethodDecorator;
 **Example:**
 
 ```ts
-import { timed } from '@catbee/utils';
+import { timed } from '@catbee/utils/performance';
 
 class DataService {
   @timed({ log: true, logLevel: 'info' })
@@ -181,17 +185,25 @@ Caches function results with optional TTL and max cache size.
 **Method Signature:**
 
 ```ts
-function memoize<T, Args extends any[]>(fn: (...args: Args) => T, options?: { ttl?: number; maxSize?: number; cacheKey?: (...args: Args) => string; autoCleanupMs?: number }): (...args: Args) => T;
+function memoize<T, Args extends any[]>(
+  fn: (...args: Args) => T,
+  options: {
+    ttl?: number;                              // default: undefined (no expiration)
+    maxSize?: number;                          // default: undefined (unlimited)
+    cacheKey?: (...args: Args) => string;      // default: JSON.stringify
+    autoCleanupMs?: number;                    // default: undefined (no auto cleanup)
+  } = {}
+): (...args: Args) => T;
 ```
 
 **Parameters:**
 
 - `fn`: The function to memoize.
-- `options`: Optional memoization options.
-  - `ttl`: Time-to-live for cache entries in milliseconds.
-  - `maxSize`: Maximum number of entries in the cache.
-  - `cacheKey`: A function to generate cache keys from arguments.
-  - `autoCleanupMs`: Interval for automatic cache cleanup.
+- `options`: Optional memoization options (default: {}).
+  - `ttl`: Time-to-live for cache entries in milliseconds (default: undefined).
+  - `maxSize`: Maximum number of entries in the cache (default: undefined).
+  - `cacheKey`: A function to generate cache keys from arguments (default: JSON.stringify).
+  - `autoCleanupMs`: Interval for automatic cache cleanup in milliseconds (default: undefined).
 
 **Returns:**
 
@@ -200,7 +212,7 @@ function memoize<T, Args extends any[]>(fn: (...args: Args) => T, options?: { tt
 **Example:**
 
 ```ts
-import { memoize } from '@catbee/utils';
+import { memoize } from '@catbee/utils/performance';
 
 const calculateFactorial = memoize(
   (n: number): number => n <= 1 ? 1 : n * calculateFactorial(n - 1),
@@ -220,15 +232,21 @@ Tracks memory usage for a function execution.
 **Method Signature:**
 
 ```ts
-function trackMemoryUsage<T>(fn: () => T, options?: { log?: boolean; label?: string }): { result: T; memoryUsage: { before: NodeJS.MemoryUsage; after: NodeJS.MemoryUsage; diff: Record<string, number> } };
+function trackMemoryUsage<T>(
+  fn: () => T,
+  options: {
+    log?: boolean;      // default: false
+    label?: string;     // default: function name
+  } = {}
+): { result: T; memoryUsage: { before: NodeJS.MemoryUsage; after: NodeJS.MemoryUsage; diff: Record<string, number> } };
 ```
 
 **Parameters:**
 
 - `fn`: The function to track memory usage for.
-- `options`: Optional tracking options.
-  - `log`: Whether to log the memory usage result.
-  - `label`: A label for the memory tracking operation.
+- `options`: Optional tracking options (default: {}).
+  - `log`: Whether to log the memory usage result (default: false).
+  - `label`: A label for the memory tracking operation (default: function name).
 
 **Returns:**
 
@@ -237,7 +255,7 @@ function trackMemoryUsage<T>(fn: () => T, options?: { log?: boolean; label?: str
 **Example:**
 
 ```ts
-import { trackMemoryUsage } from '@catbee/utils';
+import { trackMemoryUsage } from '@catbee/utils/performance';
 
 const { result, memoryUsage } = trackMemoryUsage(
   () => {

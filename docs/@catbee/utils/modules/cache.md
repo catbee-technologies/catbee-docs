@@ -1,17 +1,22 @@
-# Cache Utilities
+---
+slug: ../cache
+---
+
+# Cache
 
 In-memory TTL cache with advanced features for efficient data caching and retrieval. Provides a flexible, type-safe cache class with TTL, LRU eviction, auto-cleanup, and batch operations.
 
 ## API Summary
 
 - [**`TTLCache<K, V>`**](#function-documentation--usage-examples) - Generic class with key type `K` and value type `V`.
-- [**`set(key: K, value: V, ttlMs?: number): void`**](#set) - Add or update a cache entry, optionally with a custom TTL.
+- [**`set(key: K, value: V): void`**](#set) - Add or update a cache entry with the default TTL.
+- [**`setWithTTL(key: K, value: V, ttlMs: number): void`**](#setwithttl) - Add or update a cache entry with a custom TTL.
 - [**`get(key: K): V | undefined`**](#get) - Retrieve a value from cache.
 - [**`has(key: K): boolean`**](#has) - Check if key exists in cache.
 - [**`delete(key: K): boolean`**](#delete) - Remove a key from cache.
 - [**`clear(): void`**](#clear) - Remove all entries from cache.
 - [**`size(): number`**](#size) - Get the number of entries in cache.
-- [**`cleanup(): void`**](#cleanup) - Remove expired entries.
+- [**`cleanup(): number`**](#cleanup) - Remove expired entries and return count removed.
 - [**`keys(): K[]`**](#keys) - Get all valid keys in the cache.
 - [**`values(): V[]`**](#values) - Get all valid values in the cache.
 - [**`entries(): Array<[K, V]>`**](#entries) - Get all valid key-value pairs.
@@ -29,9 +34,12 @@ In-memory TTL cache with advanced features for efficient data caching and retrie
 
 ```ts
 interface TTLCacheOptions {
-  ttlMs?: number;          // Default TTL in milliseconds
-  maxSize?: number;        // Maximum number of entries
-  autoCleanupMs?: number;  // Auto cleanup interval
+  /** Default time-to-live in milliseconds for cache entries */
+  ttlMs?: number;
+  /** Maximum number of entries to keep in cache (uses LRU eviction policy) */
+  maxSize?: number;
+  /** Auto-cleanup interval in milliseconds (disabled if 0 or negative) */
+  autoCleanupMs?: number;
 }
 ```
 
@@ -40,32 +48,54 @@ interface TTLCacheOptions {
 ## Function Documentation & Usage Examples
 
 ```ts
-import { TTLCache } from '@catbee/utils';
+import { TTLCache } from '@catbee/utils/cache';
 
 const cache = new TTLCache<string, number>({ ttlMs: 60000, maxSize: 1000, autoCleanupMs: 30000 });
 ```
 
 ### `set()`
 
-Add or update a cache entry, optionally with a custom TTL.
+Add or update a cache entry with the default TTL.
 
 **Method Signature:**
 
 ```ts
-set(key: K, value: V, ttlMs?: number): void
+set(key: K, value: V): void
 ```
 
 **Parameters:**
 
 - `key`: The cache key.
 - `value`: The cache value.
-- `ttlMs`: Optional time-to-live in milliseconds.
 
 **Examples:**
 
 ```ts
 cache.set('foo', 42);
-cache.set('bar', 99, 5000); // custom TTL
+```
+
+---
+
+### `setWithTTL()`
+
+Add or update a cache entry with a custom TTL.
+
+**Method Signature:**
+
+```ts
+setWithTTL(key: K, value: V, ttlMs: number): void
+```
+
+**Parameters:**
+
+- `key`: The cache key.
+- `value`: The cache value.
+- `ttlMs`: Time-to-live in milliseconds.
+
+**Examples:**
+
+```ts
+cache.setWithTTL('bar', 99, 5000); // 5 second TTL
 ```
 
 ---
@@ -192,18 +222,23 @@ const count = cache.size();
 
 ### `cleanup()`
 
-Remove expired entries.
+Remove expired entries and return the count of removed entries.
 
 **Method Signature:**
 
 ```ts
-cleanup(): void
+cleanup(): number
 ```
+
+**Returns:**
+
+- The number of entries removed.
 
 **Examples:**
 
 ```ts
 const removed = cache.cleanup();
+console.log(`Removed ${removed} expired entries`);
 ```
 
 ---
@@ -383,17 +418,22 @@ Get cache statistics.
 **Method Signature:**
 
 ```ts
-stats(): object
+stats(): { size: number; validEntries: number; expiredEntries: number; maxSize?: number }
 ```
 
 **Returns:**
 
-- An object containing cache statistics like hits, misses, size, etc.
+- An object containing:
+  - `size`: Total number of entries in cache (including expired)
+  - `validEntries`: Number of valid (non-expired) entries
+  - `expiredEntries`: Number of expired entries
+  - `maxSize`: Maximum size limit (if configured)
 
 **Examples:**
 
 ```ts
 const stats = cache.stats();
+console.log(`Cache: ${stats.validEntries}/${stats.size} valid, max: ${stats.maxSize}`);
 ```
 
 ---

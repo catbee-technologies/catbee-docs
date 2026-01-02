@@ -1,4 +1,8 @@
-# ID Utilities
+---
+slug: ../id
+---
+
+# ID
 
 A collection of utility functions for generating unique identifiers and random values using cryptographically strong methods. These utilities help you create UUIDs, compact IDs, random strings, and numbers for various application needs.
 
@@ -31,7 +35,7 @@ function uuid(): string;
 **Example:**
 
 ```ts
-import { uuid } from '@catbee/utils';
+import { uuid } from '@catbee/utils/id';
 
 const id = uuid();
 // Result: "c0de1234-5678-9abc-def0-123456789abc"
@@ -46,7 +50,7 @@ Generates a nanoid-style random ID that is URL-safe and has customizable length.
 **Method Signature:**
 
 ```ts
-function nanoId(length?: number): string;
+function nanoId(length = 21): string;
 ```
 
 **Parameters:**
@@ -60,7 +64,7 @@ function nanoId(length?: number): string;
 **Example:**
 
 ```ts
-import { nanoId } from '@catbee/utils';
+import { nanoId } from '@catbee/utils/id';
 
 // Default length (21)
 const id1 = nanoId();
@@ -80,7 +84,7 @@ Generates a cryptographically strong random hexadecimal string.
 **Method Signature:**
 
 ```ts
-function randomHex(byteLength?: number): string;
+function randomHex(byteLength = 16): string;
 ```
 
 **Parameters:**
@@ -94,7 +98,7 @@ function randomHex(byteLength?: number): string;
 **Example:**
 
 ```ts
-import { randomHex } from '@catbee/utils';
+import { randomHex } from '@catbee/utils/id';
 
 // Default length (16 bytes = 32 chars)
 const hex = randomHex();
@@ -129,7 +133,7 @@ function randomInt(min: number, max: number): number;
 **Example:**
 
 ```ts
-import { randomInt } from '@catbee/utils';
+import { randomInt } from '@catbee/utils/id';
 
 // Random number between 1 and 100
 const roll = randomInt(1, 100);
@@ -148,7 +152,7 @@ Generates a cryptographically strong random base64 string (URL-safe, no padding)
 **Method Signature:**
 
 ```ts
-function randomBase64(byteLength?: number): string;
+function randomBase64(byteLength = 16): string;
 ```
 
 **Parameters:**
@@ -162,7 +166,7 @@ function randomBase64(byteLength?: number): string;
 **Example:**
 
 ```ts
-import { randomBase64 } from '@catbee/utils';
+import { randomBase64 } from '@catbee/utils/id';
 
 // Default length (16 bytes)
 const token = randomBase64();

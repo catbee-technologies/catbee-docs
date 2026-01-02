@@ -1,4 +1,8 @@
-# Crypto Utilities
+---
+slug: ../crypto
+---
+
+# Crypto
 
 Secure cryptographic functions for encryption, hashing, and token generation. Includes hashing, HMAC, random string and API key generation, timing-safe comparison, AES encryption/decryption, and JWT-like token creation/verification. All methods are fully typed.
 
@@ -19,6 +23,11 @@ Secure cryptographic functions for encryption, hashing, and token generation. In
 - [**`decrypt(encryptedData: EncryptionResult, key: string | Buffer, options?): Promise<string | Buffer>`**](#decrypt) - Decrypt AES encrypted data.
 - [**`createSignedToken(payload: object, secret: string, expiresInSeconds?: number): string`**](#createsignedtoken) - Create a signed token (JWT-like).
 - [**`verifySignedToken(token: string, secret: string): object | null`**](#verifysignedtoken) - Verify and decode a signed token.
+- [**`pbkdf2Hash(password: string, salt: string | Buffer, keyLength?: number, iterations?: number): Promise<Buffer>`**](#pbkdf2hash) - Derive a cryptographic key using PBKDF2.
+- [**`generateNonce(byteLength?: number, encoding?: BinaryToTextEncoding): string`**](#generatenonce) - Generate a cryptographically secure nonce.
+- [**`secureRandomInt(min: number, max: number): number`**](#securerandomint) - Generate a cryptographically secure random integer in a range.
+- [**`hashPassword(password: string, saltLength?: number, keyLength?: number): Promise<string>`**](#hashpassword) - Hash a password using scrypt.
+- [**`verifyPassword(password: string, hash: string): Promise<boolean>`**](#verifypassword) - Verify a password against a scrypt hash.
 
 ---
 
@@ -28,22 +37,34 @@ Secure cryptographic functions for encryption, hashing, and token generation. In
 type BufferEncoding = 'ascii' | 'utf8' | 'utf-8' | 'utf16le' | 'utf-16le' | 'ucs2' | 'ucs-2' | 'base64' | 'base64url' | 'latin1' | 'binary' | 'hex';
 
 interface EncryptionOptions {
-  algorithm?: string;
+  /** Algorithm to use (default: aes-256-gcm) */
+  algorithm?: CipherGCMTypes;
+  /** Input encoding for plaintext if string (default: utf8) */
   inputEncoding?: BufferEncoding;
-  outputEncoding?: string;
+  /** Output encoding for ciphertext (default: hex) */
+  outputEncoding?: BinaryToTextEncoding;
 }
 
 interface DecryptionOptions {
-  algorithm?: string;
-  inputEncoding?: string;
+  /** Algorithm to use (default: aes-256-gcm) */
+  algorithm?: CipherGCMTypes;
+  /** Input encoding for ciphertext if string (default: hex) */
+  inputEncoding?: BinaryToTextEncoding;
+  /** Output encoding for plaintext (default: utf8) */
   outputEncoding?: BufferEncoding;
 }
 
 interface EncryptionResult {
+  /** Encrypted data (string or Buffer based on options) */
   ciphertext: string | Buffer;
+  /** Initialization vector */
   iv: Buffer;
+  /** Authentication tag (for GCM mode) */
   authTag?: Buffer;
+  /** Algorithm used */
   algorithm: string;
+  /** Salt used for key derivation */
+  salt: Buffer;
 }
 ```
 
@@ -75,7 +96,7 @@ function hmac(algorithm: string, input: string, secret: string, encoding?: Binar
 **Examples:**
 
 ```ts
-import { hmac } from '@catbee/utils';
+import { hmac } from '@catbee/utils/crypto';
 
 hmac('sha256', 'data', 'secret'); // '...'/
 ```
@@ -105,7 +126,7 @@ function hash(algorithm: string, input: string, encoding?: BinaryToTextEncoding)
 **Examples:**
 
 ```ts
-import { hash } from '@catbee/utils';
+import { hash } from '@catbee/utils/crypto';
 
 hash('sha256', 'data'); // '...'
 ```
@@ -134,7 +155,7 @@ function sha256Hmac(input: string, secret: string): string;
 **Examples:**
 
 ```ts
-import { sha256Hmac } from '@catbee/utils';
+import { sha256Hmac } from '@catbee/utils/crypto';
 
 sha256Hmac('data', 'secret'); // '...'
 ```
@@ -163,7 +184,7 @@ function sha1(input: string, encoding?: BinaryToTextEncoding): string;
 **Examples:**
 
 ```ts
-import { sha1 } from '@catbee/utils';
+import { sha1 } from '@catbee/utils/crypto';
 
 sha1('data'); // '...'
 ```
@@ -192,7 +213,7 @@ function sha256(input: string, encoding?: BinaryToTextEncoding): string;
 **Examples:**
 
 ```ts
-import { sha256 } from '@catbee/utils';
+import { sha256 } from '@catbee/utils/crypto';
 
 sha256('data'); // '...'
 ```
@@ -220,7 +241,7 @@ function md5(input: string): string;
 **Examples:**
 
 ```ts
-import { md5 } from '@catbee/utils';
+import { md5 } from '@catbee/utils/crypto';
 
 md5('data'); // '...'
 ```
@@ -244,7 +265,7 @@ function randomString(): string;
 **Examples:**
 
 ```ts
-import { randomString } from '@catbee/utils';
+import { randomString } from '@catbee/utils/crypto';
 
 randomString(); // '...'
 ```
@@ -272,7 +293,7 @@ function generateRandomBytes(byteLength?: number): Buffer;
 **Examples:**
 
 ```ts
-import { generateRandomBytes } from '@catbee/utils';
+import { generateRandomBytes } from '@catbee/utils/crypto';
 
 generateRandomBytes(16); // <Buffer ...>
 ```
@@ -301,7 +322,7 @@ function generateRandomBytesAsString(byteLength?: number, encoding?: BinaryToTex
 **Examples:**
 
 ```ts
-import { generateRandomBytesAsString } from '@catbee/utils';
+import { generateRandomBytesAsString } from '@catbee/utils/crypto';
 
 generateRandomBytesAsString(16, 'hex'); // '...'
 ```
@@ -321,18 +342,19 @@ function generateApiKey(prefix?: string, byteLength?: number): string;
 **Parameters:**
 
 - `prefix`: An optional prefix for the API key.
-- `byteLength`: The number of random bytes to generate. Default is 32.
+- `byteLength`: The number of random bytes to generate. Default is 24.
 
 **Returns:**
 
-- A string containing the generated API key.
+- A string containing the generated API key (limited to 32 characters after prefix).
 
 **Examples:**
 
 ```ts
-import { generateApiKey } from '@catbee/utils';
+import { generateApiKey } from '@catbee/utils/crypto';
 
-generateApiKey('catbee_', 32); // 'catbee_...'
+generateApiKey('catbee_', 24); // 'catbee_...'
+generateApiKey(); // Returns 32-character key without prefix
 ```
 
 ---
@@ -356,12 +378,18 @@ function safeCompare(a: string | Buffer | Uint8Array, b: string | Buffer | Uint8
 
 - `true` if the inputs are equal, otherwise `false`.
 
+**Throws:**
+
+- `Error` if inputs are not strings, Buffers, or Uint8Arrays.
+
 **Examples:**
 
 ```ts
-import { safeCompare } from '@catbee/utils';
+import { safeCompare } from '@catbee/utils/crypto';
 
 safeCompare('abc', 'abc'); // true
+safeCompare('abc', 'def'); // false
+safeCompare(Buffer.from('abc'), Buffer.from('abc')); // true
 ```
 
 ---
@@ -387,14 +415,15 @@ function encrypt(data: string | Buffer, key: string | Buffer, options?: Encrypti
 
 **Returns:**
 
-- A Promise that resolves to the encryption result.
+- A Promise that resolves to the encryption result (includes ciphertext, iv, authTag, algorithm, and salt).
 
 **Examples:**
 
 ```ts
-import { encrypt, EncryptionResult } from '@catbee/utils';
+import { encrypt, EncryptionResult } from '@catbee/utils/crypto';
 
 const encrypted = await encrypt('secret', 'password');
+// encrypted contains: { ciphertext, iv, authTag, algorithm, salt }
 ```
 
 ---
@@ -425,7 +454,7 @@ function decrypt(encryptedData: EncryptionResult, key: string | Buffer, options?
 **Examples:**
 
 ```ts
-import { decrypt, EncryptionResult } from '@catbee/utils';
+import { decrypt, EncryptionResult } from '@catbee/utils/crypto';
 
 const decrypted = await decrypt(encrypted, 'password');
 ```
@@ -446,7 +475,7 @@ function createSignedToken(payload: object, secret: string, expiresInSeconds?: n
 
 - `payload`: The payload to include in the token.
 - `secret`: The secret key to sign the token.
-- `expiresInSeconds`: Optional expiration time in seconds.
+- `expiresInSeconds`: Optional expiration time in seconds (default: 3600).
 
 **Returns:**
 
@@ -455,9 +484,10 @@ function createSignedToken(payload: object, secret: string, expiresInSeconds?: n
 **Examples:**
 
 ```ts
-import { createSignedToken } from '@catbee/utils';
+import { createSignedToken } from '@catbee/utils/crypto';
 
 const token = createSignedToken({ userId: 1 }, 'secret', 3600);
+const defaultToken = createSignedToken({ userId: 1 }, 'secret'); // Expires in 1 hour
 ```
 
 ---
@@ -484,7 +514,174 @@ function verifySignedToken(token: string, secret: string): object | null;
 **Examples:**
 
 ```ts
-import { verifySignedToken } from '@catbee/utils';
+import { verifySignedToken } from '@catbee/utils/crypto';
 
 const payload = verifySignedToken(token, 'secret');
+if (payload) {
+  console.log('Valid token:', payload);
+} else {
+  console.log('Invalid or expired token');
+}
+```
+
+---
+
+### `pbkdf2Hash()`
+
+Derive a cryptographic key using PBKDF2 (Password-Based Key Derivation Function 2) with SHA-256.
+
+**Method Signature:**
+
+```ts
+async function pbkdf2Hash(password: string, salt: string | Buffer, keyLength?: number, iterations?: number): Promise<Buffer>;
+```
+
+**Parameters:**
+
+- `password`: Password to derive key from.
+- `salt`: Cryptographic salt (use unique per password).
+- `keyLength`: Output key length in bytes (default: 32).
+- `iterations`: Number of hashing iterations (default: 310000, OWASP recommended).
+
+**Returns:**
+
+- A Promise that resolves to the derived key as a Buffer.
+
+**Examples:**
+
+```ts
+import { pbkdf2Hash } from '@catbee/utils/crypto';
+
+const key = await pbkdf2Hash('myPassword', 'mySalt');
+const customKey = await pbkdf2Hash('myPassword', 'mySalt', 64, 500000); // 64-byte key, 500k iterations
+```
+
+---
+
+### `generateNonce()`
+
+Generate a cryptographically secure nonce (number used once).
+
+**Method Signature:**
+
+```ts
+function generateNonce(byteLength?: number, encoding?: BinaryToTextEncoding): string;
+```
+
+**Parameters:**
+
+- `byteLength`: Length of nonce in bytes (default: 16).
+- `encoding`: Output encoding (default: 'hex').
+
+**Returns:**
+
+- A nonce string in the specified encoding.
+
+**Examples:**
+
+```ts
+import { generateNonce } from '@catbee/utils/crypto';
+
+const nonce = generateNonce(); // 16-byte hex nonce
+const b64Nonce = generateNonce(16, 'base64'); // Base64-encoded nonce
+```
+
+---
+
+### `secureRandomInt()`
+
+Generate a cryptographically secure random integer in a specified range.
+
+**Method Signature:**
+
+```ts
+function secureRandomInt(min: number, max: number): number;
+```
+
+**Parameters:**
+
+- `min`: Minimum value (inclusive).
+- `max`: Maximum value (inclusive).
+
+**Returns:**
+
+- A random integer between min and max (inclusive).
+
+**Throws:**
+
+- `Error` if min is greater than max.
+
+**Examples:**
+
+```ts
+import { secureRandomInt } from '@catbee/utils/crypto';
+
+const random = secureRandomInt(1, 100); // Random number 1-100
+const diceRoll = secureRandomInt(1, 6); // Random dice roll
+```
+
+---
+
+### `hashPassword()`
+
+Hash a password using scrypt (memory-hard function).
+
+**Method Signature:**
+
+```ts
+async function hashPassword(password: string, saltLength?: number, keyLength?: number): Promise<string>;
+```
+
+**Parameters:**
+
+- `password`: The password to hash.
+- `saltLength`: Length of salt in bytes (default: 16).
+- `keyLength`: Length of derived key in bytes (default: 32).
+
+**Returns:**
+
+- A Promise that resolves to a hash string in the format `salt:hash` (both base64-encoded).
+
+**Examples:**
+
+```ts
+import { hashPassword } from '@catbee/utils/crypto';
+
+const hash = await hashPassword('myPassword');
+// Store hash in database
+await db.users.update({ id: userId }, { passwordHash: hash });
+```
+
+---
+
+### `verifyPassword()`
+
+Verify a password against a scrypt hash.
+
+**Method Signature:**
+
+```ts
+async function verifyPassword(password: string, hash: string): Promise<boolean>;
+```
+
+**Parameters:**
+
+- `password`: The password to verify.
+- `hash`: The hash to verify against (from `hashPassword()`).
+
+**Returns:**
+
+- A Promise that resolves to `true` if the password matches, otherwise `false`.
+
+**Examples:**
+
+```ts
+import { verifyPassword } from '@catbee/utils/crypto';
+
+const isValid = await verifyPassword('myPassword', storedHash);
+if (isValid) {
+  console.log('Password is correct');
+} else {
+  console.log('Invalid password');
+}
 ```

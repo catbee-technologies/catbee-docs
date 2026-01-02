@@ -1,4 +1,8 @@
-# Environment Utilities
+---
+slug: ../env
+---
+
+# Environment
 
 Type-safe environment variable management for Node.js applications.
 
@@ -28,14 +32,14 @@ Provides a single `Env` class with static methods for reading, validating, and t
   - [**`get(key: string, defaultValue: string): string`**](#get) - Gets a string environment variable, with variable expansion and fallback.
   - [**`getRequired(key: string): string`**](#getrequired) - Gets a required string environment variable, throws if missing.
   - [**`getOrFail(key: string): string`**](#getorfail) - Alias for `getRequired`.
-  - [**`getNumber(key: string, defaultValue: number, options?: { min?: number; max?: number }): number`**](#getnumber) - Gets a number environment variable, throws if not a valid number.
+  - [**`getNumber(key: string, defaultValue: number): number`**](#getnumber) - Gets a number environment variable, throws if not a valid number.
   - [**`getNumberRequired(key: string): number`**](#getnumberrequired) - Gets a required number environment variable, throws if missing or invalid.
   - [**`getInteger(key: string, defaultValue: number, options?: { min?: number; max?: number }): number`**](#getinteger) - Gets an integer environment variable, with optional min/max validation.
-  - [**`getBoolean(key: string, defaultValue?: boolean): boolean`**](#getboolean) - Gets a boolean environment variable. Accepts `true`, `1`, `yes`, `on` as true; `false`, `0`, `no`, `off` as false.
+  - [**`getBoolean(key: string, defaultValue = false): boolean`**](#getboolean) - Gets a boolean environment variable. Accepts `true`, `1`, `yes`, `on` as true; `false`, `0`, `no`, `off` as false.
   - [**`getBooleanRequired(key: string): boolean`**](#getbooleanrequired) - Gets a required boolean environment variable, throws if missing or invalid.
-  - [**`getJSON<T>(key: string, defaultValue: T): T`**](#getjson) - Parses a JSON object from an environment variable.
-  - [**`getArray<T>(key: string, defaultValue?: T[], splitter?: string, transform?: (item: string) => T): T[]`**](#getarray) - Parses a delimited string as an array, with optional transformation.
-  - [**`getNumberArray(key: string, defaultValue?: number[], splitter?: string): number[]`**](#getnumberarray) - Parses a delimited string as an array of numbers.
+  - [**`getJSON<T extends object = object>(key: string, defaultValue: T): T`**](#getjson) - Parses a JSON object from an environment variable.
+  - [**`getArray<T = string>(key: string, defaultValue = [], splitter = ',', transform?: (item: string) => T): T[]`**](#getarray) - Parses a delimited string as an array, with optional transformation.
+  - [**`getNumberArray(key: string, defaultValue = [], splitter = ','): number[]`**](#getnumberarray) - Parses a delimited string as an array of numbers.
   - [**`getEnum<T extends string>(key: string, defaultValue: T, allowedValues: readonly T[]): T`**](#getenum) - Gets an enum environment variable, throws if not a valid value.
   - [**`getNumberEnum(key: string, defaultValue: number, allowedValues: number[]): number`**](#getnumberenum) - Gets a number enum environment variable, throws if not a valid value.
   - [**`getUrl(key: string, defaultValue: string, options?: UrlOptions): string`**](#geturl) - Gets a URL environment variable, with optional validation.
@@ -43,10 +47,10 @@ Provides a single `Env` class with static methods for reading, validating, and t
   - [**`getPath(key: string, defaultValue: string, options?: PathOptions): string`**](#getpath) - Gets a path environment variable, with optional validation.
   - [**`getPort(key: string, defaultValue: number): number`**](#getport) - Gets and validates a port number (0-65535).
   - [**`getDate(key: string, defaultValue?: string | Date): Date`**](#getdate) - Gets a date environment variable as a `Date` object.
-  - [**`getDuration(key: string, defaultValue?: string | number): number`**](#getduration) - Parses a duration string (e.g., `1h30m`) as milliseconds.
-  - [**`getSafeEnv(sensitiveKeys?: string[]): Record<string, string>`**](#getsafeenv) - Returns all environment variables with sensitive values masked.
+  - [**`getDuration(key: string, defaultValue = '0'): number`**](#getduration) - Parses a duration string (e.g., `1h30m`) as milliseconds.
+  - [**`getSafeEnv(sensitiveKeys = ['password', 'secret', 'key', 'token', 'auth']): Record<string, string>`**](#getsafeenv) - Returns all environment variables with sensitive values masked.
   - [**`getWithDefault(key: string, defaultFn: () => string): string`**](#getwithdefault) - Gets a value, or generates a default using a function.
-  - [**`loadFromFile(path: string): Record<string, string>`**](#loadfromfile) - Loads environment variables from a `.env` file (does not overwrite existing).
+  - [**`loadFromFile(path = '.env'): Record<string, string>`**](#loadfromfile) - Loads environment variables from a `.env` file (does not overwrite existing).
   - [**`has(key: string): boolean`**](#has) - Checks if an environment variable exists.
   - [**`delete(key: string): void`**](#delete) - Deletes an environment variable (useful for tests).
   - [**`clearCache(): void`**](#clearcache) - Clears the internal cache of parsed values.
@@ -102,7 +106,7 @@ interface PathOptions {
 ### `Env` class
 
 ```ts
-import { Env } from '@catbee/utils';
+import { Env } from '@catbee/utils/env';
 ```
 
 ### `isDev()`
@@ -157,7 +161,7 @@ set(key: string, value: string): void
 **Examples:**
 
 ```ts
-import { Env } from '@catbee/utils';
+import { Env } from '@catbee/utils/env';
 
 Env.set('FOO', 'bar');
 ```
@@ -181,7 +185,7 @@ getAll(): Record<string, string>
 **Examples:**
 
 ```ts
-import { Env } from '@catbee/utils';
+import { Env } from '@catbee/utils/env';
 
 const allEnv = Env.getAll(); // { NODE_ENV: 'development', FOO: 'bar', ... }
 ```
@@ -210,7 +214,7 @@ get(key: string, defaultValue: string): string
 **Examples:**
 
 ```ts
-import { Env } from '@catbee/utils';
+import { Env } from '@catbee/utils/env';
 
 Env.get('FOO', 'default'); // 'bar' if set, otherwise 'default'
 Env.get('DATABASE_URL', 'postgres://${DB_HOST}/db'); // expands ${DB_HOST}
@@ -243,7 +247,7 @@ getRequired(key: string): string
 **Examples:**
 
 ```ts
-import { Env } from '@catbee/utils';
+import { Env } from '@catbee/utils/env';
 
 Env.getRequired('API_KEY'); // throws if not set
 ```
@@ -275,7 +279,7 @@ getOrFail(key: string): string
 **Examples:**
 
 ```ts
-import { Env } from '@catbee/utils';
+import { Env } from '@catbee/utils/env';
 
 Env.getOrFail('SECRET'); // throws if not set
 ```
@@ -289,16 +293,13 @@ Gets a number environment variable, throws if not a valid number.
 **Method Signature:**
 
 ```ts
-getNumber(key: string, defaultValue: number, options: { min?: number; max?: number } = {}): number
+getNumber(key: string, defaultValue: number): number
 ```
 
 **Parameters:**
 
 - `key`: The name of the environment variable to get.
 - `defaultValue`: The value to return if the environment variable is not set.
-- `options`: Optional min/max validation.
-  - `min`: Minimum allowed value.
-  - `max`: Maximum allowed value.
 
 **Returns:**
 
@@ -312,10 +313,9 @@ getNumber(key: string, defaultValue: number, options: { min?: number; max?: numb
 **Examples:**
 
 ```ts
-import { Env } from '@catbee/utils';
+import { Env } from '@catbee/utils/env';
 
 Env.getNumber('PORT', 3000); // 3000 if not set, otherwise parsed value
-Env.getNumber('TIMEOUT', 5000, { min: 1000, max: 10000 }); // throws if out of range
 ```
 
 ---
@@ -345,7 +345,7 @@ getNumberRequired(key: string): number
 **Examples:**
 
 ```ts
-import { Env } from '@catbee/utils';
+import { Env } from '@catbee/utils/env';
 
 Env.getNumberRequired('TIMEOUT'); // throws if not set or not a number
 ```
@@ -382,7 +382,7 @@ getInteger(key: string, defaultValue: number, options: { min?: number; max?: num
 **Examples:**
 
 ```ts
-import { Env } from '@catbee/utils';
+import { Env } from '@catbee/utils/env';
 
 Env.getInteger('PORT', 8080, { min: 1024, max: 65535 }); // throws if not integer or out of range
 ```
@@ -396,13 +396,13 @@ Gets a boolean environment variable. Accepts `true`, `1`, `yes`, `on` as true; `
 **Method Signature:**
 
 ```ts
-getBoolean(key: string, defaultValue?: boolean): boolean
+getBoolean(key: string, defaultValue = false): boolean
 ```
 
 **Parameters:**
 
 - `key`: The name of the environment variable to get.
-- `defaultValue`: The value to return if the environment variable is not set.
+- `defaultValue`: The value to return if the environment variable is not set (default: false).
 
 **Returns:**
 
@@ -415,7 +415,7 @@ getBoolean(key: string, defaultValue?: boolean): boolean
 **Examples:**
 
 ```ts
-import { Env } from '@catbee/utils';
+import { Env } from '@catbee/utils/env';
 
 Env.getBoolean('DEBUG', false); // true if DEBUG=yes, otherwise false
 ```
@@ -447,7 +447,7 @@ getBooleanRequired(key: string): boolean
 **Examples:**
 
 ```ts
-import { Env } from '@catbee/utils';
+import { Env } from '@catbee/utils/env';
 
 Env.getBooleanRequired('FEATURE_ENABLED'); // throws if not set or invalid
 ```
@@ -461,7 +461,7 @@ Parses a JSON object from an environment variable.
 **Method Signature:**
 
 ```ts
-getJSON<T>(key: string, defaultValue: T): T
+getJSON<T extends object = object>(key: string, defaultValue: T): T
 ```
 
 **Parameters:**
@@ -480,7 +480,7 @@ getJSON<T>(key: string, defaultValue: T): T
 **Examples:**
 
 ```ts
-import { Env } from '@catbee/utils';
+import { Env } from '@catbee/utils/env';
 
 Env.getJSON('CONFIG', { debug: false }); // parses JSON string or returns default
 ```
@@ -494,14 +494,14 @@ Parses a delimited string as an array, with optional transformation.
 **Method Signature:**
 
 ```ts
-getArray<T>(key: string, defaultValue?: T[], splitter: string = ',', transform?: (item: string) => T): T[]
+getArray<T = string>(key: string, defaultValue = [], splitter = ',', transform?: (item: string) => T): T[]
 ```
 
 **Parameters:**
 
 - `key`: The name of the environment variable to get.
-- `defaultValue`: The value to return if the environment variable is not set.
-- `splitter`: The string used to split the environment variable value into an array.
+- `defaultValue`: The value to return if the environment variable is not set (default: []).
+- `splitter`: The string used to split the environment variable value into an array (default: ',').
 - `transform`: An optional function to transform each item in the array.
 
 **Returns:**
@@ -515,7 +515,7 @@ getArray<T>(key: string, defaultValue?: T[], splitter: string = ',', transform?:
 **Examples:**
 
 ```ts
-import { Env } from '@catbee/utils';
+import { Env } from '@catbee/utils/env';
 
 Env.getArray('ALLOWED_IPS'); // ['127.0.0.1', '192.168.1.1']
 Env.getArray('PORTS', [], ',', p => parseInt(p, 10)); // [3000, 8080]
@@ -530,14 +530,14 @@ Parses a delimited string as an array of numbers.
 **Method Signature:**
 
 ```ts
-getNumberArray(key: string, defaultValue?: number[], splitter: string = ','): number[]
+getNumberArray(key: string, defaultValue = [], splitter = ','): number[]
 ```
 
 **Parameters:**
 
 - `key`: The name of the environment variable to get.
-- `defaultValue`: The value to return if the environment variable is not set.
-- `splitter`: The string used to split the environment variable value into an array.
+- `defaultValue`: The value to return if the environment variable is not set (default: []).
+- `splitter`: The string used to split the environment variable value into an array (default: ',').
 
 **Returns:**
 
@@ -550,7 +550,7 @@ getNumberArray(key: string, defaultValue?: number[], splitter: string = ','): nu
 **Examples:**
 
 ```ts
-import { Env } from '@catbee/utils';
+import { Env } from '@catbee/utils/env';
 
 Env.getNumberArray('ALLOWED_PORTS'); // [80, 443, 3000]
 ```
@@ -584,7 +584,7 @@ getEnum<T extends string>(key: string, defaultValue: T, allowedValues: readonly 
 **Examples:**
 
 ```ts
-import { Env } from '@catbee/utils';
+import { Env } from '@catbee/utils/env';
 
 Env.getEnum('LOG_LEVEL', 'info', ['debug', 'info', 'warn', 'error'] as const);
 ```
@@ -618,7 +618,7 @@ getNumberEnum(key: string, defaultValue: number, allowedValues: number[]): numbe
 **Examples:**
 
 ```ts
-import { Env } from '@catbee/utils';
+import { Env } from '@catbee/utils/env';
 
 Env.getNumberEnum('NODE_VERSION', 16, [14, 16, 18]);
 ```
@@ -656,7 +656,7 @@ getUrl(key: string, defaultValue: string, options?: UrlOptions): string
 **Examples:**
 
 ```ts
-import { Env } from '@catbee/utils';
+import { Env } from '@catbee/utils/env';
 
 Env.getUrl('API_URL', 'https://api.example.com', {
   protocols: ['https'],
@@ -693,7 +693,7 @@ getEmail(key: string, defaultValue: string): string
 **Examples:**
 
 ```ts
-import { Env } from '@catbee/utils';
+import { Env } from '@catbee/utils/env';
 
 Env.getEmail('SUPPORT_EMAIL', 'support@example.com'); // throws if invalid
 ```
@@ -730,7 +730,7 @@ getPath(key: string, defaultValue: string, options?: PathOptions): string
 **Examples:**
 
 ```ts
-import { Env } from '@catbee/utils';
+import { Env } from '@catbee/utils/env';
 
 Env.getPath('CONFIG_PATH', './config.json', {
   mustExist: true,
@@ -766,7 +766,7 @@ getPort(key: string, defaultValue: number): number
 **Examples:**
 
 ```ts
-import { Env } from '@catbee/utils';
+import { Env } from '@catbee/utils/env';
 
 Env.getPort('PORT', 3000); // throws if out of range
 ```
@@ -780,13 +780,13 @@ Gets a date environment variable as a `Date` object.
 **Method Signature:**
 
 ```ts
-getDate(key: string, defaultValue?: string | Date): Date
+getDate(key: string, defaultValue: string | Date = new Date()): Date
 ```
 
 **Parameters:**
 
 - `key`: The name of the environment variable to get.
-- `defaultValue`: The default value to return if the environment variable is not set or invalid.
+- `defaultValue`: The default value to return if the environment variable is not set or invalid (default: new Date()).
 
 **Returns:**
 
@@ -799,7 +799,7 @@ getDate(key: string, defaultValue?: string | Date): Date
 **Examples:**
 
 ```ts
-import { Env } from '@catbee/utils';
+import { Env } from '@catbee/utils/env';
 
 Env.getDate('EXPIRY_DATE', new Date()); // parses ISO string or returns default
 ```
@@ -832,7 +832,7 @@ getDuration(key: string, defaultValue?: string | number): number
 **Examples:**
 
 ```ts
-import { Env } from '@catbee/utils';
+import { Env } from '@catbee/utils/env';
 
 Env.getDuration('CACHE_TTL', '2h30m'); // 9000000
 ```
@@ -846,12 +846,12 @@ Returns all environment variables with sensitive values masked.
 **Method Signature:**
 
 ```ts
-getSafeEnv(sensitiveKeys?: string[]): Record<string, string>
+getSafeEnv(sensitiveKeys: string[] = ['password', 'secret', 'key', 'token', 'auth']): Record<string, string>
 ```
 
 **Parameters:**
 
-- `sensitiveKeys`: Optional list of keys to mask (default: `['password', 'secret', 'key']`).
+- `sensitiveKeys`: Optional list of keys to mask (default: `['password', 'secret', 'key', 'token', 'auth']`).
 
 **Returns:**
 
@@ -860,7 +860,7 @@ getSafeEnv(sensitiveKeys?: string[]): Record<string, string>
 **Examples:**
 
 ```ts
-import { Env } from '@catbee/utils';
+import { Env } from '@catbee/utils/env';
 
 Env.getSafeEnv(['password', 'secret', 'key']); // { NODE_ENV: 'development', API_KEY: '******', ... }
 ```
@@ -889,7 +889,7 @@ getWithDefault(key: string, defaultFn: () => string): string
 **Examples:**
 
 ```ts
-import { Env } from '@catbee/utils';
+import { Env } from '@catbee/utils/env';
 
 Env.getWithDefault('HOSTNAME', () => require('os').hostname());
 ```
@@ -903,12 +903,12 @@ Loads environment variables from a `.env` file (does not overwrite existing).
 **Method Signature:**
 
 ```ts
-loadFromFile(path: string): Record<string, string>
+loadFromFile(path: string = '.env'): Record<string, string>
 ```
 
 **Parameters:**
 
-- `path`: The path to the `.env` file to load.
+- `path`: Path to the .env file (default: '.env').
 
 **Returns:**
 
@@ -917,7 +917,7 @@ loadFromFile(path: string): Record<string, string>
 **Examples:**
 
 ```ts
-import { Env } from '@catbee/utils';
+import { Env } from '@catbee/utils/env';
 
 Env.loadFromFile('.env.development');
 ```
@@ -945,7 +945,7 @@ has(key: string): boolean
 **Examples:**
 
 ```ts
-import { Env } from '@catbee/utils';
+import { Env } from '@catbee/utils/env';
 
 Env.has('API_KEY'); // true or false
 ```
@@ -969,7 +969,7 @@ delete(key: string): void
 **Examples:**
 
 ```ts
-import { Env } from '@catbee/utils';
+import { Env } from '@catbee/utils/env';
 
 Env.delete('FOO');
 ```
@@ -989,7 +989,7 @@ clearCache(): void
 **Examples:**
 
 ```ts
-import { Env } from '@catbee/utils';
+import { Env } from '@catbee/utils/env';
 
 Env.clearCache();
 ```

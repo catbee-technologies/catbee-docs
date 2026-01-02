@@ -1,29 +1,34 @@
-# Logger Utilities
+---
+slug: ../logger
+---
+
+# Logger
 
 Structured logging with Pino. This module provides a robust logging system with features like hierarchical loggers, request-scoped logging, error handling, and sensitive data redaction.
 
 ## API Summary
 
-- [**`getLogger(newInstance?: boolean): Logger`**](#getlogger) - Retrieves the current logger instance from the request context or falls back to the global logger.
+- [**`getLogger(newInstance = false): Logger`**](#getlogger) - Retrieves the current logger instance from the request context or falls back to the global logger.
 - [**`createChildLogger(bindings: Record<string, any>, parentLogger?: Logger): Logger`**](#createchildlogger) - Creates a child logger with additional context that will be included in all log entries.
-- [**`createRequestLogger(requestId: string, additionalContext?: Record<string, any>): Logger`**](#createrequestlogger) - Creates a request-scoped logger with request ID and stores it in the async context.
-- [**`logError(error: Error | unknown, message?: string, context?: Record<string, any>): void`**](#logerror) - Utility to safely log errors with proper stack trace extraction
+- [**`createRequestLogger(requestId: string, additionalContext = {}): Logger`**](#createrequestlogger) - Creates a request-scoped logger with request ID and stores it in the async context.
+- [**`logError(error: Error | string, message?: string, context?: Record<string, any>): void`**](#logerror) - Utility to safely log errors with proper stack trace extraction
 - [**`resetLogger(): void`**](#resetlogger) - Resets the global logger to its default configuration.
 - [**`getRedactCensor(): (key: string) => boolean`**](#getredactcensor) - Gets the current global redaction censor function used for log redaction.
 - [**`setRedactCensor(censor: (key: string) => boolean): void`**](#setredactcensor) - Sets the global redaction censor function used throughout the application for log redaction.
-- [**`addRedactFields(fields: string | string[]): void`**](#addredactfields) - Extends the current redaction function with additional fields to redact.
+- [**`addRedactFields(fields: string[]): void`**](#addredactfields) - **Deprecated:** Use `addSensitiveFields` instead. Extends the current redaction function with additional fields to redact.
 - [**`setSensitiveFields(fields: string[]): void`**](#setsensitivefields) - Replaces the default list of sensitive fields with a new list.
-- [**`addSensitiveFields(fields: string | string[]): void`**](#addsensitivefields) - Adds additional field names to the default sensitive fields list.
+- [**`addSensitiveFields(fields: string[]): void`**](#addsensitivefields) - Adds additional field names to the default sensitive fields list.
 
 ## Environment Variables
 
-| Environment Variable        | Default Value                  | Description                              |
-| --------------------------- | ------------------------------ | ---------------------------------------- |
-| `LOGGER_LEVEL`              | `info`                         | Log level for the application            |
-| `LOGGER_NAME`               | `process.env.npm_package_name` | Name of the logger                       |
-| `LOGGER_PRETTY`             | `true`                         | Enable pretty logging                    |
-| `LOGGER_PRETTY_COLORIZE`    | `true`                         | Enable colorized output for pretty-print |
-| `LOGGER_PRETTY_SINGLE_LINE` | `false`                        | Enable single-line logging               |
+| Environment Variable        | Type      | Default/Value                         | Description                                                        |
+| --------------------------- | --------- | ------------------------------------- | ------------------------------------------------------------------ |
+| `LOGGER_LEVEL`              | `string`  | `debug` in dev/test, otherwise `info` | Logging level (`fatal`, `error`, `warn`, `info`, `debug`, `trace`) |
+| `LOGGER_NAME`               | `string`  | `@catbee/utils`                       | Logger instance name                                               |
+| `LOGGER_PRETTY`             | `boolean` | `false`                               | Enable pretty-print logging                                        |
+| `LOGGER_PRETTY_COLORIZE`    | `boolean` | `true`                                | Enable colorized output for pretty-print                           |
+| `LOGGER_PRETTY_SINGLE_LINE` | `boolean` | `false`                               | Single-line output for pretty-print                                |
+| `LOGGER_DIR`                | `string`  | `''` (empty)                          | Directory to write log files (empty = disabled)                    |
 
 ## Interfaces & Types
 
@@ -38,7 +43,7 @@ export type LoggerLevels = pino.Level; // 'fatal' | 'error' | 'warn' | 'info' | 
 ## Example Usage
 
 ```ts
-import { getLogger } from '@catbee/utils';
+import { getLogger } from '@catbee/utils/logger';
 
 const logger = getLogger();
 
@@ -63,7 +68,7 @@ Retrieves the current logger instance from the request context or falls back to 
 **Method Signature:**
 
 ```ts
-function getLogger(newInstance?: boolean): Logger;
+function getLogger(newInstance = false): Logger;
 ```
 
 **Parameters:**
@@ -77,7 +82,7 @@ function getLogger(newInstance?: boolean): Logger;
 **Example:**
 
 ```ts
-import { getLogger } from '@catbee/utils';
+import { getLogger } from '@catbee/utils/logger';
 
 // Get current logger (request-scoped if in request context, or global)
 const logger = getLogger();
@@ -113,7 +118,7 @@ function createChildLogger(bindings: Record<string, any>, parentLogger?: Logger)
 **Example:**
 
 ```ts
-import { getLogger, createChildLogger } from '@catbee/utils';
+import { getLogger, createChildLogger } from '@catbee/utils/logger';
 
 // Create a module-specific logger
 const moduleLogger = createChildLogger({ module: 'payments' });
@@ -138,13 +143,13 @@ Creates a request-scoped logger with request ID and stores it in the async conte
 **Method Signature:**
 
 ```ts
-function createRequestLogger(requestId: string, additionalContext?: Record<string, any>): Logger;
+function createRequestLogger(requestId: string, additionalContext: Record<string, any> = {}): Logger;
 ```
 
 **Parameters:**
 
 - `requestId`: Unique identifier for the request (e.g., UUID).
-- `additionalContext` (optional): Additional key-value pairs to include in all log entries for this request.
+- `additionalContext` (optional): Additional key-value pairs to include in all log entries for this request (default: {}).
 
 **Returns:**
 
@@ -153,7 +158,7 @@ function createRequestLogger(requestId: string, additionalContext?: Record<strin
 **Example:**
 
 ```ts
-import { createRequestLogger, uuid } from '@catbee/utils';
+import { createRequestLogger, uuid } from '@catbee/utils/logger';
 
 // In an API request handler:
 function handleRequest(req, res) {
@@ -180,19 +185,19 @@ Utility to safely log errors with proper stack trace extraction.
 **Method Signature:**
 
 ```ts
-function logError(error: Error | unknown, message?: string, context?: Record<string, any>): void;
+function logError(error: Error | string, message?: string, context?: Record<string, any>): void;
 ```
 
 **Parameters:**
 
-- `error`: The error object or any value to log as an error.
+- `error`: The error object or string to log as an error.
 - `message` (optional): Additional message to log alongside the error.
 - `context` (optional): Additional context to include in the log entry.
 
 **Example:**
 
 ```ts
-import { logError } from '@catbee/utils';
+import { logError } from '@catbee/utils/logger';
 
 try {
   throw new Error('Something went wrong');
@@ -200,7 +205,7 @@ try {
   logError(error, 'Failed during processing', { operation: 'dataSync' });
 }
 
-// Works with any error type
+// Works with string errors too
 logError('Invalid input', 'Validation error');
 ```
 
@@ -219,7 +224,7 @@ function resetLogger(): void;
 **Example:**
 
 ```ts
-import { resetLogger } from '@catbee/utils';
+import { resetLogger } from '@catbee/utils/logger';
 
 // After modifying logger configuration for tests
 afterEach(() => {
@@ -248,7 +253,7 @@ function getRedactCensor(): (value: unknown, path: string[], sensitiveFields?: s
 **Example:**
 
 ```ts
-import { getRedactCensor } from '@catbee/utils';
+import { getRedactCensor } from '@catbee/utils/logger';
 
 const currentCensor = getRedactCensor();
 // Use current censor in custom logic
@@ -276,7 +281,7 @@ function setRedactCensor(fn: (value: unknown, path: string[], sensitiveFields?: 
 **Example:**
 
 ```ts
-import { setRedactCensor } from '@catbee/utils';
+import { setRedactCensor } from '@catbee/utils/logger';
 
 // Custom censor that redacts only specific values
 setRedactCensor((value, path, sensitiveFields) => {
@@ -289,6 +294,10 @@ setRedactCensor((value, path, sensitiveFields) => {
 ---
 
 ### `addRedactFields()`
+
+:::warning Deprecated
+This function is deprecated. Use [`addSensitiveFields()`](#addsensitivefields) instead.
+:::
 
 Extends the current redaction function with additional fields to redact.
 
@@ -305,7 +314,7 @@ function addRedactFields(fields: string[]): void;
 **Example:**
 
 ```ts
-import { addRedactFields } from '@catbee/utils';
+import { addRedactFields } from '@catbee/utils/logger';
 
 // Add custom fields to be redacted in all logs
 addRedactFields(['customerId', 'accountNumber', 'ssn']);
@@ -330,7 +339,7 @@ function setSensitiveFields(fields: string[]): void;
 **Example:**
 
 ```ts
-import { setSensitiveFields } from '@catbee/utils';
+import { setSensitiveFields } from '@catbee/utils/logger';
 
 // Replace default sensitive fields with a custom list
 setSensitiveFields(['password', 'ssn', 'creditCard']);
@@ -355,7 +364,7 @@ function addSensitiveFields(fields: string[]): void;
 **Example:**
 
 ```ts
-import { addSensitiveFields } from '@catbee/utils';
+import { addSensitiveFields } from '@catbee/utils/logger';
 
 // Add domain-specific sensitive fields to the default list
 addSensitiveFields(['socialSecurityNumber', 'medicalRecordNumber']);

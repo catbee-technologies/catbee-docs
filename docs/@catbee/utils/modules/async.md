@@ -1,4 +1,8 @@
-# Async Utilities
+---
+slug: ../async
+---
+
+# Async
 
 Functions for handling asynchronous operations with better control flow and error handling. Includes helpers for sleep, debounce, throttle, retry, batching, concurrency, memoization, aborting, deferred promises, waterfall, rate limiting, circuit breaker, and more. All methods are fully typed.
 
@@ -21,6 +25,8 @@ Functions for handling asynchronous operations with better control flow and erro
 - [**`rateLimit<T>(fn: (...args: any[]) => Promise<T>, maxCalls: number, interval: number): (...args: any[]) => Promise<T>`**](#ratelimit) - Limits the rate of async function calls.
 - [**`circuitBreaker<T>(fn: (...args: any[]) => Promise<T>, options?: CircuitBreakerOptions): (...args: any[]) => Promise<T>`**](#circuitbreaker) - Protects against cascading failures with a circuit breaker.
 - [**`runWithConcurrency<T>(tasks: (() => Promise<T>)[], options: { concurrency?: number; onProgress?: (completed: number, total: number) => void, signal?: AbortSignal }): Promise<T[]>`**](#runwithconcurrency) - Runs async tasks with concurrency and progress control.
+- [**`optionalRequire<T>(name: string): T | null`**](#optionalrequire) - Optionally requires a module, returning null if not found.
+- [**`raceWithValue<T>(promises: Promise<T>[]): Promise<{ value: T; index: number }>`**](#racewithvalue) - Races promises and returns the first fulfilled value with its index.
 
 ---
 
@@ -36,11 +42,17 @@ interface TaskQueue {
 }
 
 interface CircuitBreakerOptions {
+  /** Number of consecutive failures before opening circuit (default: 5) */
   failureThreshold?: number;
+  /** Time in milliseconds to wait before trying again (default: 10000) */
   resetTimeout?: number;
+  /** Number of successful calls to close the circuit again (default: 1) */
   successThreshold?: number;
+  /** Callback when circuit opens */
   onOpen?: () => void;
+  /** Callback when circuit closes */
   onClose?: () => void;
+  /** Callback when circuit enters half-open state */
   onHalfOpen?: () => void;
 }
 
@@ -48,6 +60,10 @@ enum CircuitBreakerState {
   CLOSED = 'CLOSED',
   OPEN = 'OPEN',
   HALF_OPEN = 'HALF_OPEN'
+}
+
+class CircuitBreakerOpenError extends Error {
+  constructor(message?: string);
 }
 ```
 
@@ -76,7 +92,7 @@ function sleep(ms: number): Promise<void>;
 **Examples:**
 
 ```ts
-import { sleep } from '@catbee/utils';
+import { sleep } from '@catbee/utils/async';
 
 await sleep(1000); // pauses for 1 second
 ```
@@ -90,7 +106,7 @@ Debounces function calls, only invoking after delay. Provides `.cancel()` and `.
 **Method Signature:**
 
 ```ts
-function debounce<T>(fn: T, delay: number): T & { cancel(): void; flush(): void };
+function debounce<T extends (...args: any[]) => void>(fn: T, delay: number): typeof fn & { cancel(): void; flush(): void };
 ```
 
 **Parameters:**
@@ -105,7 +121,7 @@ function debounce<T>(fn: T, delay: number): T & { cancel(): void; flush(): void 
 **Examples:**
 
 ```ts
-import { debounce } from '@catbee/utils';
+import { debounce } from '@catbee/utils/async';
 
 const log = debounce((msg: string) => console.log(msg), 300);
 log('Hello');
@@ -123,7 +139,11 @@ Throttles function calls to a maximum rate.
 **Method Signature:**
 
 ```ts
-function throttle<T>(fn: T, limit: number, opts?: { leading?: boolean; trailing?: boolean }): (...args: Parameters<T>) => void;
+function throttle<T extends (...args: any[]) => void>(
+  fn: T,
+  limit: number,
+  opts?: { leading?: boolean; trailing?: boolean }
+): (...args: Parameters<T>) => void;
 ```
 
 **Parameters:**
@@ -132,7 +152,7 @@ function throttle<T>(fn: T, limit: number, opts?: { leading?: boolean; trailing?
 - `limit`: The time window in milliseconds.
 - `opts`: Options to control leading/trailing invocation.
   - `leading`: If true, invoke on the leading edge (default: true).
-  - `trailing`: If true, invoke on the trailing edge (default: true).
+  - `trailing`: If true, invoke on the trailing edge (default: false).
 
 **Returns:**
 
@@ -141,7 +161,7 @@ function throttle<T>(fn: T, limit: number, opts?: { leading?: boolean; trailing?
 **Examples:**
 
 ```ts
-import { throttle } from '@catbee/utils';
+import { throttle } from '@catbee/utils/async';
 
 const throttled = throttle(() => console.log('Tick'), 1000);
 throttled(); // Will log immediately
@@ -164,7 +184,7 @@ async function retry<T>(fn: () => Promise<T>, retries?: number, delay?: number, 
 
 - `fn`: The async function to retry.
 - `retries`: Maximum number of retries (default: 3).
-- `delay`: Initial delay between retries in milliseconds (default: 0).
+- `delay`: Initial delay between retries in milliseconds (default: 500).
 - `backoff`: Whether to use exponential backoff (default: false).
 - `onRetry`: Optional callback invoked on each retry attempt.
   - `error`: The error from the failed attempt.
@@ -177,7 +197,7 @@ async function retry<T>(fn: () => Promise<T>, retries?: number, delay?: number, 
 **Examples:**
 
 ```ts
-import { retry } from '@catbee/utils';
+import { retry } from '@catbee/utils/async';
 
 const data = await retry(fetchData, 3, 500, true, (err, attempt) => {
   console.log(`Attempt ${attempt} failed: ${err.message}`);
@@ -209,7 +229,7 @@ function withTimeout<T>(promise: Promise<T>, ms: number, message?: string): Prom
 **Examples:**
 
 ```ts
-import { withTimeout } from '@catbee/utils';
+import { withTimeout } from '@catbee/utils/async';
 
 await withTimeout(fetch('/api'), 2000, 'Request timed out');
 ```
@@ -218,7 +238,9 @@ await withTimeout(fetch('/api'), 2000, 'Request timed out');
 
 ### `runInBatches()`
 
-Runs async tasks in batches with concurrency limit.
+Runs async tasks in true batches with concurrency limit. Each batch runs in parallel, but batches run sequentially. All tasks in a batch start at the same time; the next batch waits for full completion.
+
+**Note:** For more granular concurrency control, use `createTaskQueue()` or `runWithConcurrency()`.
 
 **Method Signature:**
 
@@ -229,7 +251,7 @@ function runInBatches<T>(tasks: (() => Promise<T>)[], limit: number): Promise<T[
 **Parameters:**
 
 - `tasks`: An array of functions returning promises.
-- `limit`: Maximum number of concurrent tasks.
+- `limit`: Maximum number of concurrent tasks per batch.
 
 **Returns:**
 
@@ -238,7 +260,7 @@ function runInBatches<T>(tasks: (() => Promise<T>)[], limit: number): Promise<T[
 **Examples:**
 
 ```ts
-import { runInBatches } from '@catbee/utils';
+import { runInBatches } from '@catbee/utils/async';
 
 const results = await runInBatches(tasks, 2);
 ```
@@ -267,7 +289,7 @@ function singletonAsync<TArgs extends unknown[], TResult>(fn: (...args: TArgs) =
 **Examples:**
 
 ```ts
-import { singletonAsync } from '@catbee/utils';
+import { singletonAsync } from '@catbee/utils/async';
 
 const fetchOnce = singletonAsync(async (url: string) => fetch(url).then(r => r.json()));
 ```
@@ -295,7 +317,7 @@ function settleAll<T>(tasks: (() => Promise<T>)[]): Promise<PromiseSettledResult
 **Examples:**
 
 ```ts
-import { settleAll } from '@catbee/utils';
+import { settleAll } from '@catbee/utils/async';
 
 const tasks = [
   () => Promise.resolve(1),
@@ -328,7 +350,7 @@ function createTaskQueue(limit: number): TaskQueue;
 **Examples:**
 
 ```ts
-import { createTaskQueue, sleep } from '@catbee/utils';
+import { createTaskQueue, sleep } from '@catbee/utils/async';
 
 const queue = createTaskQueue(2);
 queue(() => sleep(1000).then(() => 'A')).then(console.log);
@@ -359,7 +381,7 @@ function runInSeries<T>(tasks: (() => Promise<T>)[]): Promise<T[]>;
 **Examples:**
 
 ```ts
-import { runInSeries } from '@catbee/utils';
+import { runInSeries } from '@catbee/utils/async';
 
 const tasks = [
   () => Promise.resolve(1),
@@ -395,7 +417,7 @@ function memoizeAsync<T, Args extends any[]>(fn: (...args: Args) => Promise<T>, 
 **Examples:**
 
 ```ts
-import { memoizeAsync } from '@catbee/utils';
+import { memoizeAsync } from '@catbee/utils/async';
 
 const fetchUser = memoizeAsync(async (id: number) => fetch(`/user/${id}`).then(r => r.json()), { ttl: 60000 });
 await fetchUser(1); // Fetched from API
@@ -427,7 +449,7 @@ function abortable<T>(promise: Promise<T>, signal: AbortSignal, abortValue?: any
 **Examples:**
 
 ```ts
-import { abortable } from '@catbee/utils';
+import { abortable } from '@catbee/utils/async';
 
 const controller = new AbortController();
 const promise = abortable(fetch('/api'), controller.signal, 'Aborted');
@@ -453,7 +475,7 @@ function createDeferred<T>(): [Promise<T>, (value: T | PromiseLike<T>) => void, 
 **Examples:**
 
 ```ts
-import { createDeferred } from '@catbee/utils';
+import { createDeferred } from '@catbee/utils/async';
 
 const [promise, resolve, reject] = createDeferred<number>();
 setTimeout(() => resolve(42), 100);
@@ -483,7 +505,7 @@ function waterfall<T>(fns: Array<(input: any) => Promise<any>>): (initialValue: 
 **Examples:**
 
 ```ts
-import { waterfall } from '@catbee/utils';
+import { waterfall } from '@catbee/utils/async';
 
 const pipeline = waterfall([
   async (x) => x + 1,
@@ -516,7 +538,7 @@ function rateLimit<T>(fn: (...args: any[]) => Promise<T>, maxCalls: number, inte
 - A rate-limited version of the function.
 
 ```ts
-import { rateLimit } from '@catbee/utils';
+import { rateLimit } from '@catbee/utils/async';
 
 const limitedFetch = rateLimit(fetch, 2, 1000);
 await limitedFetch('/api/1');
@@ -538,25 +560,44 @@ function circuitBreaker<T>(fn: (...args: any[]) => Promise<T>, options?: Circuit
 
 - `fn`: The async function to wrap with a circuit breaker.
 - `options`: Optional settings:
-  - `failureThreshold`: Number of failures to open the circuit (default: 5).
+  - `failureThreshold`: Number of consecutive failures to open the circuit (default: 5).
   - `resetTimeout`: Time in milliseconds to wait before attempting to close the circuit (default: 10000).
-  - `successThreshold`: Number of successful calls to close the circuit from half-open state (default: 2).
+  - `successThreshold`: Number of successful calls to close the circuit from half-open state (default: 1).
   - `onOpen`: Callback invoked when the circuit opens.
   - `onClose`: Callback invoked when the circuit closes.
   - `onHalfOpen`: Callback invoked when the circuit transitions to half-open.
 
 **Returns:**
 
-- A function that returns a promise resolving to the result of the original function or rejects if the circuit is open.
+- A function that returns a promise resolving to the result of the original function or throws `CircuitBreakerOpenError` if the circuit is open.
 
 **Examples:**
 
 ```ts
-import { circuitBreaker } from '@catbee/utils';
+import { circuitBreaker, CircuitBreakerOpenError } from '@catbee/utils/async';
 
-const protectedFetch = circuitBreaker(async url =>
-  fetch(url).then(r => r.json()), { failureThreshold: 3 }
+const protectedFetch = circuitBreaker(
+  async (url) => {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
+    return response.json();
+  },
+  {
+    failureThreshold: 3,
+    resetTimeout: 30000,
+    onOpen: () => console.log('Circuit breaker opened'),
+    onClose: () => console.log('Circuit breaker closed')
+  }
 );
+
+// Will throw CircuitBreakerOpenError after failureThreshold consecutive failures
+try {
+  const data = await protectedFetch('https://api.example.com');
+} catch (error) {
+  if (error instanceof CircuitBreakerOpenError) {
+    console.log('Service is currently unavailable, please try again later');
+  }
+}
 ```
 
 ---
@@ -575,7 +616,7 @@ function runWithConcurrency<T>(tasks: (() => Promise<T>)[], options?: { concurre
 
 - `tasks`: An array of functions returning promises.
 - `options`: Optional settings:
-  - `concurrency`: Maximum number of concurrent tasks (default: 5).
+  - `concurrency`: Maximum number of concurrent tasks (default: 3).
   - `onProgress`: Optional callback invoked with completed and total task counts.
   - `signal`: Optional AbortSignal to cancel the operation.
 
@@ -586,10 +627,86 @@ function runWithConcurrency<T>(tasks: (() => Promise<T>)[], options?: { concurre
 **Examples:**
 
 ```ts
-import { runWithConcurrency } from '@catbee/utils';
+import { runWithConcurrency } from '@catbee/utils/async';
 
-const results = await runWithConcurrency(tasks, {
-  concurrency: 2,
-  onProgress: (done, total) => console.log(done, total)
-});
+const urls = ['https://example.com/1', 'https://example.com/2', /* many more */];
+
+// Process up to 5 requests at a time, with progress reporting
+const results = await runWithConcurrency(
+  urls.map(url => () => fetch(url).then(res => res.json())),
+  {
+    concurrency: 5,
+    onProgress: (completed, total) => {
+      console.log(`Progress: ${completed}/${total}`);
+    }
+  }
+);
+```
+
+---
+
+### `optionalRequire()`
+
+Attempts to require a module, returning null if it cannot be found.
+
+**Method Signature:**
+
+```ts
+function optionalRequire<T = any>(name: string): T | null;
+```
+
+**Parameters:**
+
+- `name`: The name of the module to require.
+
+**Returns:**
+
+- The required module, or `null` if it cannot be loaded.
+
+**Examples:**
+
+```ts
+import { optionalRequire } from '@catbee/utils/async';
+
+const optional = optionalRequire('optional-dependency');
+if (optional) {
+  optional.doSomething();
+} else {
+  console.log('Optional dependency not available');
+}
+```
+
+---
+
+### `raceWithValue()`
+
+Races promises and returns the first fulfilled value along with its index.
+
+**Method Signature:**
+
+```ts
+async function raceWithValue<T>(promises: Promise<T>[]): Promise<{ value: T; index: number }>;
+```
+
+**Parameters:**
+
+- `promises`: An array of promises to race.
+
+**Returns:**
+
+- A promise that resolves with an object containing the value and index of the first fulfilled promise.
+
+**Examples:**
+
+```ts
+import { raceWithValue } from '@catbee/utils/async';
+
+const promises = [
+  fetch('https://api1.example.com').then(r => r.json()),
+  fetch('https://api2.example.com').then(r => r.json()),
+  fetch('https://api3.example.com').then(r => r.json())
+];
+
+const { value, index } = await raceWithValue(promises);
+console.log(Fastest response from API :, value);
 ```
