@@ -1,4 +1,8 @@
-# Middleware Utilities
+---
+slug: ../middleware
+---
+
+# Middleware
 
 Express middleware collection for handling common web server requirements including request identification, timing, error handling, timeouts, and request context management.
 
@@ -6,9 +10,10 @@ Express middleware collection for handling common web server requirements includ
 
 - [**`requestId(options: { headerName?: string; exposeHeader?: boolean; generator?: () => string; })`**](#requestid) - Attaches a unique request ID to each request for tracing and correlation between logs.
 - [**`responseTime(options?: { addHeader?: boolean; logOnComplete?: boolean; })`**](#responsetime) - Measures request processing time and adds it to response headers or logs.
-- [**`timeout(timeoutMs?: number)`**](#timeout) - Aborts requests that take too long to process.
-- [**`setupRequestContext()`**](#setuprequestcontext) - Creates an Express middleware that initializes a per-request context.
+- [**`timeout(timeoutMs = 30000)`**](#timeout) - Aborts requests that take too long to process.
+- [**`setupRequestContext(options?: { headerName?: string; autoLog?: boolean })`**](#setuprequestcontext) - Creates an Express middleware that initializes a per-request context.
 - [**`errorHandler(options?: ErrorHandlerOptions)`**](#errorhandler) - Global error handling middleware with enhanced features.
+- [**`healthCheck(options?: { path?: string; checks?: Array<{ name: string; check: () => Promise<boolean> | boolean }>; detailed?: boolean })`**](#healthcheck) - Health check middleware for service status and custom checks.
 
 ### Interfaces and Types
 
@@ -26,7 +31,7 @@ export interface ErrorHandlerOptions {
 ## Example Usage
 
 ```ts
-import { requestId, responseTime, errorHandler } from '@catbee/utils';
+import { requestId, responseTime, errorHandler } from '@catbee/utils/middleware';
 
 app.use(requestId({ headerName: 'X-Request-ID' })); // Sets X-Request-ID header and attaches req.id
 app.use(setupRequestContext({ autoLog: true, headerName: 'X-Request-ID' })); // Initializes request context with req.id and sets up logging
@@ -47,7 +52,11 @@ Attaches a unique request ID to each request for tracing and correlation between
 **Method Signature:**
 
 ```ts
-function requestId(options?: { headerName?: string; exposeHeader?: boolean; generator?: () => string }): Middleware;
+function requestId(options?: {
+  headerName?: string;        // default: 'X-Request-ID'
+  exposeHeader?: boolean;     // default: true
+  generator?: () => string;   // default: uuid
+}): Middleware;
 ```
 
 **Parameters:**
@@ -65,7 +74,7 @@ function requestId(options?: { headerName?: string; exposeHeader?: boolean; gene
 
 ```ts
 import express from 'express';
-import { requestId } from '@catbee/utils';
+import { requestId } from '@catbee/utils/middleware';
 const app = express();
 
 // Basic usage with defaults
@@ -90,7 +99,10 @@ Measures request processing time and adds it to response headers or logs.
 **Method Signature:**
 
 ```ts
-function responseTime(options?: { addHeader?: boolean; logOnComplete?: boolean }): Middleware;
+function responseTime(options?: {
+  addHeader?: boolean;      // default: true
+  logOnComplete?: boolean;  // default: false
+}): Middleware;
 ```
 
 **Parameters:**
@@ -107,7 +119,7 @@ function responseTime(options?: { addHeader?: boolean; logOnComplete?: boolean }
 
 ```ts
 import express from 'express';
-import { responseTime } from '@catbee/utils';
+import { responseTime } from '@catbee/utils/middleware';
 const app = express();
 
 // Basic usage
@@ -131,7 +143,7 @@ Aborts requests that take too long to process.
 **Method Signature:**
 
 ```ts
-function timeout(timeoutMs?: number): Middleware;
+function timeout(timeoutMs = 30000): Middleware;
 ```
 
 **Parameters:**
@@ -146,7 +158,7 @@ function timeout(timeoutMs?: number): Middleware;
 
 ```ts
 import express from 'express';
-import { timeout } from '@catbee/utils';
+import { timeout } from '@catbee/utils/middleware';
 const app = express();
 
 // Default 30-second timeout
@@ -165,7 +177,10 @@ Creates an Express middleware that initializes a per-request context.
 **Method Signature:**
 
 ```ts
-function setupRequestContext(options?: { headerName?: string; autoLog?: boolean }): Middleware;
+function setupRequestContext(options?: {
+  headerName?: string;  // default: 'x-request-id'
+  autoLog?: boolean;    // default: true
+}): Middleware;
 ```
 
 **Parameters:**
@@ -182,7 +197,7 @@ function setupRequestContext(options?: { headerName?: string; autoLog?: boolean 
 
 ```ts
 import express from 'express';
-import { setupRequestContext } from '@catbee/utils';
+import { setupRequestContext } from '@catbee/utils/middleware';
 const app = express();
 
 // Basic usage with defaults
@@ -207,6 +222,11 @@ Global error handling middleware with enhanced features.
 
 ```ts
 function errorHandler(options?: ErrorHandlerOptions): Middleware;
+
+interface ErrorHandlerOptions {
+  logErrors?: boolean;       // default: true
+  includeDetails?: boolean;  // default: false
+}
 ```
 
 **Parameters:**
@@ -223,7 +243,7 @@ function errorHandler(options?: ErrorHandlerOptions): Middleware;
 
 ```ts
 import express from 'express';
-import { errorHandler } from '@catbee/utils';
+import { errorHandler } from '@catbee/utils/middleware';
 const app = express();
 
 // Basic error handler
@@ -234,6 +254,68 @@ app.use(
   errorHandler({
     logErrors: true,
     includeDetails: process.env.NODE_ENV !== 'production'
+  })
+);
+```
+
+---
+
+### `healthCheck()`
+
+Health check middleware for service status and custom checks.
+
+**Method Signature:**
+
+```ts
+function healthCheck(options?: {
+  path?: string;                                                           // default: '/healthz'
+  checks?: Array<{ name: string; check: () => Promise<boolean> | boolean }>;
+  detailed?: boolean;                                                      // default: true
+}): Middleware;
+```
+
+**Parameters:**
+
+- `options?: object` - Health check options
+  - `path?: string` - Health check endpoint path (default: '/healthz')
+  - `checks?: Array<{name: string; check: () => Promise<boolean> | boolean}>` - Custom health checks to run
+  - `detailed?: boolean` - Show detailed check results (default: true)
+
+**Returns:**
+
+- `Middleware` - Express middleware function
+
+**Example:**
+
+```ts
+import express from 'express';
+import { healthCheck } from '@catbee/utils/middleware';
+const app = express();
+
+// Basic health check
+app.use(healthCheck());
+
+// Health check with custom checks
+app.use(
+  healthCheck({
+    path: '/health',
+    detailed: true,
+    checks: [
+      {
+        name: 'database',
+        check: async () => {
+          // Check database connection
+          return db.isConnected();
+        }
+      },
+      {
+        name: 'redis',
+        check: async () => {
+          // Check Redis connection
+          return redis.ping();
+        }
+      }
+    ]
   })
 );
 ```

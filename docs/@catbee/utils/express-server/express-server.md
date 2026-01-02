@@ -1,3 +1,7 @@
+---
+slug: ../server
+---
+
 # Express Server
 
 Enterprise-grade Express server builder for secure, reliable, and observable APIs.
@@ -77,10 +81,10 @@ Enterprise-grade Express server builder for secure, reliable, and observable API
 
 ## Interfaces & Types
 
-### ServerConfig
+### CatbeeServerConfig
 
 ```ts
-interface ServerConfig {
+interface CatbeeServerConfig {
   port: number; // default: 3000
   host?: string; // default: '0.0.0.0'
   cors?: boolean | CorsOptions; // default: false
@@ -91,31 +95,31 @@ interface ServerConfig {
     urlencoded?: { extended: boolean; limit: string }; // default: { extended: true, limit: '1mb' }
   };
   cookieParser?: boolean | CookieParseOptions; // default: false
-  trustProxy?: boolean; // default: false
+  trustProxy?: boolean | number | string | string[]; // default: false
   staticFolders?: Array<{
     path?: string; // default: '/'
     directory: string;
-    maxAge?: string; // default: undefined
+    maxAge?: string; // default: 0
     etag?: boolean; // default: true
     immutable?: boolean; // default: false
     lastModified?: boolean; // default: true
     cacheControl?: boolean; // default: true
   }>;
   isMicroservice?: boolean; // default: false
-  appName?: string; // default: 'express_app'
+  appName?: string; // default: 'catbee_server'
   globalHeaders?: Record<string, string | (() => string)>; // default: {}
   rateLimit?: {
     enable: boolean; // default: false
-    windowMs?: number; // default: 900000
+    windowMs?: number; // default: 900000 (15 min)
     max?: number; // default: 100
-    message?: string; // default: 'Too many requests'
+    message?: string; // default: 'Too many requests, please try again later.'
     standardHeaders?: boolean; // default: true
     legacyHeaders?: boolean; // default: false
   };
   requestLogging?: {
     enable: boolean; // default: true in dev, false in prod
     ignorePaths?: string[] | ((req: Request, res: Response) => boolean); // default: skips /healthz, /favicon.ico, /metrics, /docs, /.well-known
-    skipNotFoundRoutes?: boolean; // default: false
+    skipNotFoundRoutes?: boolean; // default: true
   };
   healthCheck?: {
     path?: string; // default: '/healthz'
@@ -123,7 +127,7 @@ interface ServerConfig {
     detailed?: boolean; // default: true
     withGlobalPrefix?: boolean; // default: false
   };
-  requestTimeout?: number; // default: 30000
+  requestTimeout?: number; // default: 0 (disabled)
   responseTime?: {
     enable: boolean; // default: false
     addHeader?: boolean; // default: true
@@ -138,7 +142,7 @@ interface ServerConfig {
   openApi?: {
     enable: boolean; // default: false
     mountPath?: string; // default: '/docs'
-    filePath?: string;
+    filePath?: string; // required if enabled
     verbose?: boolean; // default: false
     withGlobalPrefix?: boolean; // default: false
   };
@@ -153,24 +157,24 @@ interface ServerConfig {
     version?: string | (() => string); // default: '0.0.0'
   };
   https?: {
-    key: string;
-    cert: string;
-    ca?: string;
-    passphrase?: string;
-    [key: string]: any;
+    key: string; // Path to private key file (PEM)
+    cert: string; // Path to certificate file (PEM)
+    ca?: string; // Optional CA bundle path (PEM)
+    passphrase?: string; // Optional private key passphrase
+    [key: string]: any; // Additional Node.js https.ServerOptions
   };
 }
 ```
 
-### ServerHooks
+### CatbeeServerHooks
 
 ```ts
-interface ServerHooks {
+interface CatbeeServerHooks {
   beforeInit?: (server: ExpressServer) => Promise<void> | void;
   afterInit?: (server: ExpressServer) => Promise<void> | void;
   beforeStart?: (app: Express) => Promise<void> | void;
-  afterStart?: (server: http.Server) => Promise<void> | void;
-  beforeStop?: (server: http.Server) => Promise<void> | void;
+  afterStart?: (server: http.Server | https.Server) => Promise<void> | void;
+  beforeStop?: (server: http.Server | https.Server) => Promise<void> | void;
   afterStop?: () => Promise<void> | void;
   onError?: (error: Error, req: Request, res: Response, next: NextFunction) => void;
   onRequest?: (req: Request, res: Response, next: NextFunction) => void;
@@ -180,58 +184,62 @@ interface ServerHooks {
 
 ---
 
-## Environment Variables for Logging
+## Environment Variables
 
-| Environment Variable        | Default Value                  | Description                                 |
-| --------------------------- | ------------------------------ | ------------------------------------------- |
-| `LOGGER_LEVEL`              | `info`                         | Log level for the application               |
-| `LOGGER_NAME`               | `process.env.npm_package_name` | Name of the logger                          |
-| `LOGGER_PRETTY`             | `true`                         | Enable pretty logging                       |
-| `LOGGER_PRETTY_COLORIZE`    | `true`                         | Enable colorized output for pretty-print    |
-| `LOGGER_PRETTY_SINGLE_LINE` | `false`                        | Enable single-line logging                  |
-| `SERVER_SKIP_HEALTHZ`       | `false`                        | Skip health checks route, always return 200 |
+### Logger Environment Variables
 
-## Default Values
+For configuring logger behavior via environment variables, see the [Logger documentation](logger#environment-variables).
 
-| Option                       | Default Value                                                       | Description                                |
-| ---------------------------- | ------------------------------------------------------------------- | ------------------------------------------ |
-| `port`                       | `3000`                                                              | Port for the server                        |
-| `host`                       | `'0.0.0.0'`                                                         | Host for the server                        |
-| `cors`                       | `false`                                                             | Enable CORS                                |
-| `helmet`                     | `false`                                                             | Enable Helmet security headers             |
-| `compression`                | `false`                                                             | Enable response compression                |
-| `bodyParser.json`            | `{ limit: '1mb' }`                                                  | JSON body parser options                   |
-| `bodyParser.urlencoded`      | `{ extended: true, limit: '1mb' }`                                  | URL-encoded body parser options            |
-| `cookieParser`               | `false`                                                             | Enable cookie parsing                      |
-| `trustProxy`                 | `false`                                                             | Enable proxy trust                         |
-| `staticFolders`              | `[]`                                                                | Static file serving folders                |
-| `isMicroservice`             | `false`                                                             | Enable microservice mode                   |
-| `appName`                    | `'express_app'`                                                     | Name of the application                    |
-| `globalHeaders`              | `{}`                                                                | Global headers to include in all responses |
-| `rateLimit.enable`           | `false`                                                             | Enable rate limiting                       |
-| `rateLimit.windowMs`         | `900000` (15 min)                                                   | Time window for rate limiting              |
-| `rateLimit.max`              | `100`                                                               | Maximum number of requests in the window   |
-| `rateLimit.message`          | `'Too many requests'`                                               | Rate limit exceeded message                |
-| `requestLogging.enable`      | `true` (dev), `false` (prod)                                        | Enable request logging                     |
-| `requestLogging.ignorePaths` | `['/healthz', '/favicon.ico', '/metrics', '/docs', '/.well-known']` | Paths to ignore for request logging        |
-| `healthCheck.path`           | `'/healthz'`                                                        | Health check endpoint                      |
-| `healthCheck.detailed`       | `true`                                                              | Enable detailed health check response      |
-| `requestTimeout`             | `30000` (30 sec)                                                    | Request timeout duration                   |
-| `responseTime.enable`        | `false`                                                             | Enable response time tracking              |
-| `responseTime.addHeader`     | `true`                                                              | Add response time header                   |
-| `responseTime.logOnComplete` | `false`                                                             | Log response time on completion            |
-| `requestId.headerName`       | `'x-request-id'`                                                    | Request ID header name                     |
-| `requestId.exposeHeader`     | `true`                                                              | Expose Request ID header                   |
-| `metrics.enable`             | `false`                                                             | Enable metrics collection                  |
-| `metrics.path`               | `'/metrics'`                                                        | Metrics endpoint path                      |
-| `serviceVersion.enable`      | `false`                                                             | Enable service versioning                  |
-| `serviceVersion.headerName`  | `'x-service-version'`                                               | Service version header name                |
-| `serviceVersion.version`     | `'0.0.0'`                                                           | Service version                            |
-| `openApi.enable`             | `false`                                                             | Enable OpenAPI documentation               |
-| `openApi.mountPath`          | `'/docs'`                                                           | OpenAPI documentation mount path           |
-| `openApi.verbose`            | `false`                                                             | Enable verbose OpenAPI documentation       |
-| `openApi.withGlobalPrefix`   | `false`                                                             | Use global prefix for OpenAPI routes       |
-| `globalPrefix`               | `''`                                                                | Global prefix for all routes               |
+### Server Environment Variables
+
+| Environment Variable                           | Type       | Default/Value                                | Description                         |
+| ---------------------------------------------- | ---------- | -------------------------------------------- | ----------------------------------- |
+| `SERVER_PORT`                                  | `number`   | `${PORT}` or `3000`                          | Server port (overrides PORT)        |
+| `PORT`                                         | `number`   | `3000`                                       | Fallback port if SERVER_PORT unset  |
+| `SERVER_HOST`                                  | `string`   | `${HOST}` or `0.0.0.0`                       | Server host (overrides HOST)        |
+| `HOST`                                         | `string`   | `0.0.0.0`                                    | Fallback host if SERVER_HOST unset  |
+| `SERVER_CORS_ENABLE`                           | `boolean`  | `false`                                      | Enable CORS middleware              |
+| `SERVER_HELMET_ENABLE`                         | `boolean`  | `false`                                      | Enable Helmet security middleware   |
+| `SERVER_COMPRESSION_ENABLE`                    | `boolean`  | `false`                                      | Enable response compression         |
+| `SERVER_BODY_PARSER_JSON_LIMIT`                | `string`   | `1mb`                                        | Max JSON body size                  |
+| `SERVER_BODY_PARSER_URLENCODED_LIMIT`          | `string`   | `1mb`                                        | Max URL-encoded body size           |
+| `SERVER_COOKIE_PARSER_ENABLE`                  | `boolean`  | `false`                                      | Enable cookie parser middleware     |
+| `SERVER_IS_MICROSERVICE`                       | `boolean`  | `false`                                      | Microservice mode flag              |
+| `SERVER_APP_NAME`                              | `string`   | `${npm_package_name}` or `catbee_server`     | Application/service name            |
+| `SERVER_GLOBAL_HEADERS`                        | `JSON`     | `{}`                                         | Global response headers             |
+| `SERVER_RATE_LIMIT_ENABLE`                     | `boolean`  | `false`                                      | Enable rate limiting                |
+| `SERVER_RATE_LIMIT_WINDOW_MS`                  | `duration` | `15m`                                        | Rate limit window (ms or duration)  |
+| `SERVER_RATE_LIMIT_MAX`                        | `number`   | `100`                                        | Max requests per window             |
+| `SERVER_RATE_LIMIT_MESSAGE`                    | `string`   | `Too many requests, please try again later.` | Rate limit error message            |
+| `SERVER_RATE_LIMIT_STANDARD_HEADERS`           | `boolean`  | `true`                                       | Use standard rate limit headers     |
+| `SERVER_RATE_LIMIT_LEGACY_HEADERS`             | `boolean`  | `false`                                      | Use legacy rate limit headers       |
+| `SERVER_REQUEST_LOGGING_ENABLE`                | `boolean`  | `true` in dev, `false` otherwise             | Enable request logging              |
+| `SERVER_REQUEST_LOGGING_SKIP_NOT_FOUND_ROUTES` | `boolean`  | `true`                                       | Skip logging for 404 routes         |
+| `SERVER_TRUST_PROXY_ENABLE`                    | `boolean`  | `false`                                      | Trust proxy headers                 |
+| `SERVER_OPENAPI_ENABLE`                        | `boolean`  | `false`                                      | Enable OpenAPI docs                 |
+| `SERVER_OPENAPI_MOUNT_PATH`                    | `string`   | `/docs`                                      | OpenAPI docs mount path             |
+| `SERVER_OPENAPI_VERBOSE`                       | `boolean`  | `false`                                      | Verbose OpenAPI output              |
+| `SERVER_OPENAPI_WITH_GLOBAL_PREFIX`            | `boolean`  | `false`                                      | Prefix OpenAPI routes               |
+| `SERVER_HEALTH_CHECK_PATH`                     | `string`   | `/healthz`                                   | Health check endpoint path          |
+| `SERVER_HEALTH_CHECK_DETAILED_OUTPUT`          | `boolean`  | `true`                                       | Detailed health check output        |
+| `SERVER_HEALTH_CHECK_WITH_GLOBAL_PREFIX`       | `boolean`  | `false`                                      | Prefix health check route           |
+| `SERVER_REQUEST_TIMEOUT_MS`                    | `duration` | `0`                                          | Request timeout (ms or duration)    |
+| `SERVER_RESPONSE_TIME_ENABLE`                  | `boolean`  | `false`                                      | Enable response time tracking       |
+| `SERVER_RESPONSE_TIME_ADD_HEADER`              | `boolean`  | `true`                                       | Add X-Response-Time header          |
+| `SERVER_RESPONSE_TIME_LOG_ON_COMPLETE`         | `boolean`  | `false`                                      | Log response time on complete       |
+| `SERVER_REQUEST_ID_HEADER_NAME`                | `string`   | `x-request-id`                               | Request ID header name              |
+| `SERVER_REQUEST_ID_EXPOSE_HEADER`              | `boolean`  | `true`                                       | Expose request ID header            |
+| `SERVER_METRICS_ENABLE`                        | `boolean`  | `false`                                      | Enable Prometheus metrics           |
+| `SERVER_METRICS_PATH`                          | `string`   | `/metrics`                                   | Metrics endpoint path               |
+| `SERVER_METRICS_WITH_GLOBAL_PREFIX`            | `boolean`  | `false`                                      | Prefix metrics route                |
+| `SERVER_SERVICE_VERSION_ENABLE`                | `boolean`  | `false`                                      | Enable service version header       |
+| `SERVER_SERVICE_VERSION_HEADER_NAME`           | `string`   | `x-service-version`                          | Service version header name         |
+| `SERVER_SERVICE_VERSION`                       | `string`   | `${npm_package_version}` or `0.0.0`          | Service version value               |
+| `SERVER_SKIP_HEALTHZ_CHECKS_VALIDATION`        | `boolean`  | `false`                                      | Skip health checks if added         |
+| `npm_package_name`                             | `string`   | `@catbee/utils`                              | Package name (from package.json)    |
+| `npm_package_version`                          | `string`   | `0.0.0`                                      | Package version (from package.json) |
+
+---
 
 ---
 
@@ -249,7 +257,7 @@ interface ServerHooks {
 ## Usage Example
 
 ```ts
-import { ServerConfigBuilder, ExpressServer } from '@catbee/utils';
+import { ServerConfigBuilder, ExpressServer } from '@catbee/utils/server';
 
 // Build server config with all major features
 const config = new ServerConfigBuilder()
@@ -310,6 +318,10 @@ const server = new ExpressServer(config, {
 // Register health checks
 server.registerHealthCheck('database', async () => await checkDatabaseConnection());
 server.registerHealthCheck('storage', () => require('fs').existsSync('./data'));
+
+// Check if server is ready
+const isReady = await server.ready();
+console.log('Server ready:', isReady);
 
 // Register routes
 const router = server.createRouter('/users');
@@ -410,17 +422,21 @@ Main server class with lifecycle hooks and utilities.
 **Method Signatures:**
 
 ```ts
-new ExpressServer(config: ServerConfig, hooks?: ServerHooks)
+new ExpressServer(config: Partial<CatbeeServerConfig>, hooks?: CatbeeServerHooks)
   .start(): Promise<http.Server | https.Server>
   .stop(force?: boolean): Promise<void>
-  .enableGracefulShutdown(signals?: NodeJS.Signals[])
-  .registerHealthCheck(name: string, fn: () => Promise<boolean> | boolean)
+  .enableGracefulShutdown(signals?: NodeJS.Signals[]): this
+  .registerHealthCheck(name: string, fn: () => Promise<boolean> | boolean): this
+  .ready(): Promise<boolean>
+  .getApp(): Express
+  .getServer(): http.Server | https.Server | null
+  .setBaseRouter(router: Router): this
   .createRouter(prefix?: string): Router
-  .registerRoute(methods: string[], path: string, ...handlers)
-  .registerMiddleware(path: string, middleware)
-  .useMiddleware(...middlewares)
-  .getMetricsRegistry(): client.Registry
-  .getConfig(): ServerConfig
+  .registerRoute(methods: string[], path: string, ...handlers): this
+  .registerMiddleware(path: string | RequestHandler, middleware?: RequestHandler): this
+  .useMiddleware(...middlewares: RequestHandler[]): this
+  .getMetricsRegistry(): Registry
+  .getConfig(): CatbeeServerConfig
   .waitUntilReady(): Promise<void>
 ```
 
@@ -450,6 +466,13 @@ const server = new ExpressServer(config, {
 await server.start();
 ```
 
+**Additional Methods:**
+
+- `getApp()` - Get the underlying Express application instance
+- `getServer()` - Get the active HTTP/HTTPS server instance (null if not running)
+- `ready()` - Check if all health checks pass (returns `Promise<boolean>`)
+- `waitUntilReady()` - Wait for server initialization to complete
+
 ---
 
 ## Health Checks
@@ -474,6 +497,12 @@ server.registerHealthCheck('database', async () => {
     return false;
   }
 });
+
+// Check readiness programmatically
+const isReady = await server.ready();
+if (isReady) {
+  console.log('All health checks passed');
+}
 ```
 
 ---
@@ -579,21 +608,21 @@ See [ServerConfigBuilder](#serverconfigbuilder) and [ExpressServer](#expressserv
 ## Core NPM Packages (always required)
 
 - `express` - The web framework
-- `reflect-metadata` - Metadata reflection API
 - `pino` - Logging library
 
 ---
 
 ## Feature-specific NPM Packages (only if feature is enabled)
 
-| Feature            | Required NPM Packages           |
-| ------------------ | ------------------------------- |
-| CORS               | `cors`                          |
-| Helmet (security)  | `helmet`                        |
-| Compression        | `compression`                   |
-| Cookie Parsing     | `cookie-parser`                 |
-| Rate Limiting      | `express-rate-limit`            |
-| Prometheus Metrics | `prom-client`                   |
-| OpenAPI Docs       | `@scalar/express-api-reference` |
+| Feature             | Required NPM Packages           |
+| ------------------- | ------------------------------- |
+| CORS                | `cors`                          |
+| Helmet (security)   | `helmet`                        |
+| Compression         | `compression`                   |
+| Cookie Parsing      | `cookie-parser`                 |
+| Rate Limiting       | `express-rate-limit`            |
+| Metadata Reflection | `reflect-metadata`              |
+| Prometheus Metrics  | `prom-client`                   |
+| OpenAPI Docs        | `@scalar/express-api-reference` |
 
 **Note:** These packages must be installed via `npm install <package>` if you enable the corresponding feature in your server config.

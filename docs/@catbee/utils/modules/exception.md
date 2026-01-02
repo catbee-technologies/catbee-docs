@@ -1,4 +1,8 @@
-# Exception Utilities
+---
+slug: ../exception
+---
+
+# Exception
 
 Standard HTTP and general error handling.
 
@@ -81,7 +85,7 @@ class HttpError extends ErrorResponse {
 **Example:**
 
 ```ts
-import { HttpError } from '@catbee/utils';
+import { HttpError } from '@catbee/utils/exception';
 
 throw new HttpError(401, 'Unauthorized access');
 ```
@@ -111,7 +115,7 @@ class InternalServerErrorException extends ErrorResponse {
 **Example:**
 
 ```ts
-import { InternalServerErrorException } from '@catbee/utils';
+import { InternalServerErrorException } from '@catbee/utils/exception';
 
 throw new InternalServerErrorException();
 ```
@@ -141,7 +145,7 @@ class UnauthorizedException extends ErrorResponse {
 **Example:**
 
 ```ts
-import { UnauthorizedException } from '@catbee/utils';
+import { UnauthorizedException } from '@catbee/utils/exception';
 
 throw new UnauthorizedException('Login required');
 ```
@@ -171,7 +175,7 @@ class BadRequestException extends ErrorResponse {
 **Example:**
 
 ```ts
-import { BadRequestException } from '@catbee/utils';
+import { BadRequestException } from '@catbee/utils/exception';
 
 throw new BadRequestException('Invalid input');
 ```
@@ -196,7 +200,7 @@ Represents a 404 Not Found Error.
 **Example:**
 
 ```ts
-import { NotFoundException } from '@catbee/utils';
+import { NotFoundException } from '@catbee/utils/exception';
 
 throw new NotFoundException('User not found');
 ```
@@ -221,7 +225,7 @@ Represents a 403 Forbidden Error.
 **Example:**
 
 ```ts
-import { ForbiddenException } from '@catbee/utils';
+import { ForbiddenException } from '@catbee/utils/exception';
 
 throw new ForbiddenException();
 ```
@@ -251,7 +255,7 @@ class ConflictException extends ErrorResponse {
 **Example:**
 
 ```ts
-import { ConflictException } from '@catbee/utils';
+import { ConflictException } from '@catbee/utils/exception';
 
 throw new ConflictException('Resource already exists');
 ```
@@ -281,7 +285,7 @@ class BadGatewayException extends ErrorResponse {
 **Example:**
 
 ```ts
-import { BadGatewayException } from '@catbee/utils';
+import { BadGatewayException } from '@catbee/utils/exception';
 
 throw new BadGatewayException();
 ```
@@ -311,7 +315,7 @@ class TooManyRequestsException extends ErrorResponse {
 **Example:**
 
 ```ts
-import { TooManyRequestsException } from '@catbee/utils';
+import { TooManyRequestsException } from '@catbee/utils/exception';
 
 throw new TooManyRequestsException();
 ```
@@ -341,7 +345,7 @@ class ServiceUnavailableException extends ErrorResponse {
 **Example:**
 
 ```ts
-import { ServiceUnavailableException } from '@catbee/utils';
+import { ServiceUnavailableException } from '@catbee/utils/exception';
 
 throw new ServiceUnavailableException();
 ```
@@ -371,7 +375,7 @@ class GatewayTimeoutException extends ErrorResponse {
 **Example:**
 
 ```ts
-import { GatewayTimeoutException } from '@catbee/utils';
+import { GatewayTimeoutException } from '@catbee/utils/exception';
 
 throw new GatewayTimeoutException();
 ```
@@ -398,7 +402,7 @@ class UnprocessableEntityException extends ErrorResponse {
 **Example:**
 
 ```ts
-import { UnprocessableEntityException } from '@catbee/utils';
+import { UnprocessableEntityException } from '@catbee/utils/exception';
 
 throw new UnprocessableEntityException('Validation failed', { field: 'email' });
 ```
@@ -429,7 +433,7 @@ class MethodNotAllowedException extends ErrorResponse {
 **Example:**
 
 ```ts
-import { MethodNotAllowedException } from '@catbee/utils';
+import { MethodNotAllowedException } from '@catbee/utils/exception';
 
 throw new MethodNotAllowedException('Use GET', ['GET']);
 ```
@@ -459,7 +463,7 @@ class NotAcceptableException extends ErrorResponse {
 **Example:**
 
 ```ts
-import { NotAcceptableException } from '@catbee/utils';
+import { NotAcceptableException } from '@catbee/utils/exception';
 
 throw new NotAcceptableException();
 ```
@@ -489,7 +493,7 @@ class RequestTimeoutException extends ErrorResponse {
 **Example:**
 
 ```ts
-import { RequestTimeoutException } from '@catbee/utils';
+import { RequestTimeoutException } from '@catbee/utils/exception';
 
 throw new RequestTimeoutException();
 ```
@@ -519,7 +523,7 @@ class UnsupportedMediaTypeException extends ErrorResponse {
 **Example:**
 
 ```ts
-import { UnsupportedMediaTypeException } from '@catbee/utils';
+import { UnsupportedMediaTypeException } from '@catbee/utils/exception';
 
 throw new UnsupportedMediaTypeException();
 ```
@@ -549,7 +553,7 @@ class PayloadTooLargeException extends ErrorResponse {
 **Example:**
 
 ```ts
-import { PayloadTooLargeException } from '@catbee/utils';
+import { PayloadTooLargeException } from '@catbee/utils/exception';
 
 throw new PayloadTooLargeException();
 ```
@@ -579,7 +583,7 @@ class InsufficientStorageException extends ErrorResponse {
 **Example:**
 
 ```ts
-import { InsufficientStorageException } from '@catbee/utils';
+import { InsufficientStorageException } from '@catbee/utils/exception';
 
 throw new InsufficientStorageException();
 ```
@@ -607,7 +611,7 @@ function isHttpError(error: unknown): error is ErrorResponse;
 **Example:**
 
 ```ts
-import { isHttpError } from '@catbee/utils';
+import { isHttpError } from '@catbee/utils/exception';
 
 if (isHttpError(err)) {
   /* handle HTTP error */
@@ -638,7 +642,7 @@ function createHttpError(status: number, message?: string): ErrorResponse;
 **Example:**
 
 ```ts
-import { createHttpError } from '@catbee/utils';
+import { createHttpError } from '@catbee/utils/exception';
 
 throw createHttpError(404, 'Not found');
 ```
@@ -666,7 +670,7 @@ function hasErrorShape(error: unknown): error is { message: string; status?: num
 **Example:**
 
 ```ts
-import { hasErrorShape } from '@catbee/utils';
+import { hasErrorShape } from '@catbee/utils/exception';
 
 if (hasErrorShape(err)) {
   console.log(err.message);
@@ -696,7 +700,7 @@ function getErrorMessage(error: unknown): string;
 **Example:**
 
 ```ts
-import { getErrorMessage } from '@catbee/utils';
+import { getErrorMessage } from '@catbee/utils/exception';
 
 const msg = getErrorMessage(err);
 ```
@@ -724,7 +728,7 @@ function withErrorHandling<T extends (...args: any[]) => Promise<any>>(handler: 
 **Example:**
 
 ```ts
-import { withErrorHandling } from '@catbee/utils';
+import { withErrorHandling } from '@catbee/utils/exception';
 
 const safeHandler = withErrorHandling(async req => {
   // ...handler code...

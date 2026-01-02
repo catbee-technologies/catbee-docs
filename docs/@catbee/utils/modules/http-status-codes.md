@@ -1,3 +1,7 @@
+---
+slug: ../http-status-codes
+---
+
 # HTTP Status Codes
 
 Typed enum for HTTP status codes, providing standardized numeric status codes for HTTP responses. This utility helps maintain consistency in API responses and simplifies error handling with proper typing support.
@@ -15,11 +19,14 @@ Typed enum for HTTP status codes, providing standardized numeric status codes fo
 
 `HttpStatusCodes` is a TypeScript enum that provides strongly-typed HTTP status codes with comprehensive descriptions. Status codes are organized into five categories:
 
-- [**1xx**: Informational responses](#1xx---informational)
-- [**2xx**: Successful responses](#2xx---success)
-- [**3xx**: Redirection messages](#3xx---redirection)
-- [**4xx**: Client error responses](#4xx---client-error)
-- [**5xx**: Server error responses](#5xx---server-error)
+- [Type Definition](#type-definition)
+- [Example Usage](#example-usage)
+- [Status Code Categories](#status-code-categories)
+  - [`1xx - Informational`](#1xx---informational)
+  - [`2xx - Success`](#2xx---success)
+  - [`3xx - Redirection`](#3xx---redirection)
+  - [`4xx - Client Error`](#4xx---client-error)
+  - [`5xx - Server Error`](#5xx---server-error)
 
 ## Type Definition
 
@@ -40,7 +47,7 @@ export enum HttpStatusCodes {
 ## Example Usage
 
 ```ts
-import { HttpStatusCodes } from '@catbee/utils';
+import { HttpStatusCodes } from '@catbee/utils/http-status-codes';
 
 // Sending responses with appropriate status codes
 res.status(HttpStatusCodes.BAD_REQUEST).send('Invalid payload');
@@ -55,7 +62,7 @@ res.status(HttpStatusCodes.BAD_REQUEST).send('Invalid payload');
 These status codes indicate that the request was received and understood.
 
 ```ts
-import { HttpStatusCodes } from '@catbee/utils';
+import { HttpStatusCodes } from '@catbee/utils/http-status-codes';
 
 // Example: Indicate request was received but processing continues
 res.status(HttpStatusCodes.PROCESSING).send();
@@ -74,7 +81,7 @@ res.status(HttpStatusCodes.PROCESSING).send();
 These status codes indicate that the client's request was successfully received, understood, and accepted.
 
 ```ts
-import { HttpStatusCodes } from '@catbee/utils';
+import { HttpStatusCodes } from '@catbee/utils/http-status-codes';
 
 // Example: Resource created successfully
 res.status(HttpStatusCodes.CREATED).json({ id: 123, name: 'New Resource' });
@@ -106,7 +113,7 @@ async function processRequest() {
 These status codes indicate that further action needs to be taken by the client to complete the request.
 
 ```ts
-import { HttpStatusCodes } from '@catbee/utils';
+import { HttpStatusCodes } from '@catbee/utils/http-status-codes';
 
 // Example: Permanent redirect
 res.status(HttpStatusCodes.MOVED_PERMANENTLY)
@@ -134,7 +141,7 @@ res.status(HttpStatusCodes.TEMPORARY_REDIRECT)
 These status codes indicate that the client seems to have made an error.
 
 ```ts
-import { HttpStatusCodes } from '@catbee/utils';
+import { HttpStatusCodes } from '@catbee/utils/http-status-codes';
 
 // Example: Authentication required
 function requireAuth(req, res, next) {
@@ -173,7 +180,7 @@ function rateLimit(req, res, next) {
 These status codes indicate that the server failed to fulfill a valid request.
 
 ```ts
-import { HttpStatusCodes } from '@catbee/utils';
+import { HttpStatusCodes } from '@catbee/utils/http-status-codes';
 
 // Example: Handling server errors
 try {

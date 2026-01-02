@@ -1,4 +1,8 @@
-# Decorators Utilities
+---
+slug: ../decorator
+---
+
+# Decorator
 
 TypeScript decorators for Express.  
 These utilities provide a declarative way to define Express routes, middleware, parameter extraction, response customization, and access control using TypeScript decorators.
@@ -41,6 +45,7 @@ These utilities provide a declarative way to define Express routes, middleware, 
 - [**`@Log(options?: LogOptions): MethodDecorator & ClassDecorator`**](#log) - Add comprehensive logging to routes.
 - [**`@Injectable(): ClassDecorator`**](#injectable) - Mark a class as injectable for DI.
 - [**`@Inject(targetClass: Constructor): PropertyDecorator`**](#inject) - Inject a dependency into a class property.
+- [**`inject<T>(targetClass: Constructor<T>): T`**](#inject-function) - Retrieve an instance from the DI container.
 
 ---
 
@@ -78,24 +83,36 @@ interface RouteDefinition {
 // Parameter decoration definition for method parameters
 interface ParamDefinition {
   index: number;
-  type: 'query' | 'param' | 'body' | 'req' | 'res' | 'logger' | 'reqHeader';
+  type: 'query' | 'param' | 'body' | 'req' | 'res' | 'logger' | 'reqHeader' | 'reqId' | 'cookie';
   key?: string;
   options?: ParamOptions;
 }
 
 // Parameter options for advanced extraction
 interface ParamOptions<T = any> {
+  /** Base type of the parameter (default: 'string') */
   type?: 'string' | 'number' | 'boolean';
+  /** Data structure type (default: 'single') */
   dataType?: 'single' | 'array' | 'object';
+  /** Delimiter for array types (default: ',') */
   delimiter?: string;
+  /** Default value if parameter is missing */
   default?: T;
+  /** Whether the parameter is required (default: false) */
   required?: boolean;
+  /** Throw error on validation failure (default: true) */
   throwError?: boolean;
+  /** Minimum value for number type */
   min?: number;
+  /** Maximum value for number type */
   max?: number;
+  /** Regex pattern the value must match */
   pattern?: RegExp;
+  /** Name of the pattern for error messages */
   patternName?: string;
+  /** Custom validation function */
   validate?: (value: any) => boolean;
+  /** Custom transformation function */
   transform?: (value: any) => any;
 }
 
@@ -157,7 +174,7 @@ function registerControllers(router: Router, controllers: any[]): void;
 
 ```ts
 import express, { Router } from 'express';
-import { registerControllers } from '@catbee/utils';
+import { registerControllers } from '@catbee/utils/decorator';
 import { ExampleController } from './controllers/example.controller';
 
 const router: Router = express.Router();
@@ -187,7 +204,7 @@ Marks a class as a controller with a base path.
 **Examples:**
 
 ```ts
-import { Controller } from '@catbee/utils';
+import { Controller } from '@catbee/utils/decorator';
 
 @Controller('/api')
 class ExampleController {
@@ -218,7 +235,7 @@ Defines a route for the GET HTTP method.
 **Examples:**
 
 ```ts
-import { Get, Param } from '@catbee/utils';
+import { Get, Param } from '@catbee/utils/decorator';
 
 @Get('/items/:id')
 getItem(@Param('id') id: string) {
@@ -249,7 +266,7 @@ Defines a route for the POST HTTP method.
 **Examples:**
 
 ```ts
-import { Post, Body } from '@catbee/utils';
+import { Post, Body } from '@catbee/utils/decorator';
 
 @Post('/items')
 createItem(@Body() item: any) {
@@ -280,7 +297,7 @@ Defines a route for the PUT HTTP method.
 **Examples:**
 
 ```ts
-import { Put, Param, Body } from '@catbee/utils';
+import { Put, Param, Body } from '@catbee/utils/decorator';
 
 @Put('/items/:id')
 updateItem(@Param('id') id: string, @Body() update: any) {
@@ -311,7 +328,7 @@ Defines a route for the PATCH HTTP method.
 **Examples:**
 
 ```ts
-import { Patch, Param, Body } from '@catbee/utils';
+import { Patch, Param, Body } from '@catbee/utils/decorator';
 
 @Patch('/items/:id')
 patchItem(@Param('id') id: string, @Body() patch: any) {
@@ -342,7 +359,7 @@ Defines a route for the DELETE HTTP method.
 **Examples:**
 
 ```ts
-import { Delete, Param } from '@catbee/utils';
+import { Delete, Param } from '@catbee/utils/decorator';
 
 @Delete('/items/:id')
 deleteItem(@Param('id') id: string) {
@@ -373,7 +390,7 @@ Defines a route for the OPTIONS HTTP method.
 **Examples:**
 
 ```ts
-import { Options } from '@catbee/utils';
+import { Options } from '@catbee/utils/decorator';
 
 @Options('/items')
 optionsItems() {
@@ -404,7 +421,7 @@ Defines a route for the HEAD HTTP method.
 **Examples:**
 
 ```ts
-import { Head, Param } from '@catbee/utils';
+import { Head, Param } from '@catbee/utils/decorator';
 
 @Head('/items/:id')
 headItem(@Param('id') id: string) {
@@ -435,7 +452,7 @@ Defines a route for the TRACE HTTP method.
 **Examples:**
 
 ```ts
-import { Trace } from '@catbee/utils';
+import { Trace } from '@catbee/utils/decorator';
 
 @Trace('/trace')
 traceRoute() {
@@ -466,7 +483,7 @@ Defines a route for the CONNECT HTTP method.
 **Examples:**
 
 ```ts
-import { Connect } from '@catbee/utils';
+import { Connect } from '@catbee/utils/decorator';
 
 @Connect('/connect')
 connectRoute() {
@@ -497,7 +514,7 @@ Applies Express middleware(s) to a route or entire controller.
 **Examples:**
 
 ```ts
-import { Use, Get, Req } from '@catbee/utils';
+import { Use, Get, Req } from '@catbee/utils/decorator';
 import { authMiddleware, loggingMiddleware } from './middlewares';
 
 // Method-level middleware
@@ -543,7 +560,7 @@ Extracts query parameters from the request with optional type conversion and val
 **Examples:**
 
 ```ts
-import { Get, Query } from '@catbee/utils';
+import { Get, Query } from '@catbee/utils/decorator';
 
 @Get('/search')
 search(
@@ -567,7 +584,20 @@ search(
   @Query('sort', {
     transform: (val) => val.toUpperCase(),
     validate: (val) => ['ASC', 'DESC'].includes(val)
-  }) sort: string
+  }) sort: string,
+
+  // With pattern validation
+  @Query('email', {
+    pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+    patternName: 'valid email'
+  }) email: string,
+
+  // With min/max validation for numbers
+  @Query('age', {
+    type: 'number',
+    min: 18,
+    max: 100
+  }) age: number
 ) {
   return { results: [], term, page, ids, minPrice, sort };
 }
@@ -611,7 +641,7 @@ Extracts route parameters from the request with optional type conversion and val
 **Examples:**
 
 ```ts
-import { Get, Param } from '@catbee/utils';
+import { Get, Param } from '@catbee/utils/decorator';
 
 @Get('/users/:id')
 getUser(
@@ -622,7 +652,14 @@ getUser(
   @Param('id', {
     type: 'number',
     validate: (id) => id > 0
-  }) numericId: number
+  }) numericId: number,
+
+  // With min/max validation
+  @Param('id', {
+    type: 'number',
+    min: 1,
+    max: 999999
+  }) validatedId: number
 ) {
   return { userId: id, numericId };
 }
@@ -665,7 +702,7 @@ Extracts body or body property from the request.
 **Examples:**
 
 ```ts
-import { Post, Body } from '@catbee/utils';
+import { Post, Body } from '@catbee/utils/decorator';
 
 @Post('/users')
 createUser(@Body() userData: any) {
@@ -697,7 +734,7 @@ Injects the entire request object.
 **Examples:**
 
 ```ts
-import { Get, Req } from '@catbee/utils';
+import { Get, Req } from '@catbee/utils/decorator';
 
 @Get('/info')
 info(@Req() req: any) {
@@ -724,7 +761,7 @@ Injects the response object.
 **Examples:**
 
 ```ts
-import { Get, Res } from '@catbee/utils';
+import { Get, Res } from '@catbee/utils/decorator';
 
 @Get('/custom')
 custom(@Res() res: any) {
@@ -755,7 +792,7 @@ Extracts headers from the request.
 **Examples:**
 
 ```ts
-import { Get, ReqHeader } from '@catbee/utils';
+import { Get, ReqHeader } from '@catbee/utils/decorator';
 
 @Get('/data')
 getData(
@@ -799,7 +836,7 @@ Extracts cookies from the request.
 **Examples:**
 
 ```ts
-import { Get, ReqCookie } from '@catbee/utils';
+import { Get, ReqCookie } from '@catbee/utils/decorator';
 
 @Get('/data')
 getData(@ReqCookie('session_id') sessionId: string) {
@@ -826,7 +863,7 @@ Injects a logger instance.
 **Examples:**
 
 ```ts
-import { Get, ReqLogger } from '@catbee/utils';
+import { Get, ReqLogger } from '@catbee/utils/decorator';
 
 @Get('/log')
 logData(@ReqLogger() logger: any, @Param('id') id: string) {
@@ -860,7 +897,7 @@ Extracts the request ID from the request headers or the request object.
 **Examples:**
 
 ```ts
-import { Get, ReqId } from '@catbee/utils';
+import { Get, ReqId } from '@catbee/utils/decorator';
 
 @Get('/data')
 getData(@ReqId() reqId: string) {
@@ -891,7 +928,7 @@ Sets a custom HTTP status code for the response.
 **Examples:**
 
 ```ts
-import { Post, HttpCode, Body } from '@catbee/utils';
+import { Post, HttpCode, Body } from '@catbee/utils/decorator';
 
 @Post('/users')
 @HttpCode(201)
@@ -924,7 +961,7 @@ Adds a custom HTTP header to the response.
 **Examples:**
 
 ```ts
-import { Get, Header } from '@catbee/utils';
+import { Get, Header } from '@catbee/utils/decorator';
 
 @Get('/data')
 @Header('Cache-Control', 'max-age=60')
@@ -963,7 +1000,7 @@ Adds multiple custom HTTP headers to the response.
 **Examples:**
 
 ```ts
-import { Get, Headers } from '@catbee/utils';
+import { Get, Headers } from '@catbee/utils/decorator';
 
 // Single header
 @Get('/data')
@@ -1017,7 +1054,7 @@ Runs a function before the route handler.
 **Examples:**
 
 ```ts
-import { Before, Get, Param } from '@catbee/utils';
+import { Before, Get, Param } from '@catbee/utils/decorator';
 
 // Method-level hook
 @Get('/users/:id')
@@ -1064,7 +1101,7 @@ Runs a function after the route handler, can access the result.
 **Examples:**
 
 ```ts
-import { After, Get, Param } from '@catbee/utils';
+import { After, Get, Param } from '@catbee/utils/decorator';
 
 // Method-level hook
 @Get('/users/:id')
@@ -1112,7 +1149,7 @@ Redirects to another URL.
 **Examples:**
 
 ```ts
-import { Get, Redirect } from '@catbee/utils';
+import { Get, Redirect } from '@catbee/utils/decorator';
 
 @Get('/old-path')
 @Redirect('/new-path', 301)
@@ -1148,7 +1185,7 @@ Requires specific roles for accessing a route.
 **Examples:**
 
 ```ts
-import { Roles, Get, Controller } from '@catbee/utils';
+import { Roles, Get, Controller } from '@catbee/utils/decorator';
 
 // Method-level roles
 @Get('/admin/settings')
@@ -1203,7 +1240,7 @@ Adds caching headers to route responses for client-side caching.
 **Examples:**
 
 ```ts
-import { Get, Cache, Controller } from '@catbee/utils';
+import { Get, Cache, Controller } from '@catbee/utils/decorator';
 
 // Method-level cache
 @Get('/static-data')
@@ -1268,7 +1305,7 @@ Applies rate limiting to routes using express-rate-limit.
 **Examples:**
 
 ```ts
-import { Post, RateLimit, Body, Controller } from '@catbee/utils';
+import { Post, RateLimit, Body, Controller } from '@catbee/utils/decorator';
 
 // Method-level rate limit
 @Post('/login')
@@ -1323,7 +1360,7 @@ Sets the content type header for the response.
 **Examples:**
 
 ```ts
-import { Get, ContentType, Controller } from '@catbee/utils';
+import { Get, ContentType, Controller } from '@catbee/utils/decorator';
 
 // Method-level content type
 @Get('/download/pdf')
@@ -1387,7 +1424,7 @@ Adds API versioning to routes with configurable prefix and header options.
 **Examples:**
 
 ```ts
-import { Get, Version, Controller } from '@catbee/utils';
+import { Get, Version, Controller } from '@catbee/utils/decorator';
 
 // Method-level versioning
 @Get('/users')
@@ -1443,7 +1480,7 @@ Sets execution timeout for route handlers to prevent long-running requests.
 **Examples:**
 
 ```ts
-import { Get, Timeout, Controller } from '@catbee/utils';
+import { Get, Timeout, Controller } from '@catbee/utils/decorator';
 
 // Method-level timeout
 @Get('/slow-operation')
@@ -1516,7 +1553,7 @@ Adds comprehensive logging to routes for monitoring and debugging.
 **Examples:**
 
 ```ts
-import { Post, Log, Body, Param, Controller } from '@catbee/utils';
+import { Post, Log, Body, Param, Controller } from '@catbee/utils/decorator';
 
 // Method-level logging
 @Post('/users')
@@ -1569,7 +1606,7 @@ Marks a class as injectable for dependency injection.
 **Examples:**
 
 ```ts
-import { Injectable } from '@catbee/utils';
+import { Injectable } from '@catbee/utils/decorator';
 
 @Injectable()
 class UserService {
@@ -1602,7 +1639,7 @@ Injects a dependency into a class property or via constructor.
 **Examples (Property Injection):**
 
 ```ts
-import { Injectable, Inject, Controller } from '@catbee/utils';
+import { Injectable, Inject, Controller } from '@catbee/utils/decorator';
 
 @Injectable()
 class UserService {
@@ -1621,7 +1658,7 @@ class UserController {
 **Examples (Constructor Injection):**
 
 ```ts
-import { Injectable, Controller } from '@catbee/utils';
+import { Injectable, Controller } from '@catbee/utils/decorator';
 
 @Injectable()
 class UserService {
@@ -1638,7 +1675,7 @@ class UserController {
 
 ---
 
-### `inject()`
+### `inject()` {#inject-function}
 
 A function to manually inject a dependency outside of class decorators.
 
@@ -1655,7 +1692,7 @@ function inject<T>(targetClass: Constructor<T>): T;
 **Examples:**
 
 ```ts
-import { inject, Controller } from '@catbee/utils';
+import { inject, Controller } from '@catbee/utils/decorator';
 
 @Injectable()
 class UserService {
@@ -1693,7 +1730,7 @@ Many decorators can be applied at the controller level and will be inherited by 
 **Examples:**
 
 ```ts
-import { Controller, Get, Post, Cache, Headers, Roles, Version, Use, ContentType, Before, After } from '@catbee/utils';
+import { Controller, Get, Post, Cache, Headers, Roles, Version, Use, ContentType, Before, After } from '@catbee/utils/decorator';
 import { authMiddleware, loggingMiddleware } from './middleware';
 
 @Controller('/api/admin')

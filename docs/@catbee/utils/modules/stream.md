@@ -1,4 +1,8 @@
-# Stream Utilities
+---
+slug: ../stream
+---
+
+# Stream
 
 Helpers for working with Node.js streams, including conversion between buffers/strings and streams, batching, throttling, and line splitting. All methods are fully typed.
 
@@ -6,10 +10,10 @@ Helpers for working with Node.js streams, including conversion between buffers/s
 
 - [**`bufferToStream(data: Buffer | string): Readable`**](#buffertostream) - Converts a buffer or string to a readable stream.
 - [**`streamToBuffer(stream: Readable): Promise<Buffer>`**](#streamtobuffer) - Converts a readable stream to a buffer.
-- [**`streamToString(stream: Readable, encoding?: BufferEncoding): Promise<string>`**](#streamtostring) - Converts a readable stream to a string.
+- [**`streamToString(stream: Readable, encoding = 'utf8'): Promise<string>`**](#streamtostring) - Converts a readable stream to a string.
 - [**`createThrottleStream(bytesPerSecond: number): Transform`**](#createthrottlestream) - Creates a transform stream that limits the rate of data flow.
-- [**`createBatchStream(size: number, options?: { objectMode?: boolean }): Transform`**](#createbatchstream) - Creates a transform stream that batches data into chunks of specified size.
-- [**`createLineStream(options?: { encoding?: BufferEncoding; includeNewlines?: boolean }): Transform`**](#createlinestream) - Creates a transform stream that splits text data by newlines.
+- [**`createBatchStream(size: number, options = {}): Transform`**](#createbatchstream) - Creates a transform stream that batches data into chunks of specified size.
+- [**`createLineStream(options = {}): Transform`**](#createlinestream) - Creates a transform stream that splits text data by newlines.
 
 ---
 
@@ -55,7 +59,7 @@ function bufferToStream(data: Buffer | string): Readable;
 **Example:**
 
 ```ts
-import { bufferToStream } from '@catbee/utils';
+import { bufferToStream } from '@catbee/utils/stream';
 import fs from 'fs';
 
 // Convert string to stream
@@ -90,7 +94,7 @@ async function streamToBuffer(stream: Readable): Promise<Buffer>;
 **Example:**
 
 ```ts
-import { streamToBuffer } from '@catbee/utils';
+import { streamToBuffer } from '@catbee/utils/stream';
 import fs from 'fs';
 
 async function processFile() {
@@ -136,7 +140,7 @@ async function streamToString(stream: Readable, encoding: BufferEncoding = 'utf8
 **Example:**
 
 ```ts
-import { streamToString } from '@catbee/utils';
+import { streamToString } from '@catbee/utils/stream';
 import fs from 'fs';
 import { request } from 'https';
 
@@ -186,7 +190,7 @@ function createThrottleStream(bytesPerSecond: number): Transform;
 **Example:**
 
 ```ts
-import { createThrottleStream } from '@catbee/utils';
+import { createThrottleStream } from '@catbee/utils/stream';
 import fs from 'fs';
 
 // Limit download speed to simulate slow connection for testing
@@ -216,8 +220,8 @@ function createBatchStream(size: number, options: { objectMode?: boolean } = {})
 **Parameters:**
 
 - `size` - Size of each batch (items for object mode, bytes for binary mode)
-- `options` - Stream options
-  - `objectMode` - Whether to operate in object mode (default: false)
+- `options` - Stream options (default: {})
+  - `objectMode` - Whether to operate in object mode (default: true)
 
 **Returns:**
 
@@ -226,7 +230,7 @@ function createBatchStream(size: number, options: { objectMode?: boolean } = {})
 **Example:**
 
 ```ts
-import { createBatchStream, createLineStream } from '@catbee/utils';
+import { createBatchStream, createLineStream } from '@catbee/utils/stream';
 import fs from 'fs';
 
 // Process a large log file in batches of 100 lines
@@ -268,7 +272,7 @@ function createLineStream(
 
 **Parameters:**
 
-- `options` - Options for the line stream
+- `options` - Options for the line stream (default: {})
   - `encoding` - Character encoding (default: 'utf8')
   - `includeNewlines` - Whether to include newline characters in output (default: false)
 
@@ -279,7 +283,7 @@ function createLineStream(
 **Example:**
 
 ```ts
-import { createLineStream } from '@catbee/utils';
+import { createLineStream } from '@catbee/utils/stream';
 import fs from 'fs';
 
 // Count lines in a file

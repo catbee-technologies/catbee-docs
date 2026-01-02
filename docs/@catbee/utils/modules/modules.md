@@ -4,30 +4,30 @@ A comprehensive set of utility functions for Node.js and TypeScript projects. In
 
 ## Modules
 
-- [Array Utilities](array) – Array manipulation and transformation functions
-- [Async Utilities](async) – Promise helpers, concurrency, and timing
-- [Cache Utilities](cache) – In-memory caching with TTL support
-- [Context Store](context-store) – Per-request context using AsyncLocalStorage
-- [Crypto Utilities](crypto) – Hashing, encryption, and token functions
-- [Date Utilities](date) – Date and time manipulation functions
-- [Decorators Utilities](decorators) – TypeScript decorators for Express
-- [Directory Utilities](directory) – Directory and file system helpers
-- [Environment Utilities](environment) – Environment variable management
-- [Exception Utilities](exception) – HTTP and general error handling
-- [File System Utilities](file-system) – File operations and utilities
-- [HTTP Status Codes](http-status-codes) – Typed HTTP status codes
-- [ID Utilities](id) – UUID and ID generation functions
-- [Logger Utilities](logger) – Structured logging with Pino
-- [Middleware Utilities](middleware) – Express middleware collection
-- [Object Utilities](object) – Object manipulation and deep merge
-- [Performance Utilities](performance) – Timing, memoization, and memory tracking
-- [Request Utilities](request) – HTTP request parameter parsing and validation
-- [Response Utilities](response) – Standardized API response formatting
-- [Stream Utilities](stream) – Stream conversion, batching, throttling, and line splitting
-- [String Utilities](string) – String formatting, casing, masking, and transformation
-- [Type Utilities](type) – Type checking, conversion, and type guards
-- [URL Utilities](url) – URL parsing, query manipulation, and normalization
-- [Validate Utilities](validation) – Input validation functions
+- [Array](../array) – Array manipulation and transformation functions
+- [Async](../async) – Promise helpers, concurrency, and timing
+- [Cache](../cache) – In-memory caching with TTL support
+- [Context Store](../context-store) – Per-request context using AsyncLocalStorage
+- [Crypto](../crypto) – Hashing, encryption, and token functions
+- [Date](../date) – Date and time manipulation functions
+- [Decorator](../decorator) – TypeScript decorators for Express
+- [Directory](../directory) – Directory and file system helpers
+- [Environment](../env) – Environment variable management
+- [Exception](../exception) – HTTP and general error handling
+- [File System](../fs) – File operations and utilities
+- [HTTP Status Codes](../http-status-codes) – Typed HTTP status codes
+- [ID](../id) – UUID and ID generation functions
+- [Logger](../logger) – Structured logging with Pino
+- [Middleware](../middleware) – Express middleware collection
+- [Object](../object) – Object manipulation and deep merge
+- [Performance](../performance) – Timing, memoization, and memory tracking
+- [Request](../request) – HTTP request parameter parsing and validation
+- [Response](../response) – Standardized API response formatting
+- [Stream](../stream) – Stream conversion, batching, throttling, and line splitting
+- [String](../string) – String formatting, casing, masking, and transformation
+- [Type](../type) – Type checking, conversion, and type guards
+- [URL](../url) – URL parsing, query manipulation, and normalization
+- [Validation](../validation) – Input validation functions
 
 ---
 
