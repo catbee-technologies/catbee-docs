@@ -1,4 +1,8 @@
-# Directory Utilities
+---
+slug: ../directory
+---
+
+# Directory
 
 Helpers for file and directory operations.  
 These utilities provide async functions for creating, deleting, copying, moving, listing, watching, and analyzing directories and files.
@@ -34,14 +38,13 @@ These utilities provide async functions for creating, deleting, copying, moving,
 export interface FindFilesByPatternOptions {
   cwd?: string;
   dot?: boolean;
-  nodir?: boolean;
 }
 
 // Type for createTempDir options
 export interface CreateTempDirOptions {
   prefix?: string;
   parentDir?: string;
-  cleanup?: boolean;
+  cleanup?: boolean; // default: false
 }
 
 // Type for getDirStats result
@@ -88,7 +91,7 @@ function ensureDir(dirPath: string): Promise<void>;
 **Examples:**
 
 ```ts
-import { ensureDir } from '@catbee/utils';
+import { ensureDir } from '@catbee/utils/directory';
 
 await ensureDir('./data/logs');
 ```
@@ -117,7 +120,7 @@ function listFiles(dirPath: string, recursive?: boolean): Promise<string[]>;
 **Examples:**
 
 ```ts
-import { listFiles } from '@catbee/utils';
+import { listFiles } from '@catbee/utils/directory';
 
 const files = await listFiles('./data', true); // recursive
 ```
@@ -145,7 +148,7 @@ function deleteDirRecursive(dirPath: string): Promise<void>;
 **Examples:**
 
 ```ts
-import { deleteDirRecursive } from '@catbee/utils';
+import { deleteDirRecursive } from '@catbee/utils/directory';
 
 await deleteDirRecursive('./old-backups');
 ```
@@ -173,7 +176,7 @@ function isDirectory(pathStr: string): Promise<boolean>;
 **Examples:**
 
 ```ts
-import { isDirectory } from '@catbee/utils';
+import { isDirectory } from '@catbee/utils/directory';
 
 const isDir = await isDirectory('./data');
 ```
@@ -202,7 +205,7 @@ function copyDir(src: string, dest: string): Promise<void>;
 **Examples:**
 
 ```ts
-import { copyDir } from '@catbee/utils';
+import { copyDir } from '@catbee/utils/directory';
 
 await copyDir('./src', './backup/src');
 ```
@@ -231,7 +234,7 @@ function moveDir(src: string, dest: string): Promise<void>;
 **Examples:**
 
 ```ts
-import { moveDir } from '@catbee/utils';
+import { moveDir } from '@catbee/utils/directory';
 
 await moveDir('./temp', './archive/temp');
 ```
@@ -259,7 +262,7 @@ function emptyDir(dirPath: string): Promise<void>;
 **Examples:**
 
 ```ts
-import { emptyDir } from '@catbee/utils';
+import { emptyDir } from '@catbee/utils/directory';
 
 await emptyDir('./cache');
 ```
@@ -287,7 +290,7 @@ function getDirSize(dirPath: string): Promise<number>;
 **Examples:**
 
 ```ts
-import { getDirSize } from '@catbee/utils';
+import { getDirSize } from '@catbee/utils/directory';
 
 const size = await getDirSize('./uploads');
 ```
@@ -316,7 +319,7 @@ function watchDir(dirPath: string, callback: (eventType: 'rename' | 'change', fi
 **Examples:**
 
 ```ts
-import { watchDir } from '@catbee/utils';
+import { watchDir } from '@catbee/utils/directory';
 
 const stop = watchDir('./data', (event, file) => {
   console.log(event, file);
@@ -342,7 +345,6 @@ function findFilesByPattern(pattern: string, options?: FindFilesByPatternOptions
 - `options`: Optional settings:
   - `cwd`: The base directory to search (default: process.cwd()).
   - `dot`: Whether to include dotfiles (default: false).
-  - `nodir`: Whether to exclude directories from results (default: true).
 
 **Returns:**
 
@@ -351,7 +353,7 @@ function findFilesByPattern(pattern: string, options?: FindFilesByPatternOptions
 **Examples:**
 
 ```ts
-import { findFilesByPattern } from '@catbee/utils';
+import { findFilesByPattern } from '@catbee/utils/directory';
 
 const jpgs = await findFilesByPattern('**/*.jpg', { cwd: './images' });
 ```
@@ -380,7 +382,7 @@ function getSubdirectories(dirPath: string, recursive?: boolean): Promise<string
 **Examples:**
 
 ```ts
-import { getSubdirectories } from '@catbee/utils';
+import { getSubdirectories } from '@catbee/utils/directory';
 
 const dirs = await getSubdirectories('./projects', true); // recursive
 ```
@@ -408,7 +410,7 @@ function ensureEmptyDir(dirPath: string): Promise<void>;
 **Examples:**
 
 ```ts
-import { ensureEmptyDir } from '@catbee/utils';
+import { ensureEmptyDir } from '@catbee/utils/directory';
 await ensureEmptyDir('./temp');
 ```
 
@@ -429,7 +431,7 @@ function createTempDir(options?: CreateTempDirOptions): Promise<{ path: string; 
 - `options`: Optional settings:
   - `prefix`: Prefix for the temp directory name (default: 'tmp-').
   - `parentDir`: Parent directory to create the temp dir in (default: system temp dir).
-  - `cleanup`: Whether to provide a cleanup function (default: true).
+  - `cleanup`: Whether to register cleanup on process exit (default: false).
 
 **Returns:**
 
@@ -440,7 +442,7 @@ function createTempDir(options?: CreateTempDirOptions): Promise<{ path: string; 
 **Examples:**
 
 ```ts
-import { createTempDir } from '@catbee/utils';
+import { createTempDir } from '@catbee/utils/directory';
 
 const { path, cleanup } = await createTempDir({ prefix: 'session-' });
 // ...use path...
@@ -471,7 +473,7 @@ function findNewestFile(dirPath: string, recursive?: boolean): Promise<string | 
 **Examples:**
 
 ```ts
-import { findNewestFile } from '@catbee/utils';
+import { findNewestFile } from '@catbee/utils/directory';
 
 const newest = await findNewestFile('./logs', true);
 ```
@@ -500,7 +502,7 @@ function findOldestFile(dirPath: string, recursive?: boolean): Promise<string | 
 **Examples:**
 
 ```ts
-import { findOldestFile } from '@catbee/utils';
+import { findOldestFile } from '@catbee/utils/directory';
 
 const oldest = await findOldestFile('./logs', true);
 ```
@@ -532,7 +534,7 @@ function findInDir(dirPath: string, predicate: (path: string, stat: fs.Stats) =>
 **Examples:**
 
 ```ts
-import { findInDir } from '@catbee/utils';
+import { findInDir } from '@catbee/utils/directory';
 
 const jpgs = await findInDir('./content', (p, stat) => p.endsWith('.jpg'), true);
 ```
@@ -562,7 +564,7 @@ function watchDirRecursive(dirPath: string, callback: (eventType: 'rename' | 'ch
 **Examples:**
 
 ```ts
-import { watchDirRecursive } from '@catbee/utils';
+import { watchDirRecursive } from '@catbee/utils/directory';
 
 const stop = await watchDirRecursive('./data', (event, file) => {
   console.log(event, file);
@@ -596,7 +598,7 @@ function getDirStats(dirPath: string): Promise<DirStats>;
 **Examples:**
 
 ```ts
-import { getDirStats } from '@catbee/utils';
+import { getDirStats } from '@catbee/utils/directory';
 
 const stats = await getDirStats('./data');
 console.log(stats.fileCount, stats.dirCount, stats.totalSize);
@@ -628,7 +630,7 @@ function walkDir(dirPath: string, options: WalkDirOptions): Promise<void>;
 **Examples:**
 
 ```ts
-import { walkDir } from '@catbee/utils';
+import { walkDir } from '@catbee/utils/directory';
 
 await walkDir('./data', {
   visitorFn: entry => {

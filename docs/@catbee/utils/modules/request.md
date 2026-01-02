@@ -1,14 +1,19 @@
-# Request Utilities
+---
+slug: ../request
+---
+
+# Request
 
 Helpers for parsing and validating HTTP request parameters. Includes utilities for parsing numbers and booleans, extracting pagination, sorting, and filter parameters from query objects. All methods are fully typed.
 
 ## API Summary
 
-- [**`parseNumberParam(value: string | undefined, options?: ValidationOptions)`**](#parsenumberparam) - Safely parses a string parameter to a number.
-- [**`parseBooleanParam(value: string | undefined, options?: ValidationOptions)`**](#parsebooleanparam) - Safely parses a string parameter to a boolean.
-- [**`extractPaginationParams(query: Record<string, string | string[]>, defaultPage?: number, defaultLimit?: number, maxLimitSize?: number)`**](#extractpaginationparams) - Extracts pagination parameters from query.
-- [**`extractSortParams(query: Record<string, string | string[]>, allowedFields: string[], defaultSort?: { sortBy: string; sortOrder: 'asc' | 'desc' })`**](#extractsortparams) - Extracts sorting parameters from query.
-- [**`extractFilterParams(query: Record<string, string | string[]>, allowedFilters: string[])`**](#extractfilterparams) - Extracts filter parameters from query.
+- [**`getPaginationParams<T>(req: Request): WithPagination<T>`**](#getpaginationparams) - Extracts pagination, sorting, and search params from a request.
+- [**`parseNumberParam(value: string | undefined, options = {})`**](#parsenumberparam) - Safely parses a string parameter to a number.
+- [**`parseBooleanParam(value: string | undefined, options = {})`**](#parsebooleanparam) - Safely parses a string parameter to a boolean.
+- [**`extractPaginationParams(query, defaultPage = 1, defaultLimit = 20, maxLimitSize = 100)`**](#extractpaginationparams) - Extracts pagination parameters from query.
+- [**`extractSortParams(query, allowedFields, defaultSort?)`**](#extractsortparams) - Extracts sorting parameters from query.
+- [**`extractFilterParams(query, allowedFilters)`**](#extractfilterparams) - Extracts filter parameters from query.
 
 ---
 
@@ -27,11 +32,58 @@ export interface ValidationResult<T> {
   value: T | null;
   error?: string;
 }
+
+export interface WithPagination<T> {
+  page: number;
+  limit: number;
+  sortBy: string;
+  sortOrder: 'asc' | 'desc';
+  search?: string;
+}
 ```
 
 ---
 
 ## Function Documentation & Usage Examples
+
+### `getPaginationParams()`
+
+Extracts pagination, sorting, and optional search parameters from an Express request.
+
+**Method Signature:**
+
+```ts
+function getPaginationParams<T = {}>(req: Request): WithPagination<T>;
+```
+
+**Parameters:**
+
+- `req`: The Express request object.
+
+**Returns:**
+
+- An object containing:
+  - `page`: The validated page number (default: 1).
+  - `limit`: The validated limit number (default: 20, max: 100).
+  - `sortBy`: The field to sort by (default: 'createdAt').
+  - `sortOrder`: The sort direction (default: 'desc').
+  - `search`: Optional search string from query.
+  - Additional query parameters as type T.
+
+**Example:**
+
+```ts
+import { getPaginationParams } from '@catbee/utils/request';
+
+app.get('/api/users', (req, res) => {
+  const params = getPaginationParams(req);
+  // params = { page: 1, limit: 20, sortBy: 'createdAt', sortOrder: 'desc', search: '...' }
+  const users = await userService.findAll(params);
+  res.json(users);
+});
+```
+
+---
 
 ### `parseNumberParam()`
 
@@ -40,13 +92,13 @@ Safely parses a string parameter to a number, with validation and error handling
 **Method Signature:**
 
 ```ts
-function parseNumberParam(value: string | undefined, options?: ValidationOptions): ValidationResult<number>;
+function parseNumberParam(value: string | undefined, options: ValidationOptions = {}): ValidationResult<number>;
 ```
 
 **Parameters:**
 
 - `value`: The string value to parse.
-- `options`: Optional validation options:
+- `options`: Optional validation options (default: {}):
   - `throwOnError`: If true, throws an error on invalid input.
   - `errorMessage`: Custom error message for invalid input.
   - `defaultValue`: Default value to return if input is invalid or undefined.
@@ -62,7 +114,7 @@ function parseNumberParam(value: string | undefined, options?: ValidationOptions
 **Examples:**
 
 ```ts
-import { parseNumberParam } from '@catbee/utils';
+import { parseNumberParam } from '@catbee/utils/request';
 
 const result = parseNumberParam(req.query.id, { required: true });
 if (result.isValid) {
@@ -79,13 +131,13 @@ Safely parses a string parameter to a boolean, supporting various formats.
 **Method Signature:**
 
 ```ts
-function parseBooleanParam(value: string | undefined, options?: ValidationOptions): ValidationResult<boolean>;
+function parseBooleanParam(value: string | undefined, options: ValidationOptions = {}): ValidationResult<boolean>;
 ```
 
 **Parameters:**
 
 - `value`: The string value to parse.
-- `options`: Optional validation options:
+- `options`: Optional validation options (default: {}):
   - `throwOnError`: If true, throws an error on invalid input.
   - `errorMessage`: Custom error message for invalid input.
   - `defaultValue`: Default value to return if input is invalid or undefined.
@@ -101,7 +153,7 @@ function parseBooleanParam(value: string | undefined, options?: ValidationOption
 **Examples:**
 
 ```ts
-import { parseBooleanParam } from '@catbee/utils';
+import { parseBooleanParam } from '@catbee/utils/request';
 
 const result = parseBooleanParam(req.query.active, { defaultValue: false });
 if (result.isValid) {
@@ -121,7 +173,7 @@ Extracts validated pagination parameters (`page`, `limit`) from query object.
 function extractPaginationParams(
   query: Record<string, string | string[]>,
   defaultPage: number = 1,
-  defaultLimit: number = 10,
+  defaultLimit: number = 20,
   maxLimitSize: number = 100
 ): { page: number; limit: number };
 ```
@@ -129,9 +181,9 @@ function extractPaginationParams(
 **Parameters:**
 
 - `query`: The query object from which to extract parameters.
-- `defaultPage`: Default page number if not provided (default is 1).
-- `defaultLimit`: Default limit if not provided (default is 10).
-- `maxLimitSize`: Maximum allowed limit size (default is 100).
+- `defaultPage`: Default page number if not provided (default: 1).
+- `defaultLimit`: Default limit if not provided (default: 20).
+- `maxLimitSize`: Maximum allowed limit size (default: 100).
 
 **Returns:**
 
@@ -142,7 +194,7 @@ function extractPaginationParams(
 **Example:**
 
 ```ts
-import { extractPaginationParams } from '@catbee/utils';
+import { extractPaginationParams } from '@catbee/utils/request';
 
 const { page, limit } = extractPaginationParams(req.query, 1, 20, 100);
 ```
@@ -156,10 +208,12 @@ Extracts sorting parameters (`sortBy`, `sortOrder`) from query object, validatin
 **Method Signature:**
 
 ```ts
+const DEFAULT_SORT = { sortBy: 'createdAt', sortOrder: 'desc' };
+
 function extractSortParams(
   query: Record<string, string | string[]>,
   allowedFields: string[],
-  defaultSort?: { sortBy: string; sortOrder: 'asc' | 'desc' }
+  defaultSort: { sortBy: string; sortOrder: 'asc' | 'desc' } = DEFAULT_SORT
 ): { sortBy: string; sortOrder: 'asc' | 'desc' };
 ```
 
@@ -167,7 +221,7 @@ function extractSortParams(
 
 - `query`: The query object from which to extract parameters.
 - `allowedFields`: Array of allowed fields for sorting.
-- `defaultSort`: Optional default sorting if parameters are not provided.
+- `defaultSort`: Optional default sorting if parameters are not provided (default: `{ sortBy: 'createdAt', sortOrder: 'desc' }`).
 
 **Returns:**
 
@@ -178,7 +232,7 @@ function extractSortParams(
 **Example:**
 
 ```ts
-import { extractSortParams } from '@catbee/utils';
+import { extractSortParams } from '@catbee/utils/request';
 
 const { sortBy, sortOrder } = extractSortParams(req.query, ['name', 'createdAt'], { sortBy: 'name', sortOrder: 'asc' });
 ```
@@ -210,7 +264,7 @@ function extractFilterParams(
 **Example:**
 
 ```ts
-import { extractFilterParams } from '@catbee/utils';
+import { extractFilterParams } from '@catbee/utils/request';
 
 const filters = extractFilterParams(req.query, ['status', 'type']);
 ```

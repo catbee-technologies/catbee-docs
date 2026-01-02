@@ -1,3 +1,7 @@
+---
+slug: ../context-store
+---
+
 # Context Store
 
 Per-request context using AsyncLocalStorage. Provides a type-safe API for storing and retrieving request-scoped data (such as request ID, logger, user, etc.) across async calls. Includes helpers for Express integration, context extension, and symbol-based keys. All methods are fully typed.
@@ -21,6 +25,8 @@ Other exports:
 
 - [**`StoreKeys`**](#interface--types) – Predefined symbols for context keys.
 - [**`getRequestId(): string | undefined`**](#getrequestid) – Retrieves the current request ID from context.
+- [**`getFromContext<T>(key: symbol): T | undefined`**](#getfromcontext) – Type-safe getter for common context values.
+- [**`TypedContextKey<T>`**](#typedcontextkey) – Type-safe wrapper class for accessing and modifying context values.
 
 ---
 
@@ -52,7 +58,7 @@ export interface Store {
 ### Express Middleware
 
 ```ts
-import { ContextStore, StoreKeys, getLogger } from '@catbee/utils';
+import { ContextStore, StoreKeys, getLogger } from '@catbee/utils/context-store';
 import express from 'express';
 import crypto from 'crypto';
 
@@ -120,7 +126,7 @@ getInstance(): AsyncLocalStorage<Store>
 **Examples:**
 
 ```ts
-import { ContextStore } from '@catbee/utils';
+import { ContextStore } from '@catbee/utils/context-store';
 
 const storage = ContextStore.getInstance();
 const store = storage.getStore();
@@ -145,7 +151,7 @@ getAll(): Store | undefined
 **Examples:**
 
 ```ts
-import { ContextStore } from '@catbee/utils';
+import { ContextStore } from '@catbee/utils/context-store';
 
 const allValues = ContextStore.getAll();
 ```
@@ -174,7 +180,7 @@ run(store: Store, callback: () => T): T
 **Examples:**
 
 ```ts
-import { ContextStore } from '@catbee/utils';
+import { ContextStore } from '@catbee/utils/context-store';
 
 ContextStore.run({ [StoreKeys.REQUEST_ID]: 'id' }, () => {
   // Context is active here
@@ -200,10 +206,14 @@ set<T>(key: symbol, value: T): void
 - `key`: A symbol key to identify the value.
 - `value`: The value to store.
 
+**Throws:**
+
+- `Error` if called outside an active context (not within a `.run()` call).
+
 **Examples:**
 
 ```ts
-import { ContextStore } from '@catbee/utils';
+import { ContextStore } from '@catbee/utils/context-store';
 
 ContextStore.set(StoreKeys.REQUEST_ID, 'id');
 ContextStore.set(StoreKeys.USER, {
@@ -235,7 +245,7 @@ get<T>(key: symbol): T | undefined
 **Examples:**
 
 ```ts
-import { ContextStore } from '@catbee/utils';
+import { ContextStore } from '@catbee/utils/context-store';
 
 const user = ContextStore.get<{ id: number; name: string }>(StoreKeys.USER);
 ```
@@ -261,7 +271,7 @@ has(key: symbol): boolean
 - `true` if the key exists, otherwise `false`.
 
 ```ts
-import { ContextStore } from '@catbee/utils';
+import { ContextStore } from '@catbee/utils/context-store';
 
 if (ContextStore.has(StoreKeys.USER)) {
   // user exists in context
@@ -288,10 +298,14 @@ delete(key: symbol): boolean
 
 - `true` if the key was found and deleted, otherwise `false`.
 
+**Throws:**
+
+- `Error` if called outside an active context.
+
 **Examples:**
 
 ```ts
-import { ContextStore } from '@catbee/utils';
+import { ContextStore } from '@catbee/utils/context-store';
 
 ContextStore.delete(StoreKeys.USER);
 ```
@@ -312,10 +326,14 @@ patch(values: Partial<Record<symbol, unknown>>): void
 
 - `values`: An object containing key-value pairs to update in the context.
 
+**Throws:**
+
+- `Error` if called outside an active context.
+
 **Examples:**
 
 ```ts
-import { ContextStore } from '@catbee/utils';
+import { ContextStore } from '@catbee/utils/context-store';
 
 ContextStore.patch({
   [StoreKeys.USER]: { id: 456, name: 'Bob' },
@@ -345,14 +363,21 @@ withValue<T>(key: symbol, value: unknown, callback: () => T): T
 
 - The return value of the callback.
 
+**Throws:**
+
+- `Error` if called outside an active context.
+
 **Examples:**
 
 ```ts
-import { ContextStore } from '@catbee/utils';
+import { ContextStore } from '@catbee/utils/context-store';
 
 ContextStore.withValue(StoreKeys.USER, { id: 789 }, () => {
   // user is temporarily set here
+  const user = ContextStore.get(StoreKeys.USER);
+  console.log(user); // { id: 789 }
 });
+// Original value is restored after callback completes
 ```
 
 ---
@@ -407,7 +432,7 @@ createExpressMiddleware(initialValuesFactory?: (req: any) => Partial<Record<symb
 - An Express middleware function.
 
 ```ts
-import { ContextStore } from '@catbee/utils';
+import { ContextStore } from '@catbee/utils/context-store';
 import crypto from 'crypto';
 
 app.use(
@@ -433,8 +458,98 @@ getRequestId(): string | undefined
 
 - The current request ID or `undefined` if not set.
 
+**Examples:**
+
 ```ts
-import { getRequestId } from '@catbee/utils';
+import { getRequestId } from '@catbee/utils/context-store';
 
 const requestId = getRequestId();
+```
+
+---
+
+### `getFromContext()`
+
+Type-safe getter for common context values.
+
+**Method Signature:**
+
+```ts
+getFromContext<T>(key: symbol): T | undefined
+```
+
+**Parameters:**
+
+- `key`: The store key symbol to retrieve.
+
+**Returns:**
+
+- The typed value from the store or `undefined` if not found.
+
+**Examples:**
+
+```ts
+import { getFromContext, StoreKeys } from '@catbee/utils/context-store';
+
+const user = getFromContext<{ id: number; name: string }>(StoreKeys.USER);
+const logger = getFromContext<Logger>(StoreKeys.LOGGER);
+```
+
+---
+
+### `TypedContextKey`
+
+Type-safe wrapper class for accessing and modifying context values with specific types.
+
+**Class Definition:**
+
+```ts
+class TypedContextKey<T> {
+  constructor(symbol: symbol, defaultValue?: T);
+  get(): T | undefined;
+  set(value: T): void;
+  exists(): boolean;
+  delete(): boolean;
+}
+```
+
+**Constructor Parameters:**
+
+- `symbol`: The unique symbol for this key.
+- `defaultValue`: Optional default value if key is not found.
+
+**Methods:**
+
+- **`get()`**: Gets the current value for this key, or the default value if not found.
+- **`set(value: T)`**: Sets the value for this key.
+- **`exists()`**: Checks if this key exists in the context.
+- **`delete()`**: Deletes this key from the context.
+
+**Examples:**
+
+```ts
+import { TypedContextKey, StoreKeys } from '@catbee/utils/context-store';
+
+interface User {
+  id: number;
+  name: string;
+  email: string;
+}
+
+// Create a typed key with type safety
+const userKey = new TypedContextKey<User>(StoreKeys.USER);
+
+// Type-safe operations
+userKey.set({ id: 1, name: 'Alice', email: 'alice@example.com' });
+const user = userKey.get(); // Type: User | undefined
+
+if (userKey.exists()) {
+  console.log('User is in context');
+}
+
+userKey.delete();
+
+// With default value
+const requestIdKey = new TypedContextKey<string>(StoreKeys.REQUEST_ID, 'default-id');
+const id = requestIdKey.get(); // Returns 'default-id' if not set
 ```

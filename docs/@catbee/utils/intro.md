@@ -1,5 +1,5 @@
 ---
-sidebar_position: 1
+sidebar_position: 0
 ---
 
 # Introduction
@@ -53,33 +53,90 @@ npm i @catbee/utils
 ## ⚡ Quick Start
 
 ```ts
-import { chunk, sleep, getLogger, uuid, isEmail } from '@catbee/utils';
+import { ServerConfigBuilder, ExpressServer } from '@catbee/utils/server';
+import { Router } from 'express';
 
-// Chunk an array
-const result = chunk([1, 2, 3, 4, 5], 2); // [[1, 2], [3, 4], [5]]
+const config = new ServerConfigBuilder()
+  .withPort(3000)
+  .withCors({ origin: '*' })
+  .enableRateLimit({ max: 50, windowMs: 60000 })
+  .enableRequestLogging({ ignorePaths: ['/healthz', '/metrics'] })
+  .withHealthCheck({ path: '/health', detailed: true })
+  .enableOpenApi('./openapi.yaml', { mountPath: '/docs' })
+  .withGlobalHeaders({ 'X-Powered-By': 'Catbee' })
+  .withGlobalPrefix('/api')
+  .withRequestId({ headerName: 'X-Request-Id', exposeHeader: true })
+  .enableResponseTime({ addHeader: true, logOnComplete: true })
+  .build();
 
-// Sleep for 1 second
-await sleep(1000);
+const server = new ExpressServer(config, {
+  beforeInit: srv => console.log('Initializing server...'),
+  afterInit: srv => console.log('Server initialized'),
+  beforeStart: app => console.log('Starting server...'),
+  afterStart: srv => console.log('Server started!'),
+  beforeStop: srv => console.log('Stopping server...'),
+  afterStop: () => console.log('Server stopped.'),
+  onRequest: (req, res, next) => {
+    console.log('Processing request:', req.method, req.url);
+    next();
+  },
+  onResponse: (req, res, next) => {
+    res.setHeader('X-Processed-By', 'ExpressServer');
+    next();
+  },
+  onError: (err, req, res, next) => {
+    console.error('Custom error handler:', err);
+    res.status(500).json({ error: 'Custom error: ' + err.message });
+  }
+});
 
-// Log with context
-getLogger().info('App started');
+// Register routes
+const router = server.createRouter('/users');
+router.get('/', (req, res) => res.json({ users: [] }));
+router.post('/', (req, res) => res.json({ created: true }));
 
-// Generate a secure UUID
-console.log(uuid()); // e.g. 2a563ec1-caf6-4fe2-b60c-9cf7fb1bdb7f
+// Or set a base router for all routes
+const baseRouter = Router();
+baseRouter.use('/users', router);
+server.setBaseRouter(baseRouter);
 
-// Basic validation
-console.log(isEmail('user@example.com')); // true
+server.registerHealthCheck('database', async () => await checkDatabaseConnection());
+server.useMiddleware(loggingMiddleware, errorMiddleware);
+
+await server.start();
+server.enableGracefulShutdown();
 ```
 
 ---
 
-## 🏁 Usage Philosophy
+## 🏁 Usage
 
-Import only what you need to keep your bundle size small and your codebase clean:
+This library supports flexible import patterns to suit your needs:
+
+### Root-level imports (everything available)
+
+Import any utility directly from the root package:
 
 ```ts
-import { chunk, sleep, TTLCache, getLogger } from '@catbee/utils';
+import { chunk, sleep, TTLCache, getLogger, ServerConfigBuilder } from '@catbee/utils';
 ```
+
+### Module-level imports (scoped imports)
+
+Import only from specific modules for better organization and smaller bundles:
+
+```ts
+// Import only server-related exports
+import { ServerConfigBuilder, ExpressServer } from '@catbee/utils/server';
+
+// Import only date utilities
+import { formatDate, addDays, DateBuilder } from '@catbee/utils/date';
+
+// Import only crypto utilities
+import { hashPassword, verifyPassword } from '@catbee/utils/crypto';
+```
+
+Both import styles are fully supported and tree-shakable. Use whichever fits your project structure best!
 
 ---
 
@@ -95,7 +152,7 @@ Global configuration management with environment variable support:
 
 Enterprise-grade Express server utilities:
 
-- [Express Server](express-server) – Fast, secure, and scalable server setup
+- [Express Server](server) – Fast, secure, and scalable server setup
 
 ---
 
@@ -103,30 +160,31 @@ Enterprise-grade Express server utilities:
 
 Explore the full suite of utilities, each with detailed API docs and examples:
 
-- [Array Utilities](modules/array) – Advanced array manipulation
-- [Async Utilities](modules/async) – Promise helpers, concurrency, timing
-- [Cache Utilities](modules/cache) – In-memory caching with TTL
-- [Context Store](modules/context-store) – Per-request context via AsyncLocalStorage
-- [Crypto Utilities](modules/crypto) – Hashing, encryption, tokens
-- [Date Utilities](modules/date) – Date/time manipulation
-- [Decorators Utilities](modules/decorators) – TypeScript decorators for Express
-- [Directory Utilities](modules/directory) – Directory and file system helpers
-- [Environment Utilities](modules/environment) – Env variable management
-- [Exception Utilities](modules/exception) – HTTP and error handling
-- [File System Utilities](modules/file-system) – File operations
-- [HTTP Status Codes](modules/http-status-codes) – Typed status codes
-- [ID Utilities](modules/id) – UUID and ID generation
-- [Logger Utilities](modules/logger) – Structured logging with Pino
-- [Middleware Utilities](modules/middleware) – Express middleware collection
-- [Object Utilities](modules/object) – Deep merge, flatten, pick/omit, etc.
-- [Performance Utilities](modules/performance) – Timing, memoization, memory tracking
-- [Request Utilities](modules/request) – HTTP request parameter parsing/validation
-- [Response Utilities](modules/response) – Standardized API response formatting
-- [Stream Utilities](modules/stream) – Stream conversion, batching, throttling, line splitting
-- [String Utilities](modules/string) – Casing, masking, slugifying, formatting
-- [Type Utilities](modules/type) – Type checking, conversion, guards
-- [URL Utilities](modules/url) – URL parsing, query manipulation, normalization
-- [Validate Utilities](modules/validation) – Input validation functions
+- [Array](array) – Advanced array manipulation
+- [Async](async) – Promise helpers, concurrency, timing
+- [Cache](cache) – In-memory caching with TTL
+- [Context Store](context-store) – Per-request context via AsyncLocalStorage
+- [Crypto](crypto) – Hashing, encryption, tokens
+- [Date](date) – Date/time manipulation
+- [Decorator](decorator) – TypeScript decorators for Express
+- [Directory](directory) – Directory and file system helpers
+- [Environment](env) – Env variable management
+- [Exception](exception) – HTTP and error handling
+- [File System](fs) – File operations
+- [HTTP Status Codes](http-status-codes) – Typed status codes
+- [ID](id) – UUID and ID generation
+- [Logger](logger) – Structured logging with Pino
+- [Middleware](middleware) – Express middleware collection
+- [Object](object) – Deep merge, flatten, pick/omit, etc.
+- [Performance](performance) – Timing, memoization, memory tracking
+- [Request](request) – HTTP request parameter parsing/validation
+- [Response](response) – Standardized API response formatting
+- [Stream](stream) – Stream conversion, batching, throttling, line splitting
+- [String](string) – Casing, masking, slugifying, formatting
+- [Type](type) – Type checking, conversion, guards
+- [Types](types) – Common TypeScript types and interfaces
+- [URL](url) – URL parsing, query manipulation, normalization
+- [Validation](validation) – Input validation functions
 
 ---
 
