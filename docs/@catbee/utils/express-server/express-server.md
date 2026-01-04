@@ -1,5 +1,6 @@
 ---
 slug: ../server
+sidebar_position: 2
 ---
 
 # Express Server

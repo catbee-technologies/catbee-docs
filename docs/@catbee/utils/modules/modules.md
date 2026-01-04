@@ -1,3 +1,7 @@
+---
+sidebar_position: 3
+---
+
 # Utilities
 
 A comprehensive set of utility functions for Node.js and TypeScript projects. Includes helpers for arrays, objects, strings, streams, requests, responses, performance, caching, environment, validation, and more. All modules are fully typed and documented.

@@ -78,7 +78,19 @@ const config: Config = {
     },
     prism: {
       theme: prismThemes.vsLight,
-      darkTheme: prismThemes.oneDark
+      darkTheme: prismThemes.dracula,
+      magicComments: [
+        {
+          className: 'code-block-diff-old',
+          line: 'code-block-diff-old',
+          block: { start: 'code-block-diff-old-start', end: 'code-block-diff-old-end' }
+        },
+        {
+          className: 'code-block-diff-new',
+          line: 'code-block-diff-new',
+          block: { start: 'code-block-diff-new-start', end: 'code-block-diff-new-end' }
+        }
+      ]
     }
   } satisfies Preset.ThemeConfig,
   plugins: ['@docusaurus/plugin-client-redirects', 'docusaurus-plugin-sass']
