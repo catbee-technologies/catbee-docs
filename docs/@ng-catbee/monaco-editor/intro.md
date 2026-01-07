@@ -50,4 +50,4 @@ This library is built and tested with Angular **20.3.0** and **21.x**, and suppo
 
 ## 📜 License
 
-MIT © Catbee Technologies (see the [LICENSE](/license/) file for the full text)
+MIT © Catbee Technologies (see the [LICENSE](/license) file for the full text)

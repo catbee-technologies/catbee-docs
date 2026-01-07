@@ -32,13 +32,13 @@ Each module is designed to be:
 
 ## 📦 Available Packages
 
-| Package                                              | Description                                                                                                                    | Documentation                         |
-| ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------- |
-| [`@ng-catbee/loader`](./loader/intro/)               | Provides a flexible and customizable loading indicator component for Angular applications.                                     | [View Docs →](./loader/intro/)        |
-| [`@ng-catbee/jwt`](./jwt/intro/)                     | Offers utilities for decoding, validating, and managing JSON Web Tokens (JWT) in Angular apps.                                 | [View Docs →](./jwt/intro/)           |
-| [`@ng-catbee/indexed-db`](./indexed-db/intro/)       | A type-safe wrapper for IndexedDB operations in Angular, providing full CRUD functionality and advanced querying capabilities. | [View Docs →](./indexed-db/intro/)    |
-| [`@ng-catbee/cookie`](./cookie/intro/)               | Simplifies cookie management in Angular applications with a type-safe API and advanced features.                               | [View Docs →](./cookie/intro/)        |
-| [`@ng-catbee/storage`](./storage/intro/)             | Simplifies interaction with Web Storage APIs (localStorage and sessionStorage) in Angular applications.                        | [View Docs →](./storage/intro/)       |
-| [`@ng-catbee/monaco-editor`](./monaco-editor/intro/) | Seamlessly integrates the Monaco Editor (single and diff modes) into Angular, with full Reactive Forms support.                | [View Docs →](./monaco-editor/intro/) |
+| Package                                             | Description                                                                                                                    | Documentation                        |
+| --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------ |
+| [`@ng-catbee/cookie`](./cookie/intro)               | Simplifies cookie management in Angular applications with a type-safe API and advanced features.                               | [View Docs →](./cookie/intro)        |
+| [`@ng-catbee/indexed-db`](./indexed-db/intro)       | A type-safe wrapper for IndexedDB operations in Angular, providing full CRUD functionality and advanced querying capabilities. | [View Docs →](./indexed-db/intro)    |
+| [`@ng-catbee/jwt`](./jwt/intro)                     | Offers utilities for decoding, validating, and managing JSON Web Tokens (JWT) in Angular apps.                                 | [View Docs →](./jwt/intro)           |
+| [`@ng-catbee/loader`](./loader/intro)               | Provides a flexible and customizable loading indicator component for Angular applications.                                     | [View Docs →](./loader/intro)        |
+| [`@ng-catbee/monaco-editor`](./monaco-editor/intro) | Seamlessly integrates the Monaco Editor (single and diff modes) into Angular, with full Reactive Forms support.                | [View Docs →](./monaco-editor/intro) |
+| [`@ng-catbee/storage`](./storage/intro)             | Simplifies interaction with Web Storage APIs (localStorage and sessionStorage) in Angular applications.                        | [View Docs →](./storage/intro)       |
 
 ---

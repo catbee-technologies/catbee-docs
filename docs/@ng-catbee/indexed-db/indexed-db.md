@@ -14,7 +14,7 @@ A comprehensive, type-safe Angular library for IndexedDB operations with reactiv
 
 ### Usage Guides
 
-- [Usage Examples](./usage) - Practical examples for common IndexedDB operations
+- [Usage Examples](./usage/) - Practical examples for common IndexedDB operations
   - [Basic CRUD Operations](./usage/basic-crud) - Create, Read, Update, Delete
   - [Advanced Queries](./usage/advanced-queries) - Query builder, filtering, sorting, pagination
   - [Bulk Operations](./usage/bulk-operations) - Bulk add, update, delete

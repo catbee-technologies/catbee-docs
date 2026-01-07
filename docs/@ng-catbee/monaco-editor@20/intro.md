@@ -52,4 +52,4 @@ This library is built and tested with Angular `20.3.0`, and supports all modern 
 
 ## 📜 License
 
-MIT © Catbee Technologies (see the [LICENSE](/license/) file for the full text)
+MIT © Catbee Technologies (see the [LICENSE](/license) file for the full text)

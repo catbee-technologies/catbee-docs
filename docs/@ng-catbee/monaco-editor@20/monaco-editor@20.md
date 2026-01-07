@@ -15,7 +15,7 @@ A modern Angular library that seamlessly integrates the Monaco Editor (v20.x.x) 
 
 ### Usage Guides
 
-- [Usage Examples](./usage) - Practical examples for Monaco Editor integration
+- [Usage Examples](./usage/) - Practical examples for Monaco Editor integration
   - [Module Setup](./usage/module-setup) - Configure the Monaco Editor module
   - [Single Editor](./usage/single-editor) - Implement a single Monaco code editor
   - [Diff Editor](./usage/diff-editor) - Compare two code snippets side-by-side

@@ -14,7 +14,7 @@ A modern, customizable Angular library for displaying beautiful loading indicato
 
 ### Usage Guides
 
-- [Usage Overview](./usage) - Getting started and common usage patterns
+- [Usage Overview](./usage/) - Getting started and common usage patterns
   - [Basic Usage](./usage/basic-usage) - Show/hide loaders, configurations, messages
   - [Animations](./usage/animations) - 50+ animation styles and customization
   - [Multiple Loaders](./usage/multiple-loaders) - Managing multiple named loaders

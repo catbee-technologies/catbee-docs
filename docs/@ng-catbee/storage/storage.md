@@ -14,7 +14,7 @@ A modern, type-safe Angular library for simplified interaction with web storage 
 
 ### Usage Guides
 
-- [Usage Examples](./usage) - Comprehensive examples for using the storage package
+- [Usage Examples](./usage/) - Comprehensive examples for using the storage package
   - [Basic Usage](./usage/basic-usage) - Get, set, delete operations
   - [Type-Safe Methods](./usage/type-safe-methods) - JSON, boolean, number, enum, array methods
   - [Reactive Features](./usage/reactive-features) - Watch storage changes with observables

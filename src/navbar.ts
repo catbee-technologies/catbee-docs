@@ -26,7 +26,7 @@ const navbar: DeepPartial<Navbar> = {
           .filter(pkg => pkg.startsWith('@catbee'))
           .map(pkg => ({
             label: pkg,
-            to: `/docs/${pkg}/intro/`
+            to: `/docs/${pkg}/intro`
           })),
         {
           type: 'html',
@@ -36,7 +36,7 @@ const navbar: DeepPartial<Navbar> = {
           .filter(pkg => pkg.startsWith('@ng-catbee'))
           .map(pkg => ({
             label: pkg,
-            to: `/docs/${pkg}/intro/`
+            to: `/docs/${pkg}/intro`
           }))
       ]
     },
@@ -50,7 +50,7 @@ const navbar: DeepPartial<Navbar> = {
         { href: 'https://diff.catbee.in', label: 'Diff Checker' }
       ]
     },
-    { to: '/license/', label: 'License', position: 'left', className: 'navbar-license-link' },
+    { to: '/license', label: 'License', position: 'left', className: 'navbar-license-link' },
     {
       type: 'search',
       position: 'right'

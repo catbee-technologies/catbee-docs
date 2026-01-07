@@ -14,7 +14,7 @@ A modern, type-safe Angular library for decoding, validating, and managing JSON 
 
 ### Usage Guides
 
-- [Usage Examples](./usage) - Practical examples for common JWT use cases
+- [Usage Examples](./usage/) - Practical examples for common JWT use cases
   - [Basic Usage](./usage/basic-usage) - Decode and validate tokens
   - [Auth Guards](./usage/auth-guards) - Protect routes with JWT validation
   - [HTTP Interceptors](./usage/http-interceptors) - Auto-attach tokens to requests

@@ -22,7 +22,7 @@ const footer: DeepPartial<MultiColumnFooter> = {
         },
         {
           label: 'License',
-          to: '/license/'
+          to: '/license'
         }
       ]
     },
@@ -31,7 +31,7 @@ const footer: DeepPartial<MultiColumnFooter> = {
       className: 'footer-title-packages',
       items: packages.map(pkg => ({
         label: pkg,
-        to: `/docs/${pkg}/intro/`
+        to: `/docs/${pkg}/intro`
       }))
     },
     {

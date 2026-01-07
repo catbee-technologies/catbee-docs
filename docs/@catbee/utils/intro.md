@@ -190,4 +190,4 @@ Explore the full suite of utilities, each with detailed API docs and examples:
 
 ## 📜 License
 
-MIT © Catbee Technologies (see the [LICENSE](/license/) file for the full text)
+MIT © Catbee Technologies (see the [LICENSE](/license) file for the full text)
