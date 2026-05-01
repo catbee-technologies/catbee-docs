@@ -28,6 +28,13 @@ Secure cryptographic functions for encryption, hashing, and token generation. In
 - [**`secureRandomInt(min: number, max: number): number`**](#securerandomint) - Generate a cryptographically secure random integer in a range.
 - [**`hashPassword(password: string, saltLength?: number, keyLength?: number): Promise<string>`**](#hashpassword) - Hash a password using scrypt.
 - [**`verifyPassword(password: string, hash: string): Promise<boolean>`**](#verifypassword) - Verify a password against a scrypt hash.
+- [**`generateKeys(options: GenerateKeyOptions = {}): Promise<GenerateKeyResult>`**](#generatekeys) - Generate a public/private key pair.
+- [**`sign(data: string | Buffer | Uint8Array, privateKeyCrypto: CryptoKey, options: SignatureOptions = {}): Promise<string>`**](#sign) - Sign data with a private key.
+- [**`verify(data: string | Buffer | Uint8Array, signature: string | Buffer | Uint8Array, publicKeyCrypto: CryptoKey, options: VerifyOptions = {}): Promise<boolean>`**](#verify) - Verify a signature with a public key.
+- [**`importKey(key: string | JsonWebKey, options: ImportKeyOptions = {}): Promise<CryptoKey>`**](#importkey) - Import a PEM or JWK assymetric key.
+- [**`exportKey(key: CryptoKey, format: 'jwk' | 'pem' = 'jwk', options: ExportKeyOptions = {}): Promise<JsonWebKey | string>`**](#exportkey) - Export a key to PEM or JWK.
+- [**`fingerprint(publicKey: CryptoKey, encoding: SignatureEncoding = 'base64url'): Promise<string>`**](#fingerprint) - Generate a fingerprint for a key.
+- [**`getKeyId(publicKey: CryptoKey): Promise<string>`**](#getkeyid) - Generate a key ID for a key.
 
 ---
 
@@ -65,6 +72,120 @@ interface EncryptionResult {
   algorithm: string;
   /** Salt used for key derivation */
   salt: Buffer;
+}
+
+/**
+ * Supported asymmetric key types for generation.
+ *
+ * - `RSA`       → RSASSA-PKCS1-v1_5 (legacy compatibility)
+ * - `RSA-PSS`   → Recommended RSA variant with modern padding
+ * - `ECDSA`     → Elliptic Curve (fast, smaller keys)
+ * - `Ed25519`   → Modern, simple, highly secure (recommended)
+ */
+type EncKeyType = 'RSA' | 'RSA-PSS' | 'ECDSA' | 'Ed25519';
+
+/**
+ * Options to configure key pair generation.
+ */
+export interface GenerateKeyOptions {
+  /**
+   * Type of key algorithm to generate.
+   * @default 'RSA-PSS'
+   */
+  type?: EncKeyType;
+
+  /**
+   * RSA modulus length in bits.
+   * Recommended: 2048 or 3072 (4096 for high security).
+   * @default 2048
+   */
+  modulusLength?: number;
+
+  /**
+   * Hash algorithm used for signing.
+   *
+   * ⚠️ For ECDSA, hash is used during sign/verify, not key generation.
+   * @default 'SHA-256'
+   */
+  hash?: 'SHA-256' | 'SHA-384' | 'SHA-512';
+
+  /**
+   * Named curve for ECDSA keys.
+   * @default 'P-256'
+   */
+  namedCurve?: 'P-256' | 'P-384' | 'P-521';
+
+  /**
+   * Whether the private key can be exported.
+   *
+   * ⚠️ Set to `false` in production if you don't need to export keys.
+   * @default false
+   */
+  extractable?: boolean;
+
+  /**
+   * Whether to include generated CryptoKey objects in the result.
+   *
+   * Useful when private key export is disabled (`extractable: false`) but
+   * you still want to sign/verify with the in-memory keys.
+   * @default false
+   */
+  includeCryptoKeys?: boolean;
+
+  /**
+   * Whether to format Base64 output into 64-character lines (PEM style).
+   * @default true
+   */
+  formatPemLines?: boolean;
+
+  /**
+   * Whether to include PEM prefix/suffix headers.
+   *
+   * Example:
+   * -----BEGIN PRIVATE KEY-----
+   * -----END PRIVATE KEY-----
+   *
+   * @default true
+   */
+  addPrefixSuffix?: boolean;
+}
+
+
+interface GenerateKeyResult {
+  /** Algorithm type used */
+  type: EncKeyType;
+
+  /** PEM or Base64 encoded private key (only when extractable is true) */
+  privateKey?: string;
+
+  /** PEM or Base64 encoded public key */
+  publicKey: string;
+
+  /** Raw PKCS8 private key buffer (only when extractable is true) */
+  privateKeyBuffer?: ArrayBuffer;
+
+  /** Raw SPKI public key buffer */
+  publicKeyBuffer: ArrayBuffer;
+
+  /** Optional generated private CryptoKey */
+  privateKeyCrypto?: CryptoKey;
+
+  /** Optional generated public CryptoKey */
+  publicKeyCrypto?: CryptoKey;
+}
+
+interface ExportKeyOptions {
+  /**
+   * Whether to format Base64 output into 64-character lines (PEM style).
+   * @default true
+   */
+  formatPemLines?: boolean;
+
+  /**
+   * Whether to include PEM prefix/suffix headers.
+   * @default true
+   */
+  addPrefixSuffix?: boolean;
 }
 ```
 
@@ -684,4 +805,214 @@ if (isValid) {
 } else {
   console.log('Invalid password');
 }
+```
+
+---
+
+### `generateKeys()`
+
+Generate a public/private key pair.
+
+**Method Signature:**
+
+```ts
+function generateKeys(options: GenerateKeyOptions = {}): Promise<GenerateKeyResult>;
+```
+
+**Parameters:**
+
+- `options`: Configuration options for key generation (type, modulusLength, hash, namedCurve, extractable, includeCryptoKeys, formatPemLines, addPrefixSuffix).
+
+**Returns:**
+
+- A Promise that resolves to an object containing the generated keys and related information.
+
+**Examples:**
+
+```ts
+import { generateKeys } from '@catbee/utils/crypto';
+const { publicKey, privateKey } = await generateKeys({
+  type: 'Ed25519',
+  extractable: true,
+  includeCryptoKeys: true
+});
+console.log('Public Key:', publicKey);
+console.log('Private Key:', privateKey);
+```
+
+---
+
+### `sign()`
+
+Sign data with a private key.
+
+**Method Signature:**
+
+```ts
+function sign(data: string | Buffer | Uint8Array, privateKeyCrypto: CryptoKey, options: SignatureOptions = {}): Promise<string>;
+```
+
+**Parameters:**
+
+- `data`: The data to sign (string, Buffer, or Uint8Array).
+- `privateKeyCrypto`: The private CryptoKey to use for signing.
+- `options`: Optional signature options (algorithm, encoding).
+
+**Returns:**
+
+- A Promise that resolves to the signature as a string.
+
+**Examples:**
+
+```ts
+import { sign } from '@catbee/utils/crypto';
+const signature = await sign('data to sign', privateKeyCrypto);
+console.log('Signature:', signature);
+```
+
+---
+
+### `verify()`
+
+Verify a signature with a public key.
+
+**Method Signature:**
+
+```ts
+function verify(data: string | Buffer | Uint8Array, signature: string | Buffer | Uint8Array, publicKeyCrypto: CryptoKey, options: VerifyOptions = {}): Promise<boolean>;
+```
+
+**Parameters:**
+
+- `data`: The original data that was signed (string, Buffer, or Uint8Array).
+- `signature`: The signature to verify (string, Buffer, or Uint8Array).
+- `publicKeyCrypto`: The public CryptoKey to use for verification.
+- `options`: Optional verification options (algorithm, encoding).
+
+**Returns:**
+
+- A Promise that resolves to `true` if the signature is valid, otherwise `false`.
+
+**Examples:**
+
+```ts
+import { verify } from '@catbee/utils/crypto';
+const isValid = await verify('data to sign', signature, publicKeyCrypto);
+console.log('Signature valid:', isValid);
+```
+
+---
+
+### `importKey()`
+
+Import a PEM or JWK asymmetric key.
+
+**Method Signature:**
+
+```ts
+function importKey(key: string | JsonWebKey, options: ImportKeyOptions = {}): Promise<CryptoKey>;
+```
+
+**Parameters:**
+
+- `key`: The key to import, either as a PEM string or a JsonWebKey object.
+- `options`: Optional import options (format, algorithm, extractable, keyUsages).
+
+**Returns:**
+
+- A Promise that resolves to a CryptoKey object.
+
+**Examples:**
+
+```ts
+import { importKey } from '@catbee/utils/crypto';
+const pemKey = `-----BEGIN PUBLIC KEY-----
+...key data...
+-----END PUBLIC KEY-----`;
+const cryptoKey = await importKey(pemKey, { format: 'pem', algorithm: 'RSA-PSS', extractable: false, keyUsages: ['verify'] });
+```
+
+---
+
+### `exportKey()`
+
+Export a key to PEM or JWK.
+
+**Method Signature:**
+
+```ts
+function exportKey(key: CryptoKey, format: 'jwk' | 'pem' = 'jwk', options: ExportKeyOptions = {}): Promise<JsonWebKey | string>;
+```
+
+**Parameters:**
+
+- `key`: The CryptoKey to export.
+- `format`: The format to export the key in ('jwk' or 'pem').
+- `options`: Optional export options (formatPemLines, addPrefixSuffix).
+
+**Returns:**
+
+- A Promise that resolves to the exported key as a JsonWebKey object or a PEM string.
+
+**Examples:**
+
+```ts
+import { exportKey } from '@catbee/utils/crypto';
+const jwk = await exportKey(cryptoKey, 'jwk');
+const pem = await exportKey(cryptoKey, 'pem', { formatPemLines: true, addPrefixSuffix: true });
+console.log('JWK:', jwk);
+console.log('PEM:', pem);
+```
+
+---
+
+### `fingerprint()`
+
+Generate a fingerprint for a key.
+
+**Method Signature:**
+
+```ts
+function fingerprint(publicKey: CryptoKey, encoding: SignatureEncoding = 'base64url'): Promise<string>;
+```
+
+**Parameters:**
+
+- `publicKey`: The public CryptoKey to generate a fingerprint for.
+- `encoding`: The encoding for the output fingerprint (default is 'base64url').
+
+**Returns:**
+
+- A Promise that resolves to the fingerprint string.
+
+**Examples:**
+
+```ts
+import { fingerprint } from '@catbee/utils/crypto';
+const keyFingerprint = await fingerprint(publicKeyCrypto);
+console.log('Key Fingerprint:', keyFingerprint);
+```
+
+### `getKeyId()`
+
+Generate a key ID for a key.
+
+**Method Signature:**
+
+```ts
+function getKeyId(publicKey: CryptoKey): Promise<string>;
+```
+
+**Parameters:**
+
+- `publicKey`: The public CryptoKey to generate a key ID for.
+  **Returns:**
+- A Promise that resolves to the key ID string.
+
+**Examples:**
+
+```ts
+import { getKeyId } from '@catbee/utils/crypto';
+const keyId = await getKeyId(publicKeyCrypto);
+console.log('Key ID:', keyId);
 ```
