@@ -25,6 +25,7 @@ Comprehensive suite of validators for strings, numbers, arrays, objects, dates, 
 - [**`isStrongPassword(str: string): boolean`**](#isstrongpassword) - Checks if a string meets password complexity requirements.
 - [**`isIPv4(str: string): boolean`**](#isipv4) - Checks if a string is a valid IPv4 address.
 - [**`isIPv6(str: string): boolean`**](#isipv6) - Checks if a string is a valid IPv6 address.
+- [**`isHostname(str: string): boolean`**](#ishostname) - Checks if a string is a valid hostname.
 - [**`isCreditCard(str: string): boolean`**](#iscreditcard) - Checks if a string is a valid credit card number.
 - [**`isValidJSON(str: string): boolean`**](#isvalidjson) - Checks if a string is valid JSON.
 - [**`isArray<T>(value: unknown, itemGuard?: (item: unknown) => item is T): value is T[]`**](#isarray) - Checks if a value is an array.
@@ -45,12 +46,13 @@ Checks if a value is a valid port number (1-65535).
 **Method Signature:**
 
 ```ts
-function isPort(value: string | number): boolean;
+function isPort(value: string | number, allowZero?: boolean): boolean;
 ```
 
 **Parameters:**
 
 - `value`: The value to check (string or number).
+- `allowZero`: Optional flag to allow port 0 (default: `false`).
 
 **Returns:**
 
@@ -465,6 +467,33 @@ function isIPv6(value: string): boolean;
 import { isIPv6 } from '@catbee/utils/validation';
 
 isIPv6('2001:0db8:85a3:0000:0000:8a2e:0370:7334'); // true
+```
+
+---
+
+### `isHostname()`
+
+Checks if a string is a valid hostname or IP address.
+
+**Method Signature:**
+
+```ts
+function isHostname(value: string): boolean;
+```
+
+**Parameters:**
+
+- `value`: The value to check (string).
+
+**Returns:**
+
+- `true` if the value is a valid hostname or IP address, otherwise `false`.
+
+**Example:**
+
+```ts
+import { isHostname } from '@catbee/utils/validation';
+isHostname('example.com'); // true
 ```
 
 ---
