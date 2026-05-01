@@ -29,8 +29,9 @@ Each module is designed to be:
 
 ## 📦 Available Packages
 
-| Package                          | Description                                                                                       | Documentation                |
-| -------------------------------- | ------------------------------------------------------------------------------------------------- | ---------------------------- |
-| [`@catbee/utils`](./utils/intro) | A collection of reusable TypeScript utilities for async, array, string, cache, process, and more. | [View Docs →](./utils/intro) |
+| Package                                      | Description                                                                                                                                                      | Documentation                      |
+| -------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| [`@catbee/utils`](./utils/intro)             | A collection of reusable TypeScript utilities for async, array, string, cache, process, and more.                                                                | [View Docs →](./utils/intro)       |
+| [`@catbee/cron-parser`](./cron-parser/intro) | A lightweight, timezone-aware cron expression parser with full support for seconds, DST transitions, iterators, randomized scheduling, and crontab file parsing. | [View Docs →](./cron-parser/intro) |
 
 ---
