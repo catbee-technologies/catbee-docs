@@ -172,7 +172,10 @@ interface CatbeeServerConfig {
 ```ts
 interface CatbeeServerHooks {
   beforeInit?: (server: ExpressServer) => Promise<void> | void;
+  beforeRoutes?: (app: Express) => Promise<void> | void;
+  afterRoutes?: (app: Express) => Promise<void> | void;
   afterInit?: (server: ExpressServer) => Promise<void> | void;
+  onServerCreated?: (server: http.Server | https.Server) => Promise<void> | void;
   beforeStart?: (app: Express) => Promise<void> | void;
   afterStart?: (server: http.Server | https.Server) => Promise<void> | void;
   beforeStop?: (server: http.Server | https.Server) => Promise<void> | void;
