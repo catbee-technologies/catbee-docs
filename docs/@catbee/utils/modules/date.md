@@ -20,6 +20,7 @@ These methods provide type-safe helpers for common date operations such as forma
 - [**`formatRelativeTime(date: Date | number, now?: Date | number, locale?: string | string[]): string`**](#formatrelativetime) - Formats a date as relative time (e.g., "5 minutes ago", "in 3 days").
 - [**`parseDate(input: string | number, fallback?: Date): Date | null`**](#parsedate) - Parses a date string or timestamp into a Date object.
 - [**`dateDiff(date1: Date | number, date2?: Date | number, unit?: 'milliseconds' | 'seconds' | 'minutes' | 'hours' | 'days' | 'months' | 'years'): number`**](#datediff) - Calculates the difference between two dates in the specified unit.
+- [**`dateDiffDaysTZ(d1: Date, d2: Date, tz: string): number`**](#datediffdaystz) - Calculates the difference in days between two dates in a specific time zone.
 - [**`addToDate(date: Date | number, amount: number, unit: 'milliseconds' | 'seconds' | 'minutes' | 'hours' | 'days' | 'months' | 'years'): Date`**](#addtodate) - Adds a specified amount of time to a date.
 - [**`startOf(date: Date | number, unit: 'second' | 'minute' | 'hour' | 'day' | 'week' | 'month' | 'quarter' | 'year'): Date`**](#startof) - Gets the start of a date unit.
 - [**`endOf(date: Date | number, unit: 'second' | 'minute' | 'hour' | 'day' | 'week' | 'month' | 'quarter' | 'year'): Date`**](#endof) - Gets the end of a date unit.
@@ -38,6 +39,11 @@ These methods provide type-safe helpers for common date operations such as forma
 - [**`addYears(date: Date | number, years: number): Date`**](#addyears) - Adds years to a date.
 - [**`quarterOf(date: Date | number): 1 | 2 | 3 | 4`**](#quarterof) - Gets the quarter of the year for a date.
 - [**`weekOfYear(date: Date | number): number`**](#weekofyear) - Gets the ISO week number of the year.
+- [**`getTimezoneOffset(timeZone: string, date: Date | number): number`**](#gettimezoneoffset) - Gets the timezone offset in minutes for a specific time zone and date.
+- [**`toTimeZone(date: Date | number, timeZone: string): { year: number; month: number; day: number; hour: number; minute: number; second: number; millisecond: number }`**](#totimezone) - Converts a date to a specific time zone and returns its components.
+- [**`formatDateInTimeZone(date: Date | number, timeZone: string, format: string = 'yyyy-MM-dd HH:mm:ss', locale?: string | string[]): string`**](#formatdateintimezone) - Formats a date in a specific time zone according to a pattern and locale.
+- [**`isDST(timeZone: string, date: Date | number = new Date()): boolean`**](#isdst) - Checks if a date is in daylight saving time for a specific time zone.
+- [**`getTimezoneAbbreviation(timeZone: string, date: Date | number = new Date(), locale: string = 'en-US'): string`**](#gettimezoneabbreviation) - Gets the time zone abbreviation for a specific time zone and date.
 
 ---
 
@@ -51,6 +57,23 @@ export interface DateFormatOptions {
 }
 ```
 
+## Named date format presets
+
+| Preset     | Equivalent                      | Example (en-US)                               |
+| ---------- | ------------------------------- | --------------------------------------------- |
+| short      | M/d/yy, h:mm a                  | 6/15/15, 9:03 AM                              |
+| medium     | MMM d, y, h:mm:ss a             | Jun 15, 2015, 9:03:01 AM                      |
+| long       | MMMM d, y, h:mm:ss a z          | June 15, 2015 at 9:03:01 AM GMT+1             |
+| full       | EEEE, MMMM d, y, h:mm:ss a zzzz | Monday, June 15, 2015 at 9:03:01 AM GMT+01:00 |
+| shortDate  | M/d/yy                          | 6/15/15                                       |
+| mediumDate | MMM d, y                        | Jun 15, 2015                                  |
+| longDate   | MMMM d, y                       | June 15, 2015                                 |
+| fullDate   | EEEE, MMMM d, y                 | Monday, June 15, 2015                         |
+| shortTime  | h:mm a                          | 9:03 AM                                       |
+| mediumTime | h:mm:ss a                       | 9:03:01 AM                                    |
+| longTime   | h:mm:ss a z                     | 9:03:01 AM GMT+1                              |
+| fullTime   | h:mm:ss a zzzz                  | 9:03:01 AM GMT+01:00                          |
+
 ---
 
 ## Example Usage
@@ -61,6 +84,7 @@ import {
   formatRelativeTime,
   parseDate,
   dateDiff,
+  dateDiffDaysTZ,
   addToDate,
   startOf,
   endOf,
@@ -202,6 +226,22 @@ class DateBuilder {
   clone(): DateBuilder;
   valueOf(): number;
   toString(): string;
+
+  // Time zone
+  formatInTimeZone(timeZone: string, format?: string): string;
+  toTimeZone(timeZone: string): {
+    year: number;
+    month: number;
+    day: number;
+    hour: number;
+    minute: number;
+    second: number;
+    millisecond: number;
+  };
+  getTimezoneOffset(timeZone: string): number;
+  isDST(timeZone: string): boolean;
+  getTimezoneAbbreviation(timeZone: string): string;
+
 }
 ```
 
@@ -412,6 +452,39 @@ import { dateDiff } from '@catbee/utils/date';
 
 dateDiff(new Date('2023-05-15'), new Date('2023-05-10'), 'days'); // 5
 dateDiff(new Date('2023-05-15T10:00:00'), new Date('2023-05-15T06:00:00'), 'hours'); // 4
+```
+
+---
+
+### `dateDiffDaysTZ()`
+
+Calculates the difference in days between two dates in a specific time zone.
+
+**Method Signature:**
+
+```ts
+function dateDiffDaysTZ(d1: Date, d2: Date, tz: string): number;
+```
+
+**Parameters:**
+
+- `d1`: The first date (Date object).
+- `d2`: The second date (Date object).
+- `tz`: The time zone identifier (e.g., 'America/New_York').
+
+**Returns:**
+
+- The difference in days between the two dates in the specified time zone.
+
+**Examples:**
+
+```ts
+import { dateDiffDaysTZ } from '@catbee/utils/date';
+const date1 = new Date('2023-05-15T23:00:00Z'); // May 15, 2023 23:00 UTC
+const date2 = new Date('2023-05-16T01:00:00Z'); // May 16, 2023 01:00 UTC
+
+console.log(dateDiffDaysTZ(date1, date2, 'America/New_York')); // Output may be 0 or 1 depending on daylight saving time
+
 ```
 
 ---
@@ -965,3 +1038,156 @@ weekOfYear(new Date('2024-12-31')); // 1 (of next year)
 ```
 
 ---
+
+### `getTimezoneOffset()`
+
+Gets the timezone offset in minutes for a specific time zone and date.
+
+**Method Signature:**
+
+```ts
+function getTimezoneOffset(timeZone: string, date: Date | number): number;
+```
+
+**Parameters:**
+
+- `timeZone`: The time zone identifier (e.g., 'America/New_York').
+- `date`: The date to check (Date object or timestamp).
+
+**Returns:**
+
+- The timezone offset in minutes (e.g., -300 for UTC-5).
+
+**Examples:**
+
+```ts
+import { getTimezoneOffset } from '@catbee/utils/date';
+getTimezoneOffset('America/New_York', new Date('2024-01-15')); // -300 (UTC-5)
+getTimezoneOffset('America/New_York', new Date('2024-06-15')); // -240 (UTC-4, daylight saving time)
+```
+
+---
+
+### `toTimeZone()`
+
+Converts a date to a specific time zone and returns its components.
+
+**Method Signature:**
+
+```ts
+function toTimeZone(date: Date | number, timeZone: string): {
+  year: number;
+  month: number;
+  day: number;
+  hour: number;
+  minute: number;
+  second: number;
+  millisecond: number;
+};
+```
+
+**Parameters:**
+
+- `date`: The date to convert (Date object or timestamp).
+- `timeZone`: The time zone identifier (e.g., 'America/New_York')
+
+**Returns:**
+
+- An object containing the date components in the specified time zone.
+
+**Examples:**
+
+```ts
+import { toTimeZone } from '@catbee/utils/date';
+toTimeZone(new Date('2024-01-15T12:00:00Z'), 'America/New_York');
+// Output (components for 2024-01-15 07:00:00 in New York):
+/*
+{
+  year: 2024,
+  month: 1,
+  day: 15,
+  hour: 7,
+  minute: 0,
+  second: 0,
+  millisecond: 0
+ }
+*/
+```
+
+---
+
+### `formatDateInTimeZone()`
+
+Formats a date in a specific time zone according to a pattern and locale.
+
+**Method Signature:**
+
+```ts
+function formatDateInTimeZone(date: Date | number, timeZone: string, format: string = 'yyyy-MM-dd HH:mm:ss', locale?: string | string[]): string;
+```
+
+**Parameters:**
+
+- `date`: The date to format (Date object or timestamp).
+- `timeZone`: The time zone identifier (e.g., 'America/New_York').
+- `format`: The date format pattern (default: 'yyyy-MM-dd HH:mm:ss').
+- `locale`: The locale(s) to use for formatting (default: system locale).
+
+**Returns:**
+
+- The formatted date string in the specified time zone.
+
+**Examples:**
+
+```ts
+import { formatDateInTimeZone } from '@catbee/utils/date;
+formatDateInTimeZone(new Date('2024-01-15T12:00:00Z'), 'America/New_York');
+// Output: "2024-01-15 07:00:00" (formatted in New York time)
+```
+
+---
+
+### `isDST()`
+
+Checks if a date is in daylight saving time for a specific time zone.
+
+**Method Signature:**
+
+```ts
+function isDST(timeZone: string, date: Date | number = new Date()): boolean;
+```
+
+**Parameters:**
+
+- `timeZone`: The time zone identifier (e.g., 'America/New_York').
+- `date`: The date to check (Date object or timestamp, default: current date).
+
+**Returns:**
+
+- `true` if the date is in daylight saving time for the specified time zone, otherwise `false`.
+
+**Examples:**
+
+```ts
+import { isDST } from '@catbee/utils/date;
+isDST('America/New_York', new Date('2024-06-15')); // true (summer)
+isDST('America/New_York', new Date('2024-01-15')); // false (winter)
+```
+
+---
+
+### `getTimezoneAbbreviation()`
+
+Gets the time zone abbreviation for a specific time zone and date.
+
+**Method Signature:**
+
+```ts
+function getTimezoneAbbreviation(timeZone: string, date: Date | number = new Date(), locale: string = 'en-US'): string;
+```
+
+**Parameters:**
+
+- `timeZone`: The time zone identifier (e.g., 'America/New_York').
+- `date`: The date to check (Date object or timestamp, default: current date).
+- `locale`: The locale to use for formatting (default: 'en-US').
