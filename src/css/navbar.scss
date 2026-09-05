@@ -110,6 +110,7 @@ html[data-theme='light'] {
 .navbar-docs-link,
 .navbar-packages-dropdown,
 .navbar-tools-dropdown,
+.navbar-products-dropdown,
 .navbar-license-link {
   display: flex;
   align-items: center;
@@ -139,6 +140,11 @@ html[data-theme='light'] {
 
   &.navbar-tools-dropdown:hover::before {
     transform: scale(1.2) rotate(-10deg);
+  }
+
+  &.navbar-products-dropdown::before {
+    @include material-icons('local_mall', 1.2rem, var(--ifm-color-primary));
+    @include navbar-icon-common;
   }
 
   &.navbar-license-link::before {

@@ -50,6 +50,19 @@ const navbar: DeepPartial<Navbar> = {
         { href: 'https://diff.catbee.in', label: 'Diff Checker' }
       ]
     },
+    {
+      type: 'dropdown',
+      label: 'Products',
+      position: 'left',
+      className: 'navbar-products-dropdown',
+      items: [
+        { to: '/catbee-container-studio/', label: 'CatBee Container Studio' },
+        {
+          href: 'https://apps.microsoft.com/detail/9NX6H3J2RNX2?referrer=appbadge&mode=full',
+          label: 'Get it from Microsoft Store'
+        }
+      ]
+    },
     { to: '/license', label: 'License', position: 'left', className: 'navbar-license-link' },
     {
       type: 'search',
@@ -61,6 +74,7 @@ const navbar: DeepPartial<Navbar> = {
       items: [
         { href: 'https://github.com/catbee-technologies/catbee-utils', label: 'Catbee Utils' },
         { href: 'https://github.com/catbee-technologies/ng-catbee', label: 'Ng Catbee' },
+        { href: 'https://github.com/catbee-technologies/catbee-container-studio', label: 'Container Studio' },
         { href: 'https://github.com/catbee-technologies/catbee-docs', label: 'Catbee Docs' }
       ]
     },

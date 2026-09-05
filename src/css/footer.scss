@@ -6,14 +6,18 @@ footer.footer {
   font-size: 0.875rem;
   position: relative;
   overflow: hidden;
-  background: linear-gradient(180deg, #0f0f11 0%, color-mix(in srgb, var(--catbee-primary-color-dark-mode) 8%, #0f0f11) 100%);
+  background: linear-gradient(
+    180deg,
+    #0f0f11 0%,
+    color-mix(in srgb, var(--catbee-primary-color-dark-mode) 8%, #0f0f11) 100%
+  );
   color: var(--ifm-color-emphasis-600);
 
   .footer__links {
     position: relative;
     z-index: 1;
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
 
     .footer__title {
       font-size: 1rem;
@@ -39,6 +43,10 @@ footer.footer {
 
     .footer-title-resources .footer__title::before {
       @include material-icons('inventory_2', 1.3rem, var(--ifm-color-primary));
+    }
+
+    .footer-title-products .footer__title::before {
+      @include material-icons('desktop_windows', 1.3rem, var(--ifm-color-primary));
     }
 
     .footer__link-item {
@@ -86,7 +94,11 @@ footer.footer {
     left: 0;
     right: 0;
     height: 100%;
-    background: radial-gradient(ellipse at top, color-mix(in srgb, var(--catbee-primary-color) 8%, transparent) 0%, transparent 70%);
+    background: radial-gradient(
+      ellipse at top,
+      color-mix(in srgb, var(--catbee-primary-color) 8%, transparent) 0%,
+      transparent 70%
+    );
     pointer-events: none;
   }
 }
@@ -94,13 +106,17 @@ footer.footer {
 html[data-theme='light'] {
   footer {
     &.footer {
-      background: linear-gradient(180deg, var(--ifm-background-color) 0%, color-mix(in srgb, var(--catbee-primary-color) 5%, var(--ifm-background-color)) 100%);
+      background: linear-gradient(
+        180deg,
+        var(--ifm-background-color) 0%,
+        color-mix(in srgb, var(--catbee-primary-color) 5%, var(--ifm-background-color)) 100%
+      );
       color: var(--ifm-color-emphasis-800);
 
       .footer__links {
         .footer__link-item {
           color: var(--ifm-color-emphasis-700);
-          
+
           &:hover {
             color: var(--ifm-color-primary);
           }
@@ -113,10 +129,11 @@ html[data-theme='light'] {
 @media screen and (max-width: 1050px) {
   footer.footer {
     .footer__links {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
 
       .footer__col:nth-child(3),
-      .footer__col:nth-child(4) {
+      .footer__col:nth-child(4),
+      .footer__col:nth-child(5) {
         margin-bottom: 0;
       }
     }

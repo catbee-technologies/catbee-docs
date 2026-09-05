@@ -18,7 +18,6 @@
     position: relative;
     z-index: 1;
 
-
     .catbeeTitle {
       font-size: 3rem;
       font-weight: 800;
@@ -82,7 +81,6 @@
 
       .catbeeHomeSecondaryButton {
         background: rgba(255, 255, 255, 0.1);
-        border: 2px solid rgba(255, 255, 255, 0.3);
         color: white;
         font-weight: 600;
         padding: 0.85rem 2rem;
@@ -179,6 +177,91 @@
         }
       }
     }
+
+    .containerStudioPromo {
+      align-items: center;
+      background: color-mix(in srgb, var(--ifm-color-primary) 8%, transparent);
+      border: 1px solid color-mix(in srgb, var(--ifm-color-primary) 26%, transparent);
+      border-radius: 16px;
+      display: flex;
+      flex-basis: 100%;
+      gap: 1.5rem;
+      margin-top: 1rem;
+      overflow: hidden;
+      padding: 1rem;
+      text-align: left;
+
+      > img {
+        aspect-ratio: 1.7;
+        border-radius: 10px;
+        max-width: 310px;
+        object-fit: cover;
+        width: 35%;
+      }
+
+      .containerStudioPromoCopy {
+        flex: 1;
+
+        .containerStudioPromoKicker {
+          color: var(--ifm-color-primary);
+          font: 700 0.68rem var(--ifm-font-family-monospace);
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+        }
+
+        h2 {
+          color: #fff;
+          font-size: 1.45rem;
+          margin: 0.45rem 0;
+        }
+
+        p {
+          color: rgba(255, 255, 255, 0.7);
+          font-size: 0.88rem;
+          line-height: 1.5;
+          margin: 0;
+          max-width: 570px;
+        }
+      }
+
+      .containerStudioPromoActions {
+        align-items: center;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-top: 0.9rem;
+
+        > a,
+        > button {
+          min-width: 0;
+        }
+
+        > a,
+        > button {
+          box-sizing: border-box;
+          height: 3.5rem;
+          margin: 0;
+        }
+
+        > a {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+        }
+      }
+
+      .containerStudioPromoLink {
+        background: linear-gradient(135deg, var(--catbee-primary-color), var(--catbee-primary-color-dark-mode));
+        color: #fff;
+        flex: 0 0 auto;
+        font-size: 0.9rem;
+        width: auto;
+
+        &:hover {
+          color: #fff;
+        }
+      }
+    }
   }
 
   &::before {
@@ -204,12 +287,13 @@
     left: -50%;
     width: 200%;
     height: 200%;
-    background:
-      repeating-linear-gradient(45deg,
-        transparent,
-        transparent 10px,
-        rgba(157, 126, 255, 0.015) 10px,
-        rgba(157, 126, 255, 0.015) 20px);
+    background: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 10px,
+      rgba(157, 126, 255, 0.015) 10px,
+      rgba(157, 126, 255, 0.015) 20px
+    );
 
     animation: movePattern 20s linear infinite;
     pointer-events: none;
@@ -284,6 +368,38 @@ html[data-theme='light'] {
           }
         }
       }
+
+      .containerStudioPromo {
+        background: color-mix(in srgb, var(--ifm-color-primary) 7%, #ffffff);
+        border-color: color-mix(in srgb, var(--ifm-color-primary) 34%, transparent);
+        box-shadow: 0 16px 40px color-mix(in srgb, var(--ifm-color-primary) 12%, transparent);
+
+        .containerStudioPromoCopy {
+          .containerStudioPromoKicker {
+            color: var(--catbee-primary-color-darker);
+          }
+
+          h2 {
+            color: #1a1a2e;
+          }
+
+          p {
+            color: var(--catbee-text-medium);
+          }
+        }
+
+        .containerStudioPromoLink {
+          background: linear-gradient(135deg, var(--catbee-primary-color), var(--catbee-primary-color-dark-mode));
+          color: #fff;
+        }
+
+        .containerStudioPromoActions > a:last-child {
+          border-radius: 8px;
+          box-shadow: 0 8px 24px color-mix(in srgb, var(--ifm-color-primary) 18%, transparent);
+          line-height: 0;
+          overflow: hidden;
+        }
+      }
     }
 
     &::before {
@@ -294,12 +410,13 @@ html[data-theme='light'] {
     }
 
     &::after {
-      background:
-        repeating-linear-gradient(45deg,
-          transparent,
-          transparent 10px,
-          rgba(106, 79, 188, 0.03) 10px,
-          rgba(106, 79, 188, 0.03) 20px);
+      background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 10px,
+        rgba(106, 79, 188, 0.03) 10px,
+        rgba(106, 79, 188, 0.03) 20px
+      );
     }
   }
 }
@@ -379,6 +496,37 @@ html[data-theme='light'] {
       .catbeeDescription {
         font-size: 1rem;
       }
+
+      // The following styles are for the container studio promo section
+      .containerStudioPromo {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+
+        > img {
+          max-width: 100%;
+          width: 100%;
+        }
+
+        .containerStudioPromoCopy {
+          h2 {
+            font-size: 1.25rem;
+          }
+
+          p {
+            font-size: 0.85rem;
+          }
+
+        .containerStudioPromoActions {
+          flex-direction: column;
+          gap: 0.5rem;
+          > a,
+          > button {
+            width: 100%;
+          }
+        }
+        }
+      }
     }
   }
 }
@@ -417,6 +565,27 @@ html[data-theme='light'] {
         a {
           width: 100%;
           font-size: 1rem;
+        }
+      }
+
+      .containerStudioPromo {
+        align-items: stretch;
+        flex-direction: column;
+        margin-top: 0;
+
+        > img {
+          max-width: none;
+          width: 100%;
+        }
+
+        .containerStudioPromoActions {
+          align-items: stretch;
+          flex-direction: column;
+
+          > a,
+          > button {
+            width: 100%;
+          }
         }
       }
     }

@@ -35,6 +35,28 @@ const footer: DeepPartial<MultiColumnFooter> = {
       }))
     },
     {
+      title: 'Products',
+      className: 'footer-title-products',
+      items: [
+        {
+          label: 'CatBee Container Studio',
+          to: '/catbee-container-studio/'
+        },
+        {
+          label: 'Download from GitHub',
+          href: 'https://github.com/catbee-technologies/catbee-container-studio/releases/latest'
+        },
+        {
+          label: 'Microsoft Store',
+          href: 'https://apps.microsoft.com/detail/9NX6H3J2RNX2?referrer=appbadge&mode=full'
+        },
+        {
+          label: 'Container Studio Source',
+          href: 'https://github.com/catbee-technologies/catbee-container-studio'
+        }
+      ]
+    },
+    {
       title: 'Community',
       className: 'footer-title-community',
       items: [
