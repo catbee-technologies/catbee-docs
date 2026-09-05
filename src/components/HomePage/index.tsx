@@ -50,7 +50,7 @@ export default function HomePage(): ReactNode {
               typed, and optimized for minimal bundle impact.
             </p>
             <div className={styles.catbeeStats}>
-              <AnimatedStat end={7} label='Packages' />
+              <AnimatedStat end={8} label='Packages' />
               <AnimatedStat end={100} suffix='%' label='Type Safe' />
               <AnimatedStat end={0} label='Dependencies' />
             </div>
