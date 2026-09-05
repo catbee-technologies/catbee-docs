@@ -42,7 +42,7 @@
   align-items: center;
   padding-top: clamp(4rem, 8vw, 6rem);
   padding-bottom: clamp(4.5rem, 8vw, 6rem);
-  min-height: calc(100dvh - var(--catbee-navbar-height) - 44px);
+  min-height: calc(100dvh - var(--catbee-navbar-height));
 }
 
 .heroCopy {
