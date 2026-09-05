@@ -41,18 +41,6 @@ const footer: DeepPartial<MultiColumnFooter> = {
         {
           label: 'CatBee Container Studio',
           to: '/catbee-container-studio/'
-        },
-        {
-          label: 'Download from GitHub',
-          href: 'https://github.com/catbee-technologies/catbee-container-studio/releases/latest'
-        },
-        {
-          label: 'Microsoft Store',
-          href: 'https://apps.microsoft.com/detail/9NX6H3J2RNX2?referrer=appbadge&mode=full'
-        },
-        {
-          label: 'Container Studio Source',
-          href: 'https://github.com/catbee-technologies/catbee-container-studio'
         }
       ]
     },
@@ -65,32 +53,20 @@ const footer: DeepPartial<MultiColumnFooter> = {
           href: 'https://github.com/catbee-technologies'
         },
         {
-          label: 'Catbee Utils',
-          href: 'https://github.com/catbee-technologies/catbee-utils'
-        },
-        {
-          label: 'Ng Catbee',
-          href: 'https://github.com/catbee-technologies/ng-catbee'
-        },
-        {
-          label: 'Report Issues (@catbee/utils)',
+          label: 'Report Issues @catbee/utils ',
           href: 'https://github.com/catbee-technologies/catbee-utils/issues'
         },
         {
-          label: 'Report Issues (@ng-catbee)',
+          label: 'Report Issues @catbee/mysql',
+          href: 'https://github.com/catbee-technologies/catbee-mysql/issues'
+        },
+        {
+          label: 'Report Issues @ng-catbee',
           href: 'https://github.com/catbee-technologies/ng-catbee/issues'
         },
         {
-          label: 'Contribute to Documentation',
-          href: 'https://github.com/catbee-technologies/catbee-docs/blob/main/CONTRIBUTING.md'
-        },
-        {
-          label: 'Contribute (@catbee/utils)',
-          href: 'https://github.com/catbee-technologies/catbee-utils/blob/main/CONTRIBUTING.md'
-        },
-        {
-          label: 'Contribute (@ng-catbee)',
-          href: 'https://github.com/catbee-technologies/ng-catbee/blob/main/CONTRIBUTING.md'
+          label: 'Contribute to Catbee',
+          href: 'https://github.com/catbee-technologies/.github/blob/main/CONTRIBUTING.md'
         }
       ]
     },

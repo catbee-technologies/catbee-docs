@@ -73,15 +73,40 @@ const navbar: DeepPartial<Navbar> = {
       position: 'right',
       items: [
         { href: 'https://github.com/catbee-technologies/catbee-utils', label: 'Catbee Utils' },
+        { href: 'https://github.com/catbee-technologies/cron-parser', label: 'Catbee Cron Parser' },
+        { href: 'https://github.com/catbee-technologies/catbee-mysql', label: 'Catbee MySQL' },
+        {
+          type: 'html',
+          value: '<hr style="margin: 0.3rem 0;">'
+        },
         { href: 'https://github.com/catbee-technologies/ng-catbee', label: 'Ng Catbee' },
+        {
+          type: 'html',
+          value: '<hr style="margin: 0.3rem 0;">'
+        },
         { href: 'https://github.com/catbee-technologies/catbee-container-studio', label: 'Container Studio' },
+        {
+          type: 'html',
+          value: '<hr style="margin: 0.3rem 0;">'
+        },
         { href: 'https://github.com/catbee-technologies/catbee-docs', label: 'Catbee Docs' }
       ]
     },
     {
       label: 'NPM',
       position: 'right',
-      items: packages.map(pkg => ({ href: `https://www.npmjs.com/package/${pkg}`, label: pkg }))
+      items: [
+        ...packages
+          .filter(pkg => pkg.startsWith('@catbee'))
+          .map(pkg => ({ href: `https://www.npmjs.com/package/${pkg}`, label: pkg })),
+        {
+          type: 'html',
+          value: '<hr style="margin: 0.3rem 0;">'
+        },
+        ...packages
+          .filter(pkg => pkg.startsWith('@ng-catbee'))
+          .map(pkg => ({ href: `https://www.npmjs.com/package/${pkg}`, label: pkg }))
+      ]
     }
   ],
   hideOnScroll: false

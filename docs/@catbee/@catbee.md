@@ -33,5 +33,6 @@ Each module is designed to be:
 | -------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
 | [`@catbee/utils`](./utils/intro)             | A collection of reusable TypeScript utilities for async, array, string, cache, process, and more.                                                                | [View Docs →](./utils/intro)       |
 | [`@catbee/cron-parser`](./cron-parser/intro) | A lightweight, timezone-aware cron expression parser with full support for seconds, DST transitions, iterators, randomized scheduling, and crontab file parsing. | [View Docs →](./cron-parser/intro) |
+| [`@catbee/mysql`](./mysql/intro)             | A type-safe MySQL client with connection pooling, transactions, named parameters, resilience controls, and a fluent query builder.                               | [View Docs →](./mysql/intro)       |
 
 ---

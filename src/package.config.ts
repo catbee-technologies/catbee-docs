@@ -1,6 +1,7 @@
 export const packageVersionConfig: Record<string, string> = {
   '@catbee/utils': '2.x.x',
   '@catbee/cron-parser': '1.x.x',
+  '@catbee/mysql': '0.1.x',
   '@ng-catbee/cookie': '21',
   '@ng-catbee/indexed-db': '21',
   '@ng-catbee/jwt': '21',
