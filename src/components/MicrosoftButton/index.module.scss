@@ -1,0 +1,83 @@
+@use '../../css/utilities.scss' as *;
+
+.microsoftButton.microsoftButton {
+  align-items: center;
+  @include primary-gradient(135deg);
+  border: 0;
+  border-radius: 0.75rem;
+  box-sizing: border-box;
+  @include shadow-primary(0.25);
+  color: #fff;
+  display: inline-flex;
+  font-family: inherit;
+  gap: 0.5rem;
+  justify-content: flex-start;
+  height: 3.5rem;
+  min-height: 0;
+  padding: 0.5rem 1.25rem;
+  text-align: left;
+  width: max-content;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    filter 0.2s ease;
+
+  &:hover {
+    @include primary-gradient(135deg);
+    @include shadow-primary-hover(0.35);
+    color: #fff;
+    filter: brightness(1.06);
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: translate(0, 0) scale(0.99);
+  }
+}
+
+.microsoftLogo {
+  display: grid;
+  flex: 0 0 1.75rem;
+  gap: 2px;
+  grid-template-columns: repeat(2, 1fr);
+  height: 1.75rem;
+  width: 1.75rem;
+
+  span:nth-child(1) {
+    background: #f25022;
+  }
+  span:nth-child(2) {
+    background: #7fba00;
+  }
+  span:nth-child(3) {
+    background: #00a4ef;
+  }
+  span:nth-child(4) {
+    background: #ffb900;
+  }
+}
+
+.microsoftLabel {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.05;
+
+  small {
+    font-size: 0.62rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+  }
+
+  strong {
+    font-size: 1.05rem;
+    font-weight: 750;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 550px) {
+  .microsoftButton.microsoftButton {
+    justify-content: center;
+    width: 100%;
+  }
+}

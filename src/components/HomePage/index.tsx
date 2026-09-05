@@ -8,6 +8,7 @@ import CodeBlock from '@theme/CodeBlock';
 import useInView from '@site/src/hooks/useInView';
 import useCountUp from '@site/src/hooks/useCountUp';
 import CatbeeIcon from '@site/src/components/Icon';
+import MicrosoftButton from '@site/src/components/MicrosoftButton';
 import styles from './index.module.scss';
 
 export function AnimatedStat({
@@ -108,6 +109,36 @@ await server.start();
 server.enableGracefulShutdown();
 `}
                 </CodeBlock>
+              </div>
+            </div>
+          </motion.div>
+          <motion.div
+            className={styles.containerStudioPromo}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.45 }}
+          >
+            <img
+              src='/media/catbee-container-studio/1.containers-list.png'
+              alt='CatBee Container Studio showing running Docker containers'
+              loading='lazy'
+            />
+            <div className={styles.containerStudioPromoCopy}>
+              <span className={styles.containerStudioPromoKicker}>New from CatBee</span>
+              <Heading as='h2'>Docker, with a little more clarity.</Heading>
+              <p>Run, inspect, and manage containers, images, volumes, and files from one focused desktop workspace.</p>
+              <div className={styles.containerStudioPromoActions}>
+                <Link
+                  className={clsx(
+                    'button button--lg',
+                    styles.catbeeHomeSecondaryButton,
+                    styles.containerStudioPromoLink
+                  )}
+                  to='/catbee-container-studio/'
+                >
+                  Explore Container Studio
+                </Link>
+                <MicrosoftButton />
               </div>
             </div>
           </motion.div>

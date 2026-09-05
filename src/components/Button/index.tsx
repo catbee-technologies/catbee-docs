@@ -7,6 +7,7 @@ interface ButtonProps {
   children: React.ReactNode;
   href?: string;
   target?: string;
+  rel?: string;
   className?: string;
   variant?: 'primary' | 'secondary';
   icon?: string;
@@ -20,6 +21,7 @@ export default function Button({
   children,
   href,
   target,
+  rel,
   className,
   variant = 'primary',
   icon,
@@ -33,6 +35,7 @@ export default function Button({
     <Element
       href={href}
       target={target}
+      rel={rel}
       className={clsx(
         'button button--lg',
         styles.catbeeButton,
