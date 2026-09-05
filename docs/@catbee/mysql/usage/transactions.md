@@ -14,17 +14,18 @@ Prefer `db.transaction()` when all work belongs to one atomic operation. It comm
 
 ```ts
 const userId = await db.transaction(async tx => {
-  const inserted = await tx.insert(
+  const result = await tx.execute(
     'INSERT INTO users(name, email) VALUES(?, ?)',
     ['Alice', 'alice@example.com']
   );
+  const insertedId = result.result.insertId;
 
   await tx.execute(
     'INSERT INTO audit_logs(action, user_id) VALUES(?, ?)',
-    ['created', inserted]
+    ['created', insertedId]
   );
 
-  return inserted;
+  return insertedId;
 });
 ```
 

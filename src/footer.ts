@@ -53,7 +53,7 @@ const footer: DeepPartial<MultiColumnFooter> = {
           href: 'https://github.com/catbee-technologies'
         },
         {
-          label: 'Report Issues @catbee/utils ',
+          label: 'Report Issues @catbee/utils',
           href: 'https://github.com/catbee-technologies/catbee-utils/issues'
         },
         {

@@ -56,7 +56,7 @@ import { SqlClient } from '@catbee/mysql';
 const db = await SqlClient.create({
   host: 'localhost',
   user: 'root',
-  password: 'password',
+  password: process.env.DB_PASSWORD,
   database: 'myapp'
 });
 ```
@@ -69,7 +69,7 @@ import { SqlClient } from '@catbee/mysql';
 const db = SqlClient.createPool({
   host: 'localhost',
   user: 'root',
-  password: 'password',
+  password: process.env.DB_PASSWORD,
   database: 'myapp',
   connectionLimit: 10
 });
@@ -274,7 +274,7 @@ Retries are disabled by default. Enable them through client options when the wor
 const db = SqlClient.createPool({
   host: 'localhost',
   user: 'root',
-  password: 'password',
+  password: process.env.DB_PASSWORD,
   database: 'myapp',
   defaultQueryTimeoutMs: 5000,
   retry: {
