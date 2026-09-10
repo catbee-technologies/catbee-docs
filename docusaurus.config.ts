@@ -93,7 +93,8 @@ const config: Config = {
       ]
     }
   } satisfies Preset.ThemeConfig,
-  plugins: ['@docusaurus/plugin-client-redirects', 'docusaurus-plugin-sass']
+  plugins: ['@docusaurus/plugin-client-redirects', 'docusaurus-plugin-sass'],
+  clientModules: ['./src/vercel-insights.ts']
 };
 
 export default config;
