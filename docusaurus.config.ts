@@ -48,6 +48,15 @@ const config: Config = {
           onInlineAuthors: 'warn',
           onUntruncatedBlogPosts: 'warn'
         },
+        pages: {
+          exclude: [
+            '**/_*.{js,jsx,ts,tsx,md,mdx}',
+            '**/_*/**',
+            '**/*.test.{js,jsx,ts,tsx}',
+            '**/__tests__/**',
+            '**/config.ts'
+          ]
+        },
         theme: {
           customCss: ['./src/css/styles.scss']
         }
