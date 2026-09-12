@@ -3,13 +3,16 @@ import Button from '../Button';
 import styles from './index.module.scss';
 
 interface MicrosoftButtonProps {
+  productId: string;
   className?: string;
 }
 
-export default function MicrosoftButton({ className }: Readonly<MicrosoftButtonProps>): ReactNode {
+const getMicrosoftStoreUrl = (id: string) => `https://apps.microsoft.com/detail/${id}?referrer=appbadge&mode=full`;
+
+export default function MicrosoftButton({ className, productId }: Readonly<MicrosoftButtonProps>): ReactNode {
   return (
     <Button
-      href='https://apps.microsoft.com/detail/9NX6H3J2RNX2?referrer=appbadge&mode=full'
+      href={getMicrosoftStoreUrl(productId)}
       target='_blank'
       rel='noopener noreferrer'
       variant='primary'

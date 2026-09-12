@@ -10,6 +10,7 @@ import useCountUp from '@site/src/hooks/useCountUp';
 import CatbeeIcon from '@site/src/components/Icon';
 import MicrosoftButton from '@site/src/components/MicrosoftButton';
 import styles from './index.module.scss';
+import { ContainerStudioConfig } from '@site/src/pages/catbee-container-studio/config';
 
 export function AnimatedStat({
   end,
@@ -138,7 +139,7 @@ server.enableGracefulShutdown();
                 >
                   Explore Container Studio
                 </Link>
-                <MicrosoftButton />
+                <MicrosoftButton productId={ContainerStudioConfig.MICROSOFT_STORE_PRODUCT_ID} />
               </div>
             </div>
           </motion.div>

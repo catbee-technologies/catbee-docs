@@ -53,7 +53,7 @@ html {
 
 html,
 body {
-  font-family: "Inter", sans-serif;
+  font-family: var(--ifm-font-family-base);
   font-optical-sizing: auto;
   font-weight: 500;
   font-style: normal;
