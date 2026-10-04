@@ -11,7 +11,10 @@ Enterprise-grade Express server builder for secure, reliable, and observable API
 
 - [**`ServerConfigBuilder`**](#serverconfigbuilder) - fluent builder for server configuration.
 - [**`ExpressServer`**](#expressserver) - main server class with lifecycle hooks and utilities.
-- [**`registerHealthCheck(name: string, fn: () => Promise<boolean> | boolean)`**](#health-checks) - add health checks for dependencies.
+- [**`registerHealthCheck(name, fn, options)`**](#health-checks) - add health checks for dependencies (readiness, liveness, or both).
+- [**`setReady(ready)` / `isReady()` / `ready()`**](#health-checks) - control and inspect service readiness for Kubernetes traffic.
+- [**`markStartupComplete()` / `isStartupComplete()`**](#health-checks) - signal and inspect application startup completion for startup probes.
+- [**`getHealthzServer()` / `getHealthzAddress()`**](#health-checks) - access running Healthz probe server instance and address info.
 - [**`enableGracefulShutdown([signals])`**](#graceful-shutdown) - enable graceful shutdown on process signals.
 - [**`disableGracefulShutdown()`**](#graceful-shutdown) - unregister graceful shutdown signal listeners.
 - [**`createRouter(prefix: string)`**](#create-namespaced-router) - create a namespaced router.
@@ -125,12 +128,7 @@ interface CatbeeServerConfig {
     ignorePaths?: string[] | ((req: Request, res: Response) => boolean); // default: skips /healthz, /favicon.ico, /metrics, /docs, /.well-known
     skipNotFoundRoutes?: boolean; // default: true
   };
-  healthCheck?: {
-    path?: string; // default: '/healthz'
-    checks?: Array<{ name: string; check: () => Promise<boolean> | boolean }>;
-    detailed?: boolean; // default: true
-    withGlobalPrefix?: boolean; // default: false
-  };
+  healthzServer?: boolean | (CatbeeHealthzServerConfig & { enable?: boolean }); // default: false, env: SERVER_HEALTHZ_ENABLE || HEALTHZ_ENABLE
   requestTimeout?: number; // default: 0 (disabled)
   responseTime?: {
     enable: boolean; // default: false
@@ -199,52 +197,49 @@ For configuring logger behavior via environment variables, see the [Logger docum
 
 ### Server Environment Variables
 
-| Environment Variable                           | Type       | Default/Value                                | Description                         |
-| ---------------------------------------------- | ---------- | -------------------------------------------- | ----------------------------------- |
-| `SERVER_PORT`                                  | `number`   | `${PORT}` or `3000`                          | Server port (overrides PORT)        |
-| `PORT`                                         | `number`   | `3000`                                       | Fallback port if SERVER_PORT unset  |
-| `SERVER_HOST`                                  | `string`   | `${HOST}` or `0.0.0.0`                       | Server host (overrides HOST)        |
-| `HOST`                                         | `string`   | `0.0.0.0`                                    | Fallback host if SERVER_HOST unset  |
-| `SERVER_CORS_ENABLE`                           | `boolean`  | `false`                                      | Enable CORS middleware              |
-| `SERVER_HELMET_ENABLE`                         | `boolean`  | `false`                                      | Enable Helmet security middleware   |
-| `SERVER_COMPRESSION_ENABLE`                    | `boolean`  | `false`                                      | Enable response compression         |
-| `SERVER_BODY_PARSER_JSON_LIMIT`                | `string`   | `1mb`                                        | Max JSON body size                  |
-| `SERVER_BODY_PARSER_URLENCODED_LIMIT`          | `string`   | `1mb`                                        | Max URL-encoded body size           |
-| `SERVER_COOKIE_PARSER_ENABLE`                  | `boolean`  | `false`                                      | Enable cookie parser middleware     |
-| `SERVER_IS_MICROSERVICE`                       | `boolean`  | `false`                                      | Microservice mode flag              |
-| `SERVER_APP_NAME`                              | `string`   | `${npm_package_name}` or `catbee_server`     | Application/service name            |
-| `SERVER_GLOBAL_HEADERS`                        | `JSON`     | `{}`                                         | Global response headers             |
-| `SERVER_RATE_LIMIT_ENABLE`                     | `boolean`  | `false`                                      | Enable rate limiting                |
-| `SERVER_RATE_LIMIT_WINDOW_MS`                  | `duration` | `15m`                                        | Rate limit window (ms or duration)  |
-| `SERVER_RATE_LIMIT_MAX`                        | `number`   | `100`                                        | Max requests per window             |
-| `SERVER_RATE_LIMIT_MESSAGE`                    | `string`   | `Too many requests, please try again later.` | Rate limit error message            |
-| `SERVER_RATE_LIMIT_STANDARD_HEADERS`           | `boolean`  | `true`                                       | Use standard rate limit headers     |
-| `SERVER_RATE_LIMIT_LEGACY_HEADERS`             | `boolean`  | `false`                                      | Use legacy rate limit headers       |
-| `SERVER_REQUEST_LOGGING_ENABLE`                | `boolean`  | `true` in dev, `false` otherwise             | Enable request logging              |
-| `SERVER_REQUEST_LOGGING_SKIP_NOT_FOUND_ROUTES` | `boolean`  | `true`                                       | Skip logging for 404 routes         |
-| `SERVER_TRUST_PROXY_ENABLE`                    | `boolean`  | `false`                                      | Trust proxy headers                 |
-| `SERVER_OPENAPI_ENABLE`                        | `boolean`  | `false`                                      | Enable OpenAPI docs                 |
-| `SERVER_OPENAPI_MOUNT_PATH`                    | `string`   | `/docs`                                      | OpenAPI docs mount path             |
-| `SERVER_OPENAPI_VERBOSE`                       | `boolean`  | `false`                                      | Verbose OpenAPI output              |
-| `SERVER_OPENAPI_WITH_GLOBAL_PREFIX`            | `boolean`  | `false`                                      | Prefix OpenAPI routes               |
-| `SERVER_HEALTH_CHECK_PATH`                     | `string`   | `/healthz`                                   | Health check endpoint path          |
-| `SERVER_HEALTH_CHECK_DETAILED_OUTPUT`          | `boolean`  | `true`                                       | Detailed health check output        |
-| `SERVER_HEALTH_CHECK_WITH_GLOBAL_PREFIX`       | `boolean`  | `false`                                      | Prefix health check route           |
-| `SERVER_SKIP_HEALTHZ_CHECKS_VALIDATION`        | `boolean`  | `false`                                      | Skip health checks if added         |
-| `SERVER_REQUEST_TIMEOUT_MS`                    | `duration` | `0`                                          | Request timeout (ms or duration)    |
-| `SERVER_RESPONSE_TIME_ENABLE`                  | `boolean`  | `false`                                      | Enable response time tracking       |
-| `SERVER_RESPONSE_TIME_ADD_HEADER`              | `boolean`  | `true`                                       | Add X-Response-Time header          |
-| `SERVER_RESPONSE_TIME_LOG_ON_COMPLETE`         | `boolean`  | `false`                                      | Log response time on complete       |
-| `SERVER_REQUEST_ID_HEADER_NAME`                | `string`   | `x-request-id`                               | Request ID header name              |
-| `SERVER_REQUEST_ID_EXPOSE_HEADER`              | `boolean`  | `true`                                       | Expose request ID header            |
-| `SERVER_METRICS_ENABLE`                        | `boolean`  | `false`                                      | Enable Prometheus metrics           |
-| `SERVER_METRICS_PATH`                          | `string`   | `/metrics`                                   | Metrics endpoint path               |
-| `SERVER_METRICS_WITH_GLOBAL_PREFIX`            | `boolean`  | `false`                                      | Prefix metrics route                |
-| `SERVER_SERVICE_VERSION_ENABLE`                | `boolean`  | `false`                                      | Enable service version header       |
-| `SERVER_SERVICE_VERSION_HEADER_NAME`           | `string`   | `x-service-version`                          | Service version header name         |
-| `SERVER_SERVICE_VERSION`                       | `string`   | `${npm_package_version}` or `0.0.0`          | Service version value               |
-| `npm_package_name`                             | `string`   | `@catbee/utils`                              | Package name (from package.json)    |
-| `npm_package_version`                          | `string`   | `0.0.0`                                      | Package version (from package.json) |
+| Environment Variable                           | Type       | Default/Value                                | Description                                      |
+| ---------------------------------------------- | ---------- | -------------------------------------------- | ------------------------------------------------ |
+| `SERVER_PORT`                                  | `number`   | `${PORT}` or `3000`                          | Server port (overrides PORT)                     |
+| `PORT`                                         | `number`   | `3000`                                       | Fallback port if SERVER_PORT unset               |
+| `SERVER_HOST`                                  | `string`   | `${HOST}` or `0.0.0.0`                       | Server host (overrides HOST)                     |
+| `HOST`                                         | `string`   | `0.0.0.0`                                    | Fallback host if SERVER_HOST unset               |
+| `SERVER_CORS_ENABLE`                           | `boolean`  | `false`                                      | Enable CORS middleware                           |
+| `SERVER_HELMET_ENABLE`                         | `boolean`  | `false`                                      | Enable Helmet security middleware                |
+| `SERVER_COMPRESSION_ENABLE`                    | `boolean`  | `false`                                      | Enable response compression                      |
+| `SERVER_BODY_PARSER_JSON_LIMIT`                | `string`   | `1mb`                                        | Max JSON body size                               |
+| `SERVER_BODY_PARSER_URLENCODED_LIMIT`          | `string`   | `1mb`                                        | Max URL-encoded body size                        |
+| `SERVER_COOKIE_PARSER_ENABLE`                  | `boolean`  | `false`                                      | Enable cookie parser middleware                  |
+| `SERVER_IS_MICROSERVICE`                       | `boolean`  | `false`                                      | Microservice mode flag                           |
+| `SERVER_APP_NAME`                              | `string`   | `${npm_package_name}` or `catbee_server`     | Application/service name                         |
+| `SERVER_GLOBAL_HEADERS`                        | `JSON`     | `{}`                                         | Global response headers                          |
+| `SERVER_RATE_LIMIT_ENABLE`                     | `boolean`  | `false`                                      | Enable rate limiting                             |
+| `SERVER_RATE_LIMIT_WINDOW_MS`                  | `duration` | `15m`                                        | Rate limit window (ms or duration)               |
+| `SERVER_RATE_LIMIT_MAX`                        | `number`   | `100`                                        | Max requests per window                          |
+| `SERVER_RATE_LIMIT_MESSAGE`                    | `string`   | `Too many requests, please try again later.` | Rate limit error message                         |
+| `SERVER_RATE_LIMIT_STANDARD_HEADERS`           | `boolean`  | `true`                                       | Use standard rate limit headers                  |
+| `SERVER_RATE_LIMIT_LEGACY_HEADERS`             | `boolean`  | `false`                                      | Use legacy rate limit headers                    |
+| `SERVER_REQUEST_LOGGING_ENABLE`                | `boolean`  | `true` in dev, `false` otherwise             | Enable request logging                           |
+| `SERVER_REQUEST_LOGGING_SKIP_NOT_FOUND_ROUTES` | `boolean`  | `true`                                       | Skip logging for 404 routes                      |
+| `SERVER_TRUST_PROXY_ENABLE`                    | `boolean`  | `false`                                      | Trust proxy headers                              |
+| `SERVER_OPENAPI_ENABLE`                        | `boolean`  | `false`                                      | Enable OpenAPI docs                              |
+| `SERVER_OPENAPI_MOUNT_PATH`                    | `string`   | `/docs`                                      | OpenAPI docs mount path                          |
+| `SERVER_OPENAPI_VERBOSE`                       | `boolean`  | `false`                                      | Verbose OpenAPI output                           |
+| `SERVER_OPENAPI_WITH_GLOBAL_PREFIX`            | `boolean`  | `false`                                      | Prefix OpenAPI routes                            |
+| `SERVER_HEALTHZ_ENABLE`                        | `boolean`  | `false`                                      | Enable integrated dedicated Healthz probe server |
+| `SERVER_REQUEST_TIMEOUT_MS`                    | `duration` | `0`                                          | Request timeout (ms or duration)                 |
+| `SERVER_RESPONSE_TIME_ENABLE`                  | `boolean`  | `false`                                      | Enable response time tracking                    |
+| `SERVER_RESPONSE_TIME_ADD_HEADER`              | `boolean`  | `true`                                       | Add X-Response-Time header                       |
+| `SERVER_RESPONSE_TIME_LOG_ON_COMPLETE`         | `boolean`  | `false`                                      | Log response time on complete                    |
+| `SERVER_REQUEST_ID_HEADER_NAME`                | `string`   | `x-request-id`                               | Request ID header name                           |
+| `SERVER_REQUEST_ID_EXPOSE_HEADER`              | `boolean`  | `true`                                       | Expose request ID header                         |
+| `SERVER_METRICS_ENABLE`                        | `boolean`  | `false`                                      | Enable Prometheus metrics                        |
+| `SERVER_METRICS_PATH`                          | `string`   | `/metrics`                                   | Metrics endpoint path                            |
+| `SERVER_METRICS_WITH_GLOBAL_PREFIX`            | `boolean`  | `false`                                      | Prefix metrics route                             |
+| `SERVER_SERVICE_VERSION_ENABLE`                | `boolean`  | `false`                                      | Enable service version header                    |
+| `SERVER_SERVICE_VERSION_HEADER_NAME`           | `string`   | `x-service-version`                          | Service version header name                      |
+| `SERVER_SERVICE_VERSION`                       | `string`   | `${npm_package_version}` or `0.0.0`          | Service version value                            |
+| `npm_package_name`                             | `string`   | `@catbee/utils`                              | Package name (from package.json)                 |
+| `npm_package_version`                          | `string`   | `0.0.0`                                      | Package version (from package.json)              |
 
 ---
 
@@ -276,7 +271,7 @@ const config = new ServerConfigBuilder()
   .enableRateLimit({ max: 50, windowMs: 60000 })
   .enableRequestLogging({ ignorePaths: ['/healthz', '/metrics'] })
   .enableMetrics({ path: '/metrics' })
-  .withHealthCheck({ path: '/health', detailed: true })
+  .enableHealthzServer({ port: 8282 })
   .enableOpenApi('./openapi.yaml', { mountPath: '/docs' })
   .withStaticFolder({ path: '/assets', directory: './public/assets', maxAge: '1d' })
   .withGlobalHeaders({
@@ -322,12 +317,12 @@ const server = new ExpressServer(config, {
   }
 });
 
-// Register health checks
-server.registerHealthCheck('database', async () => await checkDatabaseConnection());
-server.registerHealthCheck('storage', () => require('fs').existsSync('./data'));
+// Register health checks (readiness probe by default)
+server.registerHealthCheck('database', async () => await checkDatabaseConnection(), 'readiness');
+server.registerHealthCheck('storage', () => require('fs').existsSync('./data'), 'readiness');
 
-// Check if server is ready
-const isReady = await server.ready();
+// Check if server is ready (synchronous check against HealthzServer)
+const isReady = server.ready();
 console.log('Server ready:', isReady);
 
 // Register routes
@@ -388,7 +383,9 @@ new ServerConfigBuilder()
   .withRequestLogging(options: RequestLoggingOptions)
   .enableMetrics(options: MetricsOptions)
   .withMetrics(options: MetricsOptions)
-  .withHealthCheck(options: HealthCheckOptions)
+  .withHealthzServer(options: CatbeeHealthzServerConfig | boolean)
+  .enableHealthzServer(options?: Partial<CatbeeHealthzServerConfig>)
+  .disableHealthzServer()
   .enableOpenApi(filePath: string, options: OpenApiOptions)
   .withOpenApi(options: OpenApiOptions)
   .withMicroService({ appName, serviceVersion })
@@ -434,8 +431,15 @@ new ExpressServer(config: Partial<CatbeeServerConfig>, hooks?: CatbeeServerHooks
   .stop(force?: boolean): Promise<void>
   .enableGracefulShutdown(signals?: NodeJS.Signals[]): this
   .disableGracefulShutdown(): this
-  .registerHealthCheck(name: string, fn: () => Promise<boolean> | boolean): this
-  .ready(): Promise<boolean>
+  .registerHealthCheck(name: string, check: (signal?: AbortSignal) => Promise<boolean> | boolean, options?: 'readiness' | 'liveness' | 'both' | { type?: 'readiness' | 'liveness' | 'both' }): this
+  .setReady(ready: boolean): this
+  .isReady(): boolean
+  .ready(): boolean
+  .markStartupComplete(): this
+  .isStartupComplete(): boolean
+  .getHealthzServer(): HealthzServer | undefined
+  .getHealthzAddress(): HealthzAddressInfo | null | undefined
+  .isHealthzServerEnabled(): boolean
   .getApp(): Express
   .getServer(): http.Server | https.Server | null
   .addBaseRouter(router: Router): this
@@ -486,40 +490,118 @@ await server.start();
 
 - `getApp()` - Get the underlying Express application instance
 - `getServer()` - Get the active HTTP/HTTPS server instance (null if not running)
-- `ready()` - Check if all health checks pass (returns `Promise<boolean>`)
+- `ready()` / `isReady()` - Return whether the service is currently marked ready for traffic on the Healthz probe server (`boolean`)
+- `setReady(ready: boolean)` - Manually update readiness status on the Healthz probe server
+- `markStartupComplete()` - Mark application startup as completed on the Healthz probe server (switches `/startupz` to 200)
+- `isStartupComplete()` - Check whether application startup has completed on the Healthz probe server
+- `getHealthzServer()` - Get the active `HealthzServer` singleton instance (if started)
+- `getHealthzAddress()` - Get the bound address info (`address`, `port`, `family`) of the running Healthz probe server
+- `isHealthzServerEnabled()` - Return whether the integrated Healthz probe server is enabled
 - `waitUntilReady()` - Wait for server initialization to complete
 
 ---
 
 ## Health Checks
 
-Register health checks for monitoring dependencies.
+In Catbee 2.2.0+, `ExpressServer` provides first-class integration with the dedicated, standalone [`HealthzServer`](healthz-server) designed specifically for Kubernetes container probes (`livenessProbe`, `readinessProbe`, `startupProbe`).
 
-**Method Signature:**
+### Why Standalone Healthz Server?
+
+In cloud-native production environments, running health probes on your main application port can lead to false-positive probe timeouts or delayed traffic draining:
+
+- Heavy application traffic, long-running requests, or event-loop stalls delay probe responses on the main HTTP server.
+- Kubernetes interprets probe timeouts as container failures and restarts healthy pods, worsening cluster instability.
+- With Catbee's integrated `HealthzServer`, probes run on an isolated HTTP listener (default port `8282`), ensuring fast and deterministic probe evaluations.
+
+### Enabling the Healthz Probe Server
+
+Enable the probe server through `ServerConfigBuilder`:
 
 ```ts
-server.registerHealthCheck(name: string, fn: () => Promise<boolean> | boolean)
+const config = new ServerConfigBuilder()
+  .withPort(3000)
+  .enableHealthzServer({
+    port: 8282,
+    shutdownDelayMs: 5000 // Drain delay before closing sockets on shutdown
+  })
+  .build();
 ```
 
-**Examples:**
+Or enable globally via environment variables:
+
+```env
+SERVER_HEALTHZ_ENABLE=true
+HEALTHZ_PORT=8282
+```
+
+### Registering Health Checks
 
 ```ts
-server.registerHealthCheck('storage', () => fs.existsSync('./data'));
-server.registerHealthCheck('database', async () => {
-  try {
-    await db.ping();
-    return true;
-  } catch {
-    return false;
-  }
+server.registerHealthCheck(
+  name: string,
+  check: (signal?: AbortSignal) => Promise<boolean> | boolean,
+  options?: 'readiness' | 'liveness' | 'both' | { type?: 'readiness' | 'liveness' | 'both' }
+): this
+```
+
+- **Target Probe Type:** By default, checks attach to the `'readiness'` probe. External dependencies (databases, Redis, message queues) must always be attached to `readiness` probes so temporary outages safely remove the pod from service endpoints without triggering container restart loops.
+- **Cooperative Timeout Cancellation:** Each check receives an optional `AbortSignal` that triggers if the probe times out (configurable via `checkTimeoutMs`, default `5000ms`).
+- **Dynamic Registration:** Checks registered before or after `server.start()` are automatically synchronized to the active `HealthzServer` instance.
+
+```ts
+// 1. Dependency check (readiness probe - default)
+server.registerHealthCheck(
+  'database',
+  async signal => {
+    return await db.ping({ signal });
+  },
+  'readiness'
+);
+
+// 2. Storage / cache dependency (readiness)
+server.registerHealthCheck('cache', async signal => {
+  return await redis.ping({ signal });
 });
 
-// Check readiness programmatically
-const isReady = await server.ready();
-if (isReady) {
-  console.log('All health checks passed');
-}
+// 3. Lightweight internal sanity check (liveness probe)
+server.registerHealthCheck('event-loop', () => {
+  return process.memoryUsage().heapUsed > 0;
+}, 'liveness');
 ```
+
+### Controlling and Inspecting Readiness
+
+```ts
+// Check readiness status synchronously
+const isReady = server.ready(); // or server.isReady()
+console.log('Ready for traffic:', isReady);
+
+// Manually pause traffic (e.g. during heavy migrations or cache prefetching)
+server.setReady(false);
+
+await runMigrations();
+
+// Re-enable traffic
+server.setReady(true);
+```
+
+### Server Lifecycle & Multi-Stage Probe Coordination
+
+When `healthzServer` is enabled, `ExpressServer` coordinates probe states across all deployment stages:
+
+1. **Pre-binding Probe Server Boot:** `HealthzServer` starts listening on port `8282` **before** the main Express server binds or executes `beforeStart` hooks:
+   - `/healthz` (liveness) returns `200 OK` (health server running and process alive).
+   - `/startupz` (startup) returns `503 Service Unavailable` (`unhealthy`, startup not complete).
+   - `/readyz` (readiness) returns `503 Service Unavailable` (not accepting traffic yet).
+2. **Atomic Startup & Completion:** If `HealthzServer` fails to bind (e.g. port collision), `server.start()` cleanly aborts and rolls back Express server setup. Once the Express server is successfully listening on its port:
+   - `server.markStartupComplete()` is automatically called, switching `/startupz` to `200 OK`.
+   - `server.setReady(true)` is automatically called, switching `/readyz` to `200 OK`.
+3. **Coordinated Shutdown & Load Balancer Draining:** When `server.stop()` is triggered (or process signal received via `enableGracefulShutdown()`):
+   - `server.setReady(false)` is invoked immediately, causing `/readyz` probes to return `503 Service Unavailable` to pull the pod from endpoint lists.
+   - `/startupz` remains `200 OK` (startup completion is decoupled from traffic readiness so Kubernetes does not treat draining as a startup failure).
+   - The server waits `shutdownDelayMs` (default `5000ms`, configurable via `SERVER_HEALTHZ_SHUTDOWN_DELAY_MS` or `HEALTHZ_SHUTDOWN_DELAY_MS`) to allow in-flight network requests to drain.
+   - The main Express server drains in-flight requests and closes active connections.
+   - `HealthzServer.stop()` shuts down the probe HTTP listener cleanly.
 
 ---
 
@@ -650,7 +732,7 @@ See [ServerConfigBuilder](#serverconfigbuilder) and [ExpressServer](#expressserv
 - `withRateLimit(opts: RateLimitOptions)` / `enableRateLimit(opts: RateLimitOptions)` / `disableRateLimit()` - Configure rate limiting
 - `withRequestLogging(opts: RequestLoggingOptions)` / `enableRequestLogging(opts: RequestLoggingOptions)` / `disableRequestLogging()` - Configure request logging
 - `withMetrics(opts: MetricsOptions)` / `enableMetrics(opts: MetricsOptions)` / `disableMetrics()` - Configure Prometheus metrics
-- `withHealthCheck(opts: HealthCheckOptions)` - Configure health check endpoints
+- `withHealthzServer(opts: CatbeeHealthzServerConfig | boolean)` / `enableHealthzServer(opts?: Partial<CatbeeHealthzServerConfig>)` / `disableHealthzServer()` - Configure dedicated Healthz probe server
 - `withOpenApi(opts: OpenApiOptions)` / `enableOpenApi(filePath: string, opts: OpenApiOptions)` / `disableOpenApi()` - Configure OpenAPI documentation
 - `withMicroService(opts: MicroServiceOptions)` - Configure as a microservice
 - `withTrustProxy(opts: TrustProxyOptions)` - Configure trust proxy settings

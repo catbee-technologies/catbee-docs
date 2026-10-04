@@ -243,10 +243,18 @@ server: {
     verbose: false,
     withGlobalPrefix: false
   },
-  healthCheck: {
-    path: '/healthz',
+  healthzServer: {
+    enable: false,
+    host: '0.0.0.0',
+    port: 8282,
+    healthzPath: '/healthz',
+    readyzPath: '/readyz',
+    startupzPath: '/startupz',
     detailed: true,
-    withGlobalPrefix: false
+    checks: [],
+    checkTimeoutMs: 5000,
+    shutdownDelayMs: 5000,
+    handleSignals: true
   },
   requestTimeout: 0,
   responseTime: {
@@ -268,8 +276,7 @@ server: {
     enable: false,
     headerName: 'x-service-version',
     version: '0.0.0'
-  },
-  skipHealthzChecksValidation: false
+  }
 }
 ```
 
@@ -288,25 +295,27 @@ healthz: {
   healthzPath: '/healthz',   // HEALTHZ_PATH (fallback: SERVER_HEALTHZ_PATH, SERVER_HEALTH_CHECK_PATH)
   readyzPath: '/readyz',     // HEALTHZ_READYZ_PATH (fallback: SERVER_READYZ_PATH)
   startupzPath: '/startupz', // HEALTHZ_STARTUPZ_PATH (fallback: SERVER_STARTUPZ_PATH)
-  detailed: true,            // HEALTHZ_DETAILED (fallback: SERVER_HEALTH_CHECK_DETAILED_OUTPUT)
+  detailed: true,            // HEALTHZ_DETAILED (fallback: SERVER_HEALTHZ_DETAILED, SERVER_HEALTH_CHECK_DETAILED_OUTPUT)
   checks: [],
-  checkTimeoutMs: 5000,      // HEALTHZ_CHECK_TIMEOUT_MS
-  shutdownDelayMs: 5000      // HEALTHZ_SHUTDOWN_DELAY_MS
+  checkTimeoutMs: 5000,      // HEALTHZ_CHECK_TIMEOUT_MS (fallback: SERVER_HEALTHZ_CHECK_TIMEOUT_MS)
+  shutdownDelayMs: 5000,     // HEALTHZ_SHUTDOWN_DELAY_MS (fallback: SERVER_HEALTHZ_SHUTDOWN_DELAY_MS)
+  handleSignals: true        // Whether HealthzServer registers its own process SIGTERM/SIGINT listeners
 }
 ```
 
 **Healthz Server Environment Variables**
 
-| Environment Variable        | Type       | Default     | Description                                                                       |
-| --------------------------- | ---------- | ----------- | --------------------------------------------------------------------------------- |
-| `HEALTHZ_HOST`              | `string`   | `0.0.0.0`   | Host to bind (fallback: `SERVER_HEALTHZ_HOST`, `SERVER_HOST`, `HOST`)             |
-| `HEALTHZ_PORT`              | `number`   | `8282`      | Port for standalone probe server (fallback: `SERVER_HEALTHZ_PORT`)                |
-| `HEALTHZ_PATH`              | `string`   | `/healthz`  | Liveness probe path (fallback: `SERVER_HEALTHZ_PATH`, `SERVER_HEALTH_CHECK_PATH`) |
-| `HEALTHZ_READYZ_PATH`       | `string`   | `/readyz`   | Readiness probe path (fallback: `SERVER_READYZ_PATH`)                             |
-| `HEALTHZ_STARTUPZ_PATH`     | `string`   | `/startupz` | Startup probe path (fallback: `SERVER_STARTUPZ_PATH`)                             |
-| `HEALTHZ_DETAILED`          | `boolean`  | `true`      | Include individual check results in JSON responses                                |
-| `HEALTHZ_CHECK_TIMEOUT_MS`  | `duration` | `5000`      | Per-check timeout before aborting via AbortSignal                                 |
-| `HEALTHZ_SHUTDOWN_DELAY_MS` | `duration` | `5000`      | Graceful shutdown delay for LB draining after unreadying                          |
+| Environment Variable        | Type       | Default     | Description                                                                                                           |
+| --------------------------- | ---------- | ----------- | --------------------------------------------------------------------------------------------------------------------- |
+| `SERVER_HEALTHZ_ENABLE`     | `boolean`  | `false`     | Enable integrated dedicated Healthz probe server in ExpressServer (fallback: `HEALTHZ_ENABLE`)                        |
+| `HEALTHZ_HOST`              | `string`   | `0.0.0.0`   | Host to bind (fallback: `SERVER_HEALTHZ_HOST`, `SERVER_HOST`, `HOST`)                                                 |
+| `HEALTHZ_PORT`              | `number`   | `8282`      | Port for standalone probe server (fallback: `SERVER_HEALTHZ_PORT`)                                                    |
+| `HEALTHZ_PATH`              | `string`   | `/healthz`  | Liveness probe path (fallback: `SERVER_HEALTHZ_PATH`, `SERVER_HEALTH_CHECK_PATH`)                                     |
+| `HEALTHZ_READYZ_PATH`       | `string`   | `/readyz`   | Readiness probe path (fallback: `SERVER_READYZ_PATH`)                                                                 |
+| `HEALTHZ_STARTUPZ_PATH`     | `string`   | `/startupz` | Startup probe path (fallback: `SERVER_STARTUPZ_PATH`)                                                                 |
+| `HEALTHZ_DETAILED`          | `boolean`  | `true`      | Include individual check results in JSON (fallback: `SERVER_HEALTHZ_DETAILED`, `SERVER_HEALTH_CHECK_DETAILED_OUTPUT`) |
+| `HEALTHZ_CHECK_TIMEOUT_MS`  | `duration` | `5000`      | Per-check timeout before aborting via AbortSignal (fallback: `SERVER_HEALTHZ_CHECK_TIMEOUT_MS`)                       |
+| `HEALTHZ_SHUTDOWN_DELAY_MS` | `duration` | `5000`      | Graceful shutdown delay for LB draining after unreadying (fallback: `SERVER_HEALTHZ_SHUTDOWN_DELAY_MS`)               |
 
 For comprehensive documentation, see the [Healthz Server documentation](healthz-server).
 
@@ -378,7 +387,7 @@ interface CatbeeGlobalServerConfig {
   globalHeaders?: Record<string, string | (() => string)>;
   rateLimit?: RateLimitConfig;
   requestLogging?: RequestLoggingConfig;
-  healthCheck?: HealthCheckConfig;
+  healthzServer?: ToggleConfig<CatbeeHealthzServerConfig & { enable?: boolean }>;
   requestTimeout?: number;
   responseTime?: ResponseTimeConfig;
   requestId?: RequestIdConfig;
@@ -387,7 +396,6 @@ interface CatbeeGlobalServerConfig {
   metrics?: MetricsConfig;
   serviceVersion?: ServiceVersionConfig;
   https?: HttpsConfig;
-  skipHealthzChecksValidation?: boolean;
 }
 ```
 

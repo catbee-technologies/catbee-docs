@@ -61,7 +61,7 @@ const config = new ServerConfigBuilder()
   .withCors({ origin: '*' })
   .enableRateLimit({ max: 50, windowMs: 60000 })
   .enableRequestLogging({ ignorePaths: ['/healthz', '/metrics'] })
-  .withHealthCheck({ path: '/health', detailed: true })
+  .enableHealthzServer({ port: 8282 })
   .enableOpenApi('./openapi.yaml', { mountPath: '/docs' })
   .withGlobalHeaders({ 'X-Powered-By': 'Catbee' })
   .withGlobalPrefix('/api')
@@ -100,7 +100,7 @@ const baseRouter = Router();
 baseRouter.use('/users', router);
 server.setBaseRouter(baseRouter);
 
-server.registerHealthCheck('database', async () => await checkDatabaseConnection());
+server.registerHealthCheck('database', async () => await checkDatabaseConnection(), 'readiness');
 server.useMiddleware(loggingMiddleware, errorMiddleware);
 
 await server.start();
