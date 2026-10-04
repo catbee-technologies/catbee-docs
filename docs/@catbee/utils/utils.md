@@ -15,6 +15,7 @@ A modular, production-grade utility library for Node.js and TypeScript.
 ### Express Server
 
 - [Express Server](./server) - Express.js server utilities and helpers
+- [Healthz Server](./healthz-server) - Standalone Kubernetes probe server (`/healthz`, `/readyz`, `/startupz`)
 
 ### Utility Modules
 

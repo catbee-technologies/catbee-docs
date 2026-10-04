@@ -19,6 +19,7 @@ A comprehensive set of utility functions for Node.js and TypeScript projects. In
 - [Environment](../env) – Environment variable management
 - [Exception](../exception) – HTTP and general error handling
 - [File System](../fs) – File operations and utilities
+- [Healthz Server](../healthz-server) – Standalone Kubernetes probe server (`/healthz`, `/readyz`, `/startupz`)
 - [HTTP Status Codes](../http-status-codes) – Typed HTTP status codes
 - [ID](../id) – UUID and ID generation functions
 - [Logger](../logger) – Structured logging with Pino

@@ -13,9 +13,12 @@ Enterprise-grade Express server builder for secure, reliable, and observable API
 - [**`ExpressServer`**](#expressserver) - main server class with lifecycle hooks and utilities.
 - [**`registerHealthCheck(name: string, fn: () => Promise<boolean> | boolean)`**](#health-checks) - add health checks for dependencies.
 - [**`enableGracefulShutdown([signals])`**](#graceful-shutdown) - enable graceful shutdown on process signals.
-- [**`createRouter(prefix: string)`**](#create-router) - create a namespaced router.
-- [**`setBaseRouter(router: Router)`**](#set-global-base-router) - set a global base router for all routes.
-- [**`registerRoute(methods: string[], path: string, ...handlers: RequestHandler[])`**](#register-middleware) - register route handlers.
+- [**`disableGracefulShutdown()`**](#graceful-shutdown) - unregister graceful shutdown signal listeners.
+- [**`createRouter(prefix: string)`**](#create-namespaced-router) - create a namespaced router.
+- [**`addBaseRouter(router: Router)`**](#mount-base-router-addbaserouter) - mount a base router onto the root router (prevents duplicate mounting).
+- [**`setBaseRouter(router: Router)`**](#mount-base-router-addbaserouter) - alias for `addBaseRouter` (backward compatible).
+- [**`get()`, `post()`, `put()`, `delete()`, `patch()`, `options()`, `head()`**](#express-style-route-helpers) - fluent Express route registration helpers.
+- [**`registerRoute(methods: string[], path: string, ...handlers: RequestHandler[])`**](#register-custom-route) - register route handlers.
 - [**`registerMiddleware(path: string, middleware: RequestHandler)`**](#register-middleware) - add custom middleware.
 - [**`useMiddleware(...middlewares: RequestHandler[])`**](#register-middleware) - apply global middleware.
 - [**`getMetricsRegistry(): MetricsRegistry`**](#metrics) - access Prometheus metrics registry.
@@ -227,6 +230,7 @@ For configuring logger behavior via environment variables, see the [Logger docum
 | `SERVER_HEALTH_CHECK_PATH`                     | `string`   | `/healthz`                                   | Health check endpoint path          |
 | `SERVER_HEALTH_CHECK_DETAILED_OUTPUT`          | `boolean`  | `true`                                       | Detailed health check output        |
 | `SERVER_HEALTH_CHECK_WITH_GLOBAL_PREFIX`       | `boolean`  | `false`                                      | Prefix health check route           |
+| `SERVER_SKIP_HEALTHZ_CHECKS_VALIDATION`        | `boolean`  | `false`                                      | Skip health checks if added         |
 | `SERVER_REQUEST_TIMEOUT_MS`                    | `duration` | `0`                                          | Request timeout (ms or duration)    |
 | `SERVER_RESPONSE_TIME_ENABLE`                  | `boolean`  | `false`                                      | Enable response time tracking       |
 | `SERVER_RESPONSE_TIME_ADD_HEADER`              | `boolean`  | `true`                                       | Add X-Response-Time header          |
@@ -239,7 +243,6 @@ For configuring logger behavior via environment variables, see the [Logger docum
 | `SERVER_SERVICE_VERSION_ENABLE`                | `boolean`  | `false`                                      | Enable service version header       |
 | `SERVER_SERVICE_VERSION_HEADER_NAME`           | `string`   | `x-service-version`                          | Service version header name         |
 | `SERVER_SERVICE_VERSION`                       | `string`   | `${npm_package_version}` or `0.0.0`          | Service version value               |
-| `SERVER_SKIP_HEALTHZ_CHECKS_VALIDATION`        | `boolean`  | `false`                                      | Skip health checks if added         |
 | `npm_package_name`                             | `string`   | `@catbee/utils`                              | Package name (from package.json)    |
 | `npm_package_version`                          | `string`   | `0.0.0`                                      | Package version (from package.json) |
 
@@ -430,12 +433,21 @@ new ExpressServer(config: Partial<CatbeeServerConfig>, hooks?: CatbeeServerHooks
   .start(): Promise<http.Server | https.Server>
   .stop(force?: boolean): Promise<void>
   .enableGracefulShutdown(signals?: NodeJS.Signals[]): this
+  .disableGracefulShutdown(): this
   .registerHealthCheck(name: string, fn: () => Promise<boolean> | boolean): this
   .ready(): Promise<boolean>
   .getApp(): Express
   .getServer(): http.Server | https.Server | null
+  .addBaseRouter(router: Router): this
   .setBaseRouter(router: Router): this
   .createRouter(prefix?: string): Router
+  .get(path: string, ...handlers: RequestHandler[]): this
+  .post(path: string, ...handlers: RequestHandler[]): this
+  .put(path: string, ...handlers: RequestHandler[]): this
+  .delete(path: string, ...handlers: RequestHandler[]): this
+  .patch(path: string, ...handlers: RequestHandler[]): this
+  .options(path: string, ...handlers: RequestHandler[]): this
+  .head(path: string, ...handlers: RequestHandler[]): this
   .registerRoute(methods: string[], path: string, ...handlers): this
   .registerMiddleware(path: string | RequestHandler, middleware?: RequestHandler): this
   .useMiddleware(...middlewares: RequestHandler[]): this
@@ -513,54 +525,100 @@ if (isReady) {
 
 ## Graceful Shutdown
 
-Enable zero-downtime deployments.
+Enable zero-downtime deployments and safe process termination.
 
-**Method Signature:**
+**Method Signatures:**
 
 ```ts
-server.enableGracefulShutdown(signals?: NodeJS.Signals[])
+server.enableGracefulShutdown(signals?: NodeJS.Signals[]): this
+server.disableGracefulShutdown(): this
 ```
 
-**Examples:**
+### How Graceful Shutdown Works
+
+1. **Signal Handling**: Listens for process signals (`SIGTERM`, `SIGINT` by default). Signal handlers are managed in an internal `Map` to prevent duplicate execution.
+2. **Immediate Idle Connection Teardown**: Upon initiation, `server.closeIdleConnections?.()` is called immediately so idle keep-alive HTTP sockets do not stall the termination process.
+3. **In-Flight Request Draining**: The server stops accepting new connections and waits for active requests to finish processing.
+4. **Forced Socket Destruction**: Any socket that does not close within the timeout window is forcefully destroyed.
+5. **Hook Execution**: `beforeStop` and `afterStop` lifecycle hooks are executed in sequence.
+
+### Examples
 
 ```ts
+// Enable automatic signal handling on SIGTERM and SIGINT
 server.enableGracefulShutdown();
 
-async function shutdown() {
-  await server.stop();
-  process.exit(0);
-}
+// For testing or dynamic lifecycles, unregister listeners to prevent leaks
+server.disableGracefulShutdown();
+
+// Or manually stop the server
+await server.stop();
 ```
+
+---
+
+## Server Lifecycle & Concurrency Protection
+
+`ExpressServer` is built for mission-critical production environments with robust startup and shutdown guarantees:
+
+- **Concurrency Protection**: Calling `server.start()` concurrently is protected by an internal in-flight `startPromise`. Multiple concurrent calls wait on the same initialization and return the single running server instance without port collision or double-binding.
+- **Hook & Listener Ordering**: Connection tracking, unified error handling, and the `onServerCreated` hook are registered and awaited **before** `server.listen()` is called. This ensures no incoming socket or startup error can be missed.
+- **Automatic Failure Cleanup**: If the server fails to bind or start (e.g., port in use), listeners are automatically detached, connections are cleared, and `this.server` resets to `null`, allowing safe retry attempts.
 
 ---
 
 ## Routing & Middleware
 
-### Set Global Base Router
+`ExpressServer` unifies all routing onto a permanent internal `rootRouter`. This ensures that global middleware, route prefixes, and sub-routers interact cleanly without dropped handlers.
+
+### Mount Base Router (`addBaseRouter`)
+
+Mount an external router onto the server's root routing pipeline. Duplicate mounting of the same router instance is automatically prevented:
 
 ```ts
 import { Router } from 'express';
-const baseRouter = Router();
 
-const config = new ServerConfigBuilder()
-  .withGlobalPrefix('/api/v1')
-  .build();
+const apiRouter = Router();
+apiRouter.get('/users', (req, res) => res.json({ users: [] }));
+
 const server = new ExpressServer(config);
 
-server.setBaseRouter(baseRouter);
+// Mount router onto root router
+server.addBaseRouter(apiRouter);
+
+// Duplicate mounts are safely ignored
+server.addBaseRouter(apiRouter);
+
+// `setBaseRouter` is maintained as a backward-compatible alias
+server.setBaseRouter(apiRouter);
 ```
 
-### Create Router
+### Express-Style Route Helpers
+
+Register routes directly on the server instance using familiar Express-style HTTP method helpers:
+
+```ts
+server
+  .get('/status', (req, res) => res.json({ status: 'ok' }))
+  .post('/users', authMiddleware, createUserHandler)
+  .put('/users/:id', updateUserHandler)
+  .delete('/users/:id', deleteUserHandler)
+  .patch('/users/:id', patchUserHandler)
+  .options('/users', optionsHandler)
+  .head('/ping', (req, res) => res.end());
+```
+
+### Create Namespaced Router
 
 ```ts
 const router = server.createRouter('/users');
 router.get('/', handler);
 ```
 
-### Register Route
+### Register Custom Route
 
 ```ts
-server.registerRoute(['get'], '/status', (req, res) => res.json({ ok: true }));
+server.registerRoute(['get', 'post'], '/webhook', webhookHandler);
 ```
 
 ### Register Middleware

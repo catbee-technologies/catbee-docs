@@ -148,11 +148,12 @@ Global configuration management with environment variable support:
 
 ---
 
-## 🏢 Express Server
+## 🏢 Express Server & Health Probes
 
-Enterprise-grade Express server utilities:
+Enterprise-grade Express server and standalone Kubernetes probe servers:
 
 - [Express Server](server) – Fast, secure, and scalable server setup
+- [Healthz Server](healthz-server) – Standalone Kubernetes probe server (`/healthz`, `/readyz`, `/startupz`)
 
 ---
 
@@ -171,6 +172,7 @@ Explore the full suite of utilities, each with detailed API docs and examples:
 - [Environment](env) – Env variable management
 - [Exception](exception) – HTTP and error handling
 - [File System](fs) – File operations
+- [Healthz Server](healthz-server) – Standalone Kubernetes probe server
 - [HTTP Status Codes](http-status-codes) – Typed status codes
 - [ID](id) – UUID and ID generation
 - [Logger](logger) – Structured logging with Pino

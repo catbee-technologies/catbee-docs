@@ -12,40 +12,79 @@ Per-request context using AsyncLocalStorage. Provides a type-safe API for storin
   - [**`getInstance(): AsyncLocalStorage<Store>`**](#getinstance) – Returns the underlying AsyncLocalStorage instance.
   - [**`getAll(): Store | undefined`**](#getall) – Retrieves the entire context store object for the current async context.
   - [**`run<T>(store: Store, callback: () => T): T`**](#run) – Initializes a new async context and executes a callback within it.
-  - [**`set<T>(key: symbol, value: T): void`**](#set) – Sets a value in the current context store by symbol key.
-  - [**`get<T>(key: symbol): T | undefined`**](#get) – Retrieves a value from the async context store by symbol key.
-  - [**`has(key: symbol): boolean`**](#has) – Checks if a key exists in the current context store.
-  - [**`delete(key: symbol): void`**](#delete) – Removes a value from the current context store by symbol key.
+  - [**`set<T>(key: ContextKey<T>, value: T): void`**](#set) – Sets a value in the current context store by key.
+  - [**`get<T>(key: ContextKey<T>): T | undefined`**](#get) – Retrieves a value from the async context store by key.
+  - [**`has(key: ContextKey): boolean`**](#has) – Checks if a key exists in the current context store.
+  - [**`delete(key: ContextKey): boolean`**](#delete) – Removes a value from the current context store by key.
   - [**`patch(values: Partial<Store>): void`**](#patch) – Updates multiple values in the current context store at once.
-  - [**`withValue<T>(key: symbol, value: T, callback: () => void): void`**](#withvalue) – Executes a callback with a temporary store value.
+  - [**`withValue<T, V>(key: ContextKey<V>, value: V, callback: () => T): T`**](#withvalue) – Executes a callback within a branched context with a temporary value.
   - [**`extend(newValues: Partial<Store>, callback: () => void): void`**](#extend) – Creates a new context that inherits values and adds/overrides new ones.
   - [**`createExpressMiddleware(initialValuesFactory?: () => Partial<Store>): express.RequestHandler`**](#createexpressmiddleware) – Creates Express middleware that initializes a context for each request.
 
 Other exports:
 
-- [**`StoreKeys`**](#interface--types) – Predefined symbols for context keys.
-- [**`getRequestId(): string | undefined`**](#getrequestid) – Retrieves the current request ID from context.
-- [**`getFromContext<T>(key: symbol): T | undefined`**](#getfromcontext) – Type-safe getter for common context values.
+- [**`TypedStoreKeys`**](#typedstorekeys) – Pre-instantiated, type-safe `TypedContextKey` objects for core and messaging keys.
+- [**`StoreKeys`**](#storekeys) – Predefined symbols for context keys.
+- [**`ContextKey<T>`**](#contextkey) – Type alias for `symbol | TypedContextKey<T>`.
 - [**`TypedContextKey<T>`**](#typedcontextkey) – Type-safe wrapper class for accessing and modifying context values.
+- [**`getRequestId(): string | undefined`**](#getrequestid) – Retrieves the current request ID from context.
+- [**`getFromContext<T>(key: ContextKey<T>): T | undefined`**](#getfromcontext) – Type-safe getter for context values.
 
 ---
 
 ## Interface & Types
 
+### `ContextKey`
+
+Union type accepted by all `ContextStore` methods, allowing transparent use of raw symbols or `TypedContextKey<T>` instances:
+
 ```ts
-// Predefined symbols used as keys in AsyncLocalStorage.
+export type ContextKey<T = unknown> = symbol | TypedContextKey<T>;
+```
+
+### `StoreKeys`
+
+Predefined symbols used as keys in `AsyncLocalStorage`:
+
+```ts
 export const StoreKeys = {
   LOGGER: Symbol('LOGGER'),
   REQUEST_ID: Symbol('REQUEST_ID'),
-  USER: Symbol('USER'),
-  SESSION: Symbol('SESSION'),
-  TRANSACTION_ID: Symbol('TRANSACTION_ID'),
+  CORRELATION_ID: Symbol('CORRELATION_ID'),
   USER_ID: Symbol('USER_ID'),
+  TRANSACTION_ID: Symbol('TRANSACTION_ID'),
   TENANT_ID: Symbol('TENANT_ID'),
   TRACE_ID: Symbol('TRACE_ID'),
-  CORRELATION_ID: Symbol('CORRELATION_ID')
-};
+  SPAN_ID: Symbol('SPAN_ID'),
+  MESSAGE_ID: Symbol('MESSAGE_ID'),
+  MESSAGE_TYPE: Symbol('MESSAGE_TYPE'),
+  QUEUE_NAME: Symbol('QUEUE_NAME')
+} as const;
+```
 
+### `TypedStoreKeys`
+
+Pre-configured, strongly typed `TypedContextKey` instances providing autocomplete and automatic type resolution without manual casting:
+
+```ts
+export const TypedStoreKeys = {
+  LOGGER: new TypedContextKey<Logger>(StoreKeys.LOGGER),
+  REQUEST_ID: new TypedContextKey<string>(StoreKeys.REQUEST_ID),
+  CORRELATION_ID: new TypedContextKey<string>(StoreKeys.CORRELATION_ID),
+  USER_ID: new TypedContextKey<string>(StoreKeys.USER_ID),
+  TRANSACTION_ID: new TypedContextKey<string>(StoreKeys.TRANSACTION_ID),
+  TENANT_ID: new TypedContextKey<string>(StoreKeys.TENANT_ID),
+  TRACE_ID: new TypedContextKey<string>(StoreKeys.TRACE_ID),
+  SPAN_ID: new TypedContextKey<string>(StoreKeys.SPAN_ID),
+  MESSAGE_ID: new TypedContextKey<string>(StoreKeys.MESSAGE_ID),
+  MESSAGE_TYPE: new TypedContextKey<string>(StoreKeys.MESSAGE_TYPE),
+  QUEUE_NAME: new TypedContextKey<string>(StoreKeys.QUEUE_NAME)
+} as const;
+```
+
+### `Store`
+
+```ts
 export interface Store {
   [key: symbol]: unknown;
 }
@@ -193,17 +232,17 @@ ContextStore.run({ [StoreKeys.REQUEST_ID]: 'id' }, () => {
 
 ### `set()`
 
-Sets a value in the current context store by symbol key.
+Sets a value in the current context store by key. Accepts a `symbol` or a `TypedContextKey<T>`.
 
 **Method Signature:**
 
 ```ts
-set<T>(key: symbol, value: T): void
+set<T>(key: ContextKey<T>, value: T): void
 ```
 
 **Parameters:**
 
-- `key`: A symbol key to identify the value.
+- `key`: A `symbol` or `TypedContextKey<T>` identifying the value.
 - `value`: The value to store.
 
 **Throws:**
@@ -213,30 +252,32 @@ set<T>(key: symbol, value: T): void
 **Examples:**
 
 ```ts
-import { ContextStore } from '@catbee/utils/context-store';
+import { ContextStore, StoreKeys, TypedStoreKeys } from '@catbee/utils/context-store';
 
-ContextStore.set(StoreKeys.REQUEST_ID, 'id');
-ContextStore.set(StoreKeys.USER, {
-  id: 123,
-  name: 'Alice'
-});
+// Using TypedStoreKeys
+ContextStore.set(TypedStoreKeys.REQUEST_ID, 'req_12345');
+ContextStore.set(TypedStoreKeys.USER_ID, 'usr_98765');
+ContextStore.set(TypedStoreKeys.QUEUE_NAME, 'orders.processing');
+
+// Using raw Symbol
+ContextStore.set(StoreKeys.TRANSACTION_ID, 'tx_9999');
 ```
 
 ---
 
 ### `get()`
 
-Retrieves a value from the async context store by symbol key.
+Retrieves a value from the async context store by key. Accepts a `symbol` or a `TypedContextKey<T>`.
 
 **Method Signature:**
 
 ```ts
-get<T>(key: symbol): T | undefined
+get<T>(key: ContextKey<T>): T | undefined
 ```
 
 **Parameters:**
 
-- `key`: A symbol key to identify the value.
+- `key`: A `symbol` or `TypedContextKey<T>` identifying the value.
 
 **Returns:**
 
@@ -245,36 +286,41 @@ get<T>(key: symbol): T | undefined
 **Examples:**
 
 ```ts
-import { ContextStore } from '@catbee/utils/context-store';
+import { ContextStore, StoreKeys, TypedStoreKeys } from '@catbee/utils/context-store';
 
-const user = ContextStore.get<{ id: number; name: string }>(StoreKeys.USER);
+// Type is inferred automatically when using TypedStoreKeys: string | undefined
+const userId = ContextStore.get(TypedStoreKeys.USER_ID);
+const queueName = ContextStore.get(TypedStoreKeys.QUEUE_NAME);
+
+// Using raw symbol with explicit type argument
+const txId = ContextStore.get<string>(StoreKeys.TRANSACTION_ID);
 ```
 
 ---
 
 ### `has()`
 
-Checks if a key exists in the current context store.
+Checks if a key exists in the current context store. Accepts a `symbol` or a `TypedContextKey`.
 
 **Method Signature:**
 
 ```ts
-has(key: symbol): boolean
+has(key: ContextKey): boolean
 ```
 
 **Parameters:**
 
-- `key`: A symbol key to check.
+- `key`: A `symbol` or `TypedContextKey` to check.
 
 **Returns:**
 
 - `true` if the key exists, otherwise `false`.
 
 ```ts
-import { ContextStore } from '@catbee/utils/context-store';
+import { ContextStore, TypedStoreKeys } from '@catbee/utils/context-store';
 
-if (ContextStore.has(StoreKeys.USER)) {
-  // user exists in context
+if (ContextStore.has(TypedStoreKeys.USER_ID)) {
+  // user ID exists in context
 }
 ```
 
@@ -282,17 +328,17 @@ if (ContextStore.has(StoreKeys.USER)) {
 
 ### `delete()`
 
-Removes a value from the current context store by symbol key.
+Removes a value from the current context store by key. Accepts a `symbol` or a `TypedContextKey`.
 
 **Method Signature:**
 
 ```ts
-delete(key: symbol): boolean
+delete(key: ContextKey): boolean
 ```
 
 **Parameters:**
 
-- `key`: A symbol key to identify the value.
+- `key`: A `symbol` or `TypedContextKey` to remove.
 
 **Returns:**
 
@@ -305,9 +351,9 @@ delete(key: symbol): boolean
 **Examples:**
 
 ```ts
-import { ContextStore } from '@catbee/utils/context-store';
+import { ContextStore, TypedStoreKeys } from '@catbee/utils/context-store';
 
-ContextStore.delete(StoreKeys.USER);
+ContextStore.delete(TypedStoreKeys.USER_ID);
 ```
 
 ---
@@ -333,11 +379,12 @@ patch(values: Partial<Record<symbol, unknown>>): void
 **Examples:**
 
 ```ts
-import { ContextStore } from '@catbee/utils/context-store';
+import { ContextStore, StoreKeys } from '@catbee/utils/context-store';
 
 ContextStore.patch({
-  [StoreKeys.USER]: { id: 456, name: 'Bob' },
-  [StoreKeys.SESSION]: 'session-token'
+  [StoreKeys.USER_ID]: 'usr_123',
+  [StoreKeys.TENANT_ID]: 'tenant_abc',
+  [StoreKeys.MESSAGE_ID]: 'msg_456'
 });
 ```
 
@@ -345,19 +392,19 @@ ContextStore.patch({
 
 ### `withValue()`
 
-Executes a callback with a temporary store value that only exists during execution.
+Executes a callback within a branched async context containing a temporary value. Built with full async boundary safety via `AsyncLocalStorage.run`—the parent context remains untouched and cannot be corrupted by nested async work.
 
 **Method Signature:**
 
 ```ts
-withValue<T>(key: symbol, value: unknown, callback: () => T): T
+withValue<T, V>(key: ContextKey<V>, value: V, callback: () => T): T
 ```
 
 **Parameters:**
 
-- `key`: A symbol key to identify the value.
-- `value`: The temporary value to set.
-- `callback`: A function to execute with the temporary value.
+- `key`: A `symbol` or `TypedContextKey<V>` identifying the value.
+- `value`: The temporary value to set for the duration of the callback.
+- `callback`: A function to execute within the branched context.
 
 **Returns:**
 
@@ -370,14 +417,14 @@ withValue<T>(key: symbol, value: unknown, callback: () => T): T
 **Examples:**
 
 ```ts
-import { ContextStore } from '@catbee/utils/context-store';
+import { ContextStore, TypedStoreKeys } from '@catbee/utils/context-store';
 
-ContextStore.withValue(StoreKeys.USER, { id: 789 }, () => {
-  // user is temporarily set here
-  const user = ContextStore.get(StoreKeys.USER);
-  console.log(user); // { id: 789 }
+ContextStore.withValue(TypedStoreKeys.USER_ID, 'temporary-system-user', () => {
+  // USER_ID is 'temporary-system-user' within this async branch
+  console.log(TypedStoreKeys.USER_ID.get()); // 'temporary-system-user'
 });
-// Original value is restored after callback completes
+
+// Original USER_ID is unaffected outside the callback
 ```
 
 ---
@@ -470,17 +517,17 @@ const requestId = getRequestId();
 
 ### `getFromContext()`
 
-Type-safe getter for common context values.
+Type-safe getter for context values. Accepts either a raw `symbol` or a `TypedContextKey<T>`.
 
 **Method Signature:**
 
 ```ts
-getFromContext<T>(key: symbol): T | undefined
+getFromContext<T>(key: ContextKey<T>): T | undefined
 ```
 
 **Parameters:**
 
-- `key`: The store key symbol to retrieve.
+- `key`: The `ContextKey` (symbol or `TypedContextKey<T>`) to retrieve.
 
 **Returns:**
 
@@ -489,10 +536,14 @@ getFromContext<T>(key: symbol): T | undefined
 **Examples:**
 
 ```ts
-import { getFromContext, StoreKeys } from '@catbee/utils/context-store';
+import { getFromContext, StoreKeys, TypedStoreKeys } from '@catbee/utils/context-store';
 
-const user = getFromContext<{ id: number; name: string }>(StoreKeys.USER);
-const logger = getFromContext<Logger>(StoreKeys.LOGGER);
+// Automatically typed via TypedStoreKeys
+const requestId = getFromContext(TypedStoreKeys.REQUEST_ID);
+const queueName = getFromContext(TypedStoreKeys.QUEUE_NAME);
+
+// Or with raw symbol and explicit type parameter
+const correlationId = getFromContext<string>(StoreKeys.CORRELATION_ID);
 ```
 
 ---
@@ -510,46 +561,49 @@ class TypedContextKey<T> {
   set(value: T): void;
   exists(): boolean;
   delete(): boolean;
+  getSymbol(): symbol;
 }
 ```
 
 **Constructor Parameters:**
 
 - `symbol`: The unique symbol for this key.
-- `defaultValue`: Optional default value if key is not found.
+- `defaultValue`: Optional default value returned by `get()` if key is not found in context.
 
 **Methods:**
 
 - **`get()`**: Gets the current value for this key, or the default value if not found.
-- **`set(value: T)`**: Sets the value for this key.
+- **`set(value: T)`**: Sets the value for this key in the current context.
 - **`exists()`**: Checks if this key exists in the context.
 - **`delete()`**: Deletes this key from the context.
+- **`getSymbol()`**: Returns the underlying `symbol` for this key.
 
 **Examples:**
 
 ```ts
-import { TypedContextKey, StoreKeys } from '@catbee/utils/context-store';
+import { TypedContextKey, TypedStoreKeys, StoreKeys } from '@catbee/utils/context-store';
 
-interface User {
-  id: number;
-  name: string;
-  email: string;
+interface UserProfile {
+  id: string;
+  roles: string[];
 }
 
-// Create a typed key with type safety
-const userKey = new TypedContextKey<User>(StoreKeys.USER);
+// 1. Create a custom typed key
+const USER_PROFILE_KEY = Symbol('USER_PROFILE');
+const UserProfileKey = new TypedContextKey<UserProfile>(USER_PROFILE_KEY);
 
-// Type-safe operations
-userKey.set({ id: 1, name: 'Alice', email: 'alice@example.com' });
-const user = userKey.get(); // Type: User | undefined
+// 2. Type-safe operations
+UserProfileKey.set({ id: 'u_123', roles: ['admin'] });
+const profile = UserProfileKey.get(); // Type: UserProfile | undefined
 
-if (userKey.exists()) {
-  console.log('User is in context');
+if (UserProfileKey.exists()) {
+  console.log('User profile is in context');
 }
 
-userKey.delete();
+// Retrieve underlying symbol
+const rawSymbol = UserProfileKey.getSymbol();
 
-// With default value
-const requestIdKey = new TypedContextKey<string>(StoreKeys.REQUEST_ID, 'default-id');
-const id = requestIdKey.get(); // Returns 'default-id' if not set
+// 3. Or use built-in pre-configured TypedStoreKeys directly
+TypedStoreKeys.USER_ID.set('usr_9999');
+const currentUserId = TypedStoreKeys.USER_ID.get();
 ```

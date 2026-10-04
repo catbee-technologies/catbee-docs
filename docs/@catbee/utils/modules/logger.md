@@ -9,10 +9,10 @@ Structured logging with Pino. This module provides a robust logging system with 
 ## API Summary
 
 - [**`getLogger(newInstance = false): Logger`**](#getlogger) - Retrieves the current logger instance from the request context or falls back to the global logger.
-- [**`createChildLogger(bindings: Record<string, any>, parentLogger?: Logger): Logger`**](#createchildlogger) - Creates a child logger with additional context that will be included in all log entries.
+- [**`createChildLogger(bindings: Record<string, unknown>, parentLogger?: Logger): Logger`**](#createchildlogger) - Creates a child logger with additional context that will be included in all log entries.
 - [**`createRequestLogger(requestId: string, additionalContext = {}): Logger`**](#createrequestlogger) - Creates a request-scoped logger with request ID and stores it in the async context.
-- [**`logError(error: Error | string, message?: string, context?: Record<string, any>): void`**](#logerror) - Utility to safely log errors with proper stack trace extraction
-- [**`resetLogger(): void`**](#resetlogger) - Resets the global logger to its default configuration.
+- [**`logError(error: unknown, message?: string, context?: Record<string, unknown>): void`**](#logerror) - Utility to safely log errors with proper stack trace extraction (supports any `unknown` error).
+- [**`resetLogger(): void`**](#resetlogger) - Resets the global root logger singleton for testing or reconfiguration.
 - [**`getRedactCensor(): (key: string) => boolean`**](#getredactcensor) - Gets the current global redaction censor function used for log redaction.
 - [**`setRedactCensor(censor: (key: string) => boolean): void`**](#setredactcensor) - Sets the global redaction censor function used throughout the application for log redaction.
 - [**`addRedactFields(fields: string[]): void`**](#addredactfields) - **Deprecated:** Use `addSensitiveFields` instead. Extends the current redaction function with additional fields to redact.
@@ -33,11 +33,20 @@ Structured logging with Pino. This module provides a robust logging system with 
 ## Interfaces & Types
 
 ```ts
-// Main logger type (Pino logger)
-export type Logger = pino.Logger;
+import type { Logger as PinoLogger, Level } from 'pino';
 
-// Logger levels from Pino
-export type LoggerLevels = pino.Level; // 'fatal' | 'error' | 'warn' | 'info' | 'debug' | 'trace'
+// Main logger type (Pino logger)
+export type Logger = PinoLogger;
+
+// Logger level for application-wide logging
+export type LoggerLevel = Level; // 'fatal' | 'error' | 'warn' | 'info' | 'debug' | 'trace' | 'silent'
+
+/**
+ * Logger levels for application-wide logging.
+ *
+ * @deprecated Use `LoggerLevel` instead.
+ */
+export type LoggerLevels = LoggerLevel;
 ```
 
 ## Example Usage
@@ -177,22 +186,19 @@ function handleRequest(req, res) {
 
 ### `logError()`
 
-Utility to safely log errors with proper stack trace extraction.
-
-- If `error` is an instance of `Error`, logs its message and stack trace.
-- If `error` is not an `Error`, logs it as a stringified value.
+Utility to safely log errors with proper stack trace extraction. Accepts any `unknown` error value, extracting message and stack traces if it is an `Error` instance, or formatting it safely otherwise.
 
 **Method Signature:**
 
 ```ts
-function logError(error: Error | string, message?: string, context?: Record<string, any>): void;
+function logError(error: unknown, message?: string, context?: Record<string, unknown>): void;
 ```
 
 **Parameters:**
 
-- `error`: The error object or string to log as an error.
+- `error`: The error object, string, or unknown value to log.
 - `message` (optional): Additional message to log alongside the error.
-- `context` (optional): Additional context to include in the log entry.
+- `context` (optional): Additional structured context properties.
 
 **Example:**
 
@@ -205,7 +211,7 @@ try {
   logError(error, 'Failed during processing', { operation: 'dataSync' });
 }
 
-// Works with string errors too
+// Works with string or unknown errors too
 logError('Invalid input', 'Validation error');
 ```
 
@@ -213,7 +219,7 @@ logError('Invalid input', 'Validation error');
 
 ### `resetLogger()`
 
-Resets the global logger instance to its initial state, removing any custom configurations or child loggers.
+Resets the cached global root logger singleton (`_global[GLOBAL_LOGGER_KEY]`). Next time `getLogger()` is called, a fresh logger is instantiated according to the latest configuration and environment variables. Essential for unit tests and dynamic reconfiguration.
 
 **Method Signature:**
 
@@ -224,9 +230,9 @@ function resetLogger(): void;
 **Example:**
 
 ```ts
-import { resetLogger } from '@catbee/utils/logger';
+import { resetLogger, getLogger } from '@catbee/utils/logger';
 
-// After modifying logger configuration for tests
+// Clean up logger state between tests
 afterEach(() => {
   resetLogger();
 });
@@ -236,6 +242,35 @@ afterEach(() => {
 
 ## Redaction and Security
 
+`@catbee/utils` provides an intelligent, production-ready redaction engine designed to prevent sensitive credential and PII leakage in logs while eliminating false-positive redactions on benign words.
+
+### Redaction Architecture
+
+1. **Delimiter and Token-Aware Matching**:
+   Path segments are parsed using both delimiter boundaries (`_`, `-`) and camelCase transitions (`(?<=[a-z0-9])(?=[A-Z])`). This completely eliminates false-positive redactions on words like:
+   - `author` (does not match `auth`)
+   - `oauth` (does not match `auth`)
+   - `opinion` (does not match `pin`)
+
+   While reliably redacting compound and nested sensitive fields:
+   - `userAuth`, `user_auth`, `custom_api_key`, `dbPassword`, `client_secret`
+
+2. **Expanded Default Sensitive Fields**:
+   The built-in sensitive fields list covers authentication tokens, secrets, session cookies, and payment/PII data:
+   - `password`, `token`, `secret`, `authorization`, `auth`
+   - `api_key`, `apiKey`, `apikey`, `private_key`, `access_token`, `refresh_token`, `client_secret`
+   - `key`, `passphrase`, `otp`, `api_secret`, `token_secret`
+   - `cookie`, `cookies`, `set-cookie`, `session_id`
+   - `credit_card`, `card_number`, `cvv`, `cvc`, `ssn`, `pin`
+
+3. **Nested URL Parameter Redaction**:
+   Query parameters containing sensitive keys are censored across both root and nested URL fields (`req.url`, `request.originalUrl`, `url`, `uri`, `href`, `redirect_uri`). Dynamic patterns automatically escape regex metacharacters.
+
+4. **Deep Wildcard Paths (Depth 5)**:
+   By default, `generateDeepPaths(field, 5)` expands wildcard paths up to 5 levels deep (e.g. `*.*.*.*.*.password`), protecting deeply nested payload objects automatically.
+
+---
+
 ### `getRedactCensor()`
 
 Gets the current global redaction censor function used for log redaction.
@@ -243,7 +278,7 @@ Gets the current global redaction censor function used for log redaction.
 **Method Signature:**
 
 ```ts
-function getRedactCensor(): (value: unknown, path: string[], sensitiveFields?: string[]) => string;
+function getRedactCensor(): (value: unknown, path: string[], sensitiveFields?: string[]) => unknown;
 ```
 
 **Returns:**
@@ -256,7 +291,6 @@ function getRedactCensor(): (value: unknown, path: string[], sensitiveFields?: s
 import { getRedactCensor } from '@catbee/utils/logger';
 
 const currentCensor = getRedactCensor();
-// Use current censor in custom logic
 ```
 
 ---
@@ -268,15 +302,12 @@ Sets the global redaction censor function used throughout the application for lo
 **Method Signature:**
 
 ```ts
-function setRedactCensor(fn: (value: unknown, path: string[], sensitiveFields?: string[]) => string): void;
+function setRedactCensor(fn: (value: unknown, path: string[], sensitiveFields?: string[]) => unknown): void;
 ```
 
 **Parameters:**
 
-- `fn`: A function that takes a value, its path in the object, and an optional list of sensitive fields, returning a redacted string.
-  - `value`: The value to potentially redact.
-  - `path`: An array representing the path to the value in the object.
-  - `sensitiveFields`: An optional array of field names considered sensitive.
+- `fn`: A function that takes a value, its path in the object, and an optional list of sensitive fields, returning a redacted string or value.
 
 **Example:**
 
@@ -287,8 +318,58 @@ import { setRedactCensor } from '@catbee/utils/logger';
 setRedactCensor((value, path, sensitiveFields) => {
   if (path.includes('password')) return '***';
   if (typeof value === 'string' && value.includes('secret')) return '***';
-  return value as string;
+  return value;
 });
+```
+
+---
+
+### `setSensitiveFields()`
+
+Replaces the default list of sensitive fields with a new list, invalidating the internal redaction cache.
+
+**Method Signature:**
+
+```ts
+function setSensitiveFields(fields: string[]): void;
+```
+
+**Parameters:**
+
+- `fields`: An array of field names to set as the new sensitive fields list.
+
+**Example:**
+
+```ts
+import { setSensitiveFields } from '@catbee/utils/logger';
+
+// Replace default sensitive fields with a custom list
+setSensitiveFields(['password', 'ssn', 'credit_card']);
+```
+
+---
+
+### `addSensitiveFields()`
+
+Adds additional field names to the default sensitive fields list. Automatically expands camelCase, snake_case, and kebab-case variations.
+
+**Method Signature:**
+
+```ts
+function addSensitiveFields(fields: string[]): void;
+```
+
+**Parameters:**
+
+- `fields`: An array of field names to add to the existing sensitive fields list.
+
+**Example:**
+
+```ts
+import { addSensitiveFields } from '@catbee/utils/logger';
+
+// Add domain-specific sensitive fields
+addSensitiveFields(['socialSecurityNumber', 'medicalRecordNumber', 'encryptionKey']);
 ```
 
 ---
@@ -316,56 +397,5 @@ function addRedactFields(fields: string[]): void;
 ```ts
 import { addRedactFields } from '@catbee/utils/logger';
 
-// Add custom fields to be redacted in all logs
-addRedactFields(['customerId', 'accountNumber', 'ssn']);
-```
-
----
-
-### `setSensitiveFields()`
-
-Replaces the default list of sensitive fields with a new list.
-
-**Method Signature:**
-
-```ts
-function setSensitiveFields(fields: string[]): void;
-```
-
-**Parameters:**
-
-- `fields`: An array of field names to set as the new sensitive fields list.
-
-**Example:**
-
-```ts
-import { setSensitiveFields } from '@catbee/utils/logger';
-
-// Replace default sensitive fields with a custom list
-setSensitiveFields(['password', 'ssn', 'creditCard']);
-```
-
----
-
-### `addSensitiveFields()`
-
-Adds additional field names to the default sensitive fields list.
-
-**Method Signature:**
-
-```ts
-function addSensitiveFields(fields: string[]): void;
-```
-
-**Parameters:**
-
-- `fields`: An array of field names to add to the existing sensitive fields list.
-
-**Example:**
-
-```ts
-import { addSensitiveFields } from '@catbee/utils/logger';
-
-// Add domain-specific sensitive fields to the default list
-addSensitiveFields(['socialSecurityNumber', 'medicalRecordNumber']);
+addRedactFields(['customerId', 'accountNumber']);
 ```

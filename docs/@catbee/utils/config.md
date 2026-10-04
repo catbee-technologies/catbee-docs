@@ -277,6 +277,39 @@ server: {
 
 For overriding server config options via environment variables, see the [Express Server documentation](server#server-environment-variables).
 
+### Healthz Server Defaults
+
+Default configuration for the standalone Kubernetes probe server resolved by `getDefaultHealthzConfig()`:
+
+```ts
+healthz: {
+  host: '0.0.0.0',           // HEALTHZ_HOST (fallback: SERVER_HEALTHZ_HOST, SERVER_HOST, HOST)
+  port: 8282,                // HEALTHZ_PORT (fallback: SERVER_HEALTHZ_PORT)
+  healthzPath: '/healthz',   // HEALTHZ_PATH (fallback: SERVER_HEALTHZ_PATH, SERVER_HEALTH_CHECK_PATH)
+  readyzPath: '/readyz',     // HEALTHZ_READYZ_PATH (fallback: SERVER_READYZ_PATH)
+  startupzPath: '/startupz', // HEALTHZ_STARTUPZ_PATH (fallback: SERVER_STARTUPZ_PATH)
+  detailed: true,            // HEALTHZ_DETAILED (fallback: SERVER_HEALTH_CHECK_DETAILED_OUTPUT)
+  checks: [],
+  checkTimeoutMs: 5000,      // HEALTHZ_CHECK_TIMEOUT_MS
+  shutdownDelayMs: 5000      // HEALTHZ_SHUTDOWN_DELAY_MS
+}
+```
+
+**Healthz Server Environment Variables**
+
+| Environment Variable        | Type       | Default     | Description                                                                       |
+| --------------------------- | ---------- | ----------- | --------------------------------------------------------------------------------- |
+| `HEALTHZ_HOST`              | `string`   | `0.0.0.0`   | Host to bind (fallback: `SERVER_HEALTHZ_HOST`, `SERVER_HOST`, `HOST`)             |
+| `HEALTHZ_PORT`              | `number`   | `8282`      | Port for standalone probe server (fallback: `SERVER_HEALTHZ_PORT`)                |
+| `HEALTHZ_PATH`              | `string`   | `/healthz`  | Liveness probe path (fallback: `SERVER_HEALTHZ_PATH`, `SERVER_HEALTH_CHECK_PATH`) |
+| `HEALTHZ_READYZ_PATH`       | `string`   | `/readyz`   | Readiness probe path (fallback: `SERVER_READYZ_PATH`)                             |
+| `HEALTHZ_STARTUPZ_PATH`     | `string`   | `/startupz` | Startup probe path (fallback: `SERVER_STARTUPZ_PATH`)                             |
+| `HEALTHZ_DETAILED`          | `boolean`  | `true`      | Include individual check results in JSON responses                                |
+| `HEALTHZ_CHECK_TIMEOUT_MS`  | `duration` | `5000`      | Per-check timeout before aborting via AbortSignal                                 |
+| `HEALTHZ_SHUTDOWN_DELAY_MS` | `duration` | `5000`      | Graceful shutdown delay for LB draining after unreadying                          |
+
+For comprehensive documentation, see the [Healthz Server documentation](healthz-server).
+
 ## Types
 
 ### CatbeeConfig
