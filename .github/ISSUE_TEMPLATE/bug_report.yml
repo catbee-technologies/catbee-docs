@@ -1,22 +1,23 @@
-name: "Bug Report"
-description: "Report an issue with the documentation or the docs website."
-title: "[Bug]: "
-labels: ["bug"]
+name: Bug Report
+description: Report an issue with the documentation or the docs website.
+title: '[Bug]: '
+labels: ['bug']
 body:
   - type: markdown
     attributes:
       value: |
-        Thanks for reporting a documentation issue!  
-        Please provide as much detail as possible so we can address it quickly.
+        Thanks for taking the time to report a documentation issue!  
+        Please fill in the details below to help us address it quickly.
 
   - type: checkboxes
     id: prechecks
     attributes:
       label: Pre-checks
+      description: Help us triage faster by confirming the following.
       options:
-        - label: I have searched existing issues to avoid duplicates.
+        - label: I searched existing issues and discussions to avoid duplicates.
           required: true
-        - label: I have refreshed the page and cleared the cache if it appears UI-related.
+        - label: I refreshed the page and cleared browser cache if UI-related.
           required: false
 
   - type: dropdown
@@ -24,13 +25,17 @@ body:
     attributes:
       label: Affected Area
       options:
-        - Documentation Content (text, examples, incorrect info)
-        - Broken Link
-        - Sidebar / Navigation
-        - UI / Styling Issue
-        - Build Error
-        - Search Not Working
-        - Other
+        - 'All Documentation'
+        - '@catbee/utils Documentation'
+        - '@catbee/mysql Documentation'
+        - '@ng-catbee/* Documentation'
+        - 'Broken Link or 404'
+        - 'Sidebar / Navigation'
+        - 'Search Functionality'
+        - 'UI / Layout / Theme Issue'
+        - 'Docusaurus Build / Deployment'
+        - 'Other'
+      multiple: true
     validations:
       required: true
 
@@ -38,15 +43,27 @@ body:
     id: page
     attributes:
       label: Page URL or File Path
-      placeholder: e.g., /docs/getting-started or docs/intro.md
+      placeholder: e.g., https://catbee.in/docs/@catbee/mysql/intro or docs/@catbee/utils/intro.md
     validations:
       required: true
 
   - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Include OS, browser, and version (for UI/layout or search issues).
+      placeholder: |
+        - OS: Ubuntu 22.04 / macOS 14 / Windows 11
+        - Browser: Chrome 130 / Firefox 131 / Safari 18
+    validations:
+      required: false
+
+  - type: input
     id: summary
     attributes:
-      label: Issue Summary
-      placeholder: Short and clear description of the problem.
+      label: Bug Summary
+      description: Short and clear description of the problem.
+      placeholder: e.g., Broken link on MySQL intro page or search modal fails to open on mobile.
     validations:
       required: true
 
@@ -54,10 +71,11 @@ body:
     id: steps
     attributes:
       label: Steps to Reproduce
+      description: Describe the steps to see the issue.
       placeholder: |
-        1. Go to the page...
-        2. Click on...
-        3. Observe the issue...
+        1. Navigate to page ...
+        2. Click on ...
+        3. See error or missing content ...
     validations:
       required: true
 
@@ -65,7 +83,7 @@ body:
     id: expected
     attributes:
       label: Expected Behavior
-      placeholder: What did you expect to see?
+      placeholder: Describe what should have happened or what content should be displayed.
     validations:
       required: true
 
@@ -73,7 +91,7 @@ body:
     id: actual
     attributes:
       label: Actual Behavior
-      placeholder: What happened instead? Include screenshots if helpful.
+      placeholder: Describe what actually happened. Include screenshots if helpful.
     validations:
       required: true
 
@@ -81,10 +99,10 @@ body:
     id: logs
     attributes:
       label: Console / Build Logs (if applicable)
-      description: Include build output, console errors, or DevTools logs.
+      description: Include build output, console errors, or DevTools logs. Wrap in triple backticks.
       placeholder: |
         ```
-        <paste logs here>
+        <paste logs or console errors here>
         ```
     validations:
       required: false
@@ -93,4 +111,4 @@ body:
     id: extra
     attributes:
       label: Additional Context
-      placeholder: Anything else that might help us understand the issue.
+      placeholder: Screenshots, related issues, or anything else useful.

@@ -1,7 +1,7 @@
-name: "Feature Request"
+name: Feature Request
 description: Suggest improvements or new ideas for the documentation or docs website.
-title: "[Feature]: "
-labels: ["enhancement", "feature-request"]
+title: '[Feature]: '
+labels: ['enhancement', 'feature-request', 'improvement']
 body:
   - type: markdown
     attributes:
@@ -13,10 +13,11 @@ body:
     id: prechecks
     attributes:
       label: Pre-checks
+      description: Help us triage faster by confirming the following.
       options:
-        - label: I have searched existing issues to avoid duplicates.
+        - label: I searched existing issues and discussions to avoid duplicates.
           required: true
-        - label: I verified this request is related to documentation or the docs site.
+        - label: I verified this request is related to documentation or the docs website.
           required: true
 
   - type: dropdown
@@ -24,61 +25,84 @@ body:
     attributes:
       label: Area of Improvement
       options:
-        - New Documentation Page
-        - Improve Existing Page
-        - Navigation / Sidebar Improvements
-        - UI / Layout Enhancement
-        - Search Improvements
-        - Build / Deployment Improvements
-        - Other
+        - 'New Documentation Page / Guide'
+        - 'Improve Existing Documentation'
+        - 'Interactive Code Examples / Demos'
+        - 'Navigation / Sidebar Improvements'
+        - 'Search Improvements'
+        - 'UI / Layout / Theme Enhancements'
+        - 'Docusaurus Build / Tooling'
+        - 'Other'
+      multiple: true
     validations:
       required: true
 
   - type: input
-    id: summary
+    id: title
     attributes:
       label: Feature Summary
-      placeholder: Short description, e.g., "Add a section for environment variable examples."
+      description: A short, clear summary of the requested feature.
+      placeholder: e.g., Add a section for environment variable examples in @catbee/utils.
     validations:
       required: true
 
   - type: textarea
-    id: motivation
+    id: problem
     attributes:
-      label: Motivation / Problem
+      label: Problem Statement / Motivation
+      description: Why is this needed? What problem does it solve for readers or contributors?
       placeholder: |
-        Why is this needed?  
-        What problem does it solve for readers or contributors?
+        Explain the motivation or difficulty readers face that this addition would solve.
     validations:
       required: true
 
   - type: textarea
-    id: proposal
+    id: solution
     attributes:
       label: Proposed Solution
+      description: How should this work? Provide detailed behavior or content outline if possible.
       placeholder: |
-        Explain how you imagine this improvement working.  
-        (New page outline, UI changes, examples, diagrams, etc.)
+        Explain how you imagine this improvement working. Include Markdown/MDX snippets where applicable:
+
+        ```markdown
+        # Proposed section or guide structure
+        ```
     validations:
       required: true
 
   - type: textarea
-    id: examples
+    id: usecase
     attributes:
-      label: Examples / References (optional)
+      label: Use Cases / Target Audience
+      description: Describe who this helps and why it matters.
       placeholder: |
-        Links to other docs, mockups, screenshots, or inspiration.
+        - As a developer using @catbee/utils, I want ...
+        - This enables ...
+        - This improves clarity / developer onboarding ...
     validations:
-      required: false
+      required: true
 
   - type: dropdown
     id: priority
     attributes:
       label: Priority
+      description: How important is this feature?
       options:
         - Low
         - Medium
         - High
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: Acceptance Criteria
+      description: Bullet points describing how we'll know this request is complete.
+      placeholder: |
+        - [ ] New guide/page is written and reviewed
+        - [ ] Navigation sidebar is updated
+        - [ ] Code examples verified
     validations:
       required: false
 
@@ -86,4 +110,4 @@ body:
     id: extra
     attributes:
       label: Additional Context
-      placeholder: Anything else you'd like us to know.
+      placeholder: Links to other documentation, mockups, screenshots, or inspiration.

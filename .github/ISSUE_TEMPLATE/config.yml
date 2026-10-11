@@ -3,6 +3,9 @@ contact_links:
   - name: Readme
     url: https://github.com/catbee-technologies/catbee-docs#readme
     about: Check the README for more information about the project.
+  - name: Documentation
+    url: https://catbee.in
+    about: Visit the Catbee documentation website.
   - name: Discussions
     url: https://github.com/catbee-technologies/catbee-docs/discussions
     about: Ask questions or start a discussion here.
