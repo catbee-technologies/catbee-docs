@@ -25,6 +25,7 @@ Structured logging with Pino. This module provides a robust logging system with 
 | --------------------------- | --------- | ------------------------------------- | ------------------------------------------------------------------ |
 | `LOGGER_LEVEL`              | `string`  | `debug` in dev/test, otherwise `info` | Logging level (`fatal`, `error`, `warn`, `info`, `debug`, `trace`) |
 | `LOGGER_NAME`               | `string`  | `@catbee/utils`                       | Logger instance name                                               |
+| `LOGGER_SEVERITY`           | `boolean` | `false`                               | Include the severity field in log output                           |
 | `LOGGER_PRETTY`             | `boolean` | `false`                               | Enable pretty-print logging                                        |
 | `LOGGER_PRETTY_COLORIZE`    | `boolean` | `true`                                | Enable colorized output for pretty-print                           |
 | `LOGGER_PRETTY_SINGLE_LINE` | `boolean` | `false`                               | Single-line output for pretty-print                                |

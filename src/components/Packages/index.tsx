@@ -28,15 +28,6 @@ const packageMetadata: Record<
     color: '#3178c6',
     gradient: 'linear-gradient(135deg, #3178c6, #235a97)'
   },
-  '@catbee/cron-parser': {
-    description:
-      'A lightweight, timezone-aware cron expression parser with full support for seconds, DST transitions, iterators, randomized scheduling, and crontab file parsing.',
-    icon: 'schedule',
-    link: '/docs/@catbee/cron-parser/intro',
-    tags: ['Node.js', 'Cron', 'Scheduler'],
-    color: '#f97316',
-    gradient: 'linear-gradient(135deg, #f97316, #ea580c)'
-  },
   '@catbee/mysql': {
     description:
       'A type-safe MySQL client with pooling, transactions, named parameters, resilience controls, and a fluent query builder.',

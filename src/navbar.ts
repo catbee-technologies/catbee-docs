@@ -73,7 +73,6 @@ const navbar: DeepPartial<Navbar> = {
       position: 'right',
       items: [
         { href: 'https://github.com/catbee-technologies/catbee-utils', label: 'Catbee Utils' },
-        { href: 'https://github.com/catbee-technologies/cron-parser', label: 'Catbee Cron Parser' },
         { href: 'https://github.com/catbee-technologies/catbee-mysql', label: 'Catbee MySQL' },
         {
           type: 'html',
@@ -88,8 +87,7 @@ const navbar: DeepPartial<Navbar> = {
         {
           type: 'html',
           value: '<hr style="margin: 0.3rem 0;">'
-        },
-        { href: 'https://github.com/catbee-technologies/catbee-docs', label: 'Catbee Docs' }
+        }
       ]
     },
     {
