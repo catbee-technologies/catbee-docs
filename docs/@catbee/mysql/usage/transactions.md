@@ -6,7 +6,7 @@ sidebar_position: 3
 
 # Transactions
 
-Transactions use a dedicated connection and expose query helpers plus commit, rollback, and savepoint controls.
+Transactions use a dedicated connection and expose query helpers plus commit, rollback, isolation level, and savepoint controls.
 
 ## Automatic transactions
 
@@ -49,6 +49,38 @@ try {
 ```
 
 After `commit()` or `rollback()`, the transaction is released and cannot be used again.
+
+## Transaction options
+
+Both `db.transaction()` and `db.startTransaction()` accept optional `TransactionOptions`:
+
+- `isolationLevel`: `'READ UNCOMMITTED' | 'READ COMMITTED' | 'REPEATABLE READ' | 'SERIALIZABLE'`
+- `readOnly`: `boolean` (executes `SET TRANSACTION READ ONLY` when `true`)
+
+Options execute standard ANSI SQL statements on the dedicated connection prior to beginning the transaction and are scoped only to that transaction without modifying session or pool defaults:
+
+```ts
+// Automatic transaction with custom isolation level and read-only mode
+const report = await db.transaction(
+  async tx => {
+    return await tx.all('SELECT * FROM financial_reports');
+  },
+  {
+    isolationLevel: 'READ COMMITTED',
+    readOnly: true
+  }
+);
+
+// Manual transaction with SERIALIZABLE isolation
+const tx = await db.startTransaction({ isolationLevel: 'SERIALIZABLE' });
+try {
+  await tx.execute('UPDATE accounts SET balance = balance - 100 WHERE id = ?', [fromId]);
+  await tx.commit();
+} catch (err) {
+  await tx.rollback();
+  throw err;
+}
+```
 
 ## Transaction helpers
 

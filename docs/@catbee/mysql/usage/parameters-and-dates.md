@@ -22,7 +22,7 @@ const result = await db.queryNamed(
 
 The compiler does not replace tokens inside:
 
-- Single-quoted string literals
+- Single-quoted string literals (properly handling escaped backslashes, e.g. `'C:\\'`)
 - Double-quoted string literals
 - Backtick identifiers
 - Line comments
@@ -46,10 +46,23 @@ console.log(compiled.parameters); // [7]
 
 ## Supported values
 
-`SqlValue` is one of:
+`SqlValue` supports scalar primitives as well as arrays:
+
+- **Scalar values**: `string | number | boolean | Buffer | null`
+- **1D arrays**: For `IN (?)` clauses or positional lists
+- **2D arrays**: For bulk `INSERT ... VALUES ?` operations
 
 ```ts
-type SqlValue = string | number | boolean | Buffer | null;
+// 1. IN clause list
+const roles = ['admin', 'editor'];
+const users = await db.all('SELECT * FROM users WHERE role IN (?)', [roles]);
+
+// 2. Bulk insert with 2D array
+const batch = [
+  ['Alice', 'alice@example.com'],
+  ['Bob', 'bob@example.com']
+];
+await db.insert('INSERT INTO users(name, email) VALUES ?', [batch]);
 ```
 
 Dates are intentionally not accepted as raw SQL parameters. Convert them to explicit UTC strings first.
@@ -85,7 +98,7 @@ const createdDate = event ? parseMysqlDateTime(event.created_at) : null;
 
 - `formatDateForMysql(date, includeMilliseconds?)` returns `YYYY-MM-DD HH:mm:ss[.SSS]` in UTC.
 - `getCurrentUtcMysqlTimestamp(includeMilliseconds?)` returns the current UTC DATETIME string.
-- `parseMysqlDateTime(value)` parses a UTC DATETIME and validates calendar ranges.
+- `parseMysqlDateTime(value)` parses a UTC DATETIME (supporting 1 to 6 fractional microsecond digits, e.g. `YYYY-MM-DD HH:mm:ss.ffffff`) and validates calendar ranges.
 - `parseMysqlDate(value)` parses `YYYY-MM-DD` at midnight UTC.
 - `parseMysqlTimestamp(value)` parses a TIMESTAMP using the DATETIME format.
 - `formatDateOnly(date)` returns `YYYY-MM-DD` in UTC.

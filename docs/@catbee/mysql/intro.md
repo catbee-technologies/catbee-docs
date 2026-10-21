@@ -6,7 +6,7 @@ sidebar_position: 1
 
 # @catbee/mysql
 
-A lightweight, type-safe MySQL client for Node.js with connection pooling, transactions, named parameters, resilience controls, and a fluent query builder.
+A lightweight, type-safe MySQL client for Node.js with connection pooling, transactions, named parameters, resilience controls, distributed advisory locks, schema migrations, and a fluent query builder.
 
 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', margin: '1rem 0' }}>
   <img src="https://github.com/catbee-technologies/catbee-mysql/actions/workflows/ci.yml/badge.svg?label=Build" alt="Build Status" />
@@ -22,10 +22,13 @@ A lightweight, type-safe MySQL client for Node.js with connection pooling, trans
 
 - **Type-safe queries** with TypeScript support for rows, results, parameters, and transactions.
 - **Single connections or pools** through `SqlClient.create()` and `SqlClient.createPool()`.
-- **Manual and automatic transactions** with rollback-on-error behavior.
+- **Manual and automatic transactions** with rollback-on-error behavior and configurable isolation levels.
 - **Nested transactions** through savepoints, rollback-to, and release helpers.
+- **Distributed advisory locks** with dedicated session scoping via `withAdvisoryLock()`.
+- **Schema migrations & bootstrap** with `UpgradeManager` for sequential migrations, rollbacks, and instant fresh database bootstrap (`schemaInit`).
 - **Fluent query builder** for `SELECT`, `INSERT`, `UPDATE`, `DELETE`, joins, filters, grouping, and pagination.
 - **Named parameters** with safe `:name` placeholder compilation.
+- **Bulk inserts & arrays** supporting 1D `IN (?)` arrays and 2D bulk `VALUES ?` arrays.
 - **Resilience controls** including retries, timeouts, cancellation, and strict statement enforcement.
 - **Middleware and events** for timing, observability, and error reporting.
 - **Convenience methods** such as `get()`, `all()`, `insert()`, `update()`, `delete()`, `exists()`, and `count()`.
@@ -33,11 +36,12 @@ A lightweight, type-safe MySQL client for Node.js with connection pooling, trans
 
 ## Continue learning
 
-- [Basic usage](./usage/basic) - Connect, query, execute statements, and type results
+- [Basic usage](./usage/basic) - Connect, query, execute statements, advisory locks, and type results
 - [Connection pooling](./usage/pooling) - Configure concurrency, retries, timeouts, and cancellation
-- [Transactions](./usage/transactions) - Use automatic transactions, manual commit/rollback, and savepoints
+- [Transactions](./usage/transactions) - Use automatic transactions, manual commit/rollback, isolation levels, and savepoints
+- [Schema migrations & bootstrap](./usage/migrations) - Database schema lifecycle, sequential migrations, rollbacks, and fresh database bootstrap
 - [Query builder](./usage/query-builder) - Compose parameterized SQL fluently
-- [Parameters and dates](./usage/parameters-and-dates) - Use named placeholders and UTC date helpers
+- [Parameters and dates](./usage/parameters-and-dates) - Use named placeholders, 1D/2D arrays, and UTC date helpers
 - [API reference](./api-reference) - Browse exported classes, methods, interfaces, and utilities
 
 ## Installation
@@ -48,7 +52,7 @@ npm install @catbee/mysql
 
 ## Create a client
 
-Use a single connection for simple workloads:
+Connect with a single connection:
 
 ```ts
 import { SqlClient } from '@catbee/mysql';
@@ -61,11 +65,9 @@ const db = await SqlClient.create({
 });
 ```
 
-Use a pool for applications with concurrent queries:
+Or configure connection pooling for concurrent workloads:
 
 ```ts
-import { SqlClient } from '@catbee/mysql';
-
 const db = SqlClient.createPool({
   host: 'localhost',
   user: 'root',
@@ -114,13 +116,21 @@ const userCount = await db.count('SELECT COUNT(*) FROM users');
 
 ## Execute statements
 
-Use `execute()` for statements that change data, or use the convenience methods for common operations:
+Use `execute()` for statements that change data, or use convenience methods for common operations:
 
 ```ts
 const inserted = await db.insert(
   'INSERT INTO users(name, email) VALUES(?, ?)',
   ['Alice', 'alice@example.com']
 );
+
+// Bulk insert using 2D array and VALUES ?
+const bulkInserted = await db.insert('INSERT INTO users(name, email) VALUES ?', [
+  [
+    ['Alice', 'alice@example.com'],
+    ['Bob', 'bob@example.com']
+  ]
+]);
 
 const updated = await db.update(
   'UPDATE users SET active = ? WHERE id = ?',
@@ -161,7 +171,7 @@ Use `executeNamed()` for write statements.
 
 ## Transactions
 
-Automatic transactions commit on success and roll back when the callback throws:
+Automatic transactions commit on success and roll back when the callback throws. You can also specify transaction options such as `isolationLevel`:
 
 ```ts
 await db.transaction(async tx => {
@@ -170,13 +180,13 @@ await db.transaction(async tx => {
     'INSERT INTO audit_logs(action, user_id) VALUES(?, ?)',
     ['activate', userId]
   );
-});
+}, { isolationLevel: 'READ COMMITTED' });
 ```
 
 For explicit control, start and finish a transaction manually:
 
 ```ts
-const tx = await db.startTransaction();
+const tx = await db.startTransaction({ isolationLevel: 'REPEATABLE READ' });
 
 try {
   await tx.execute('UPDATE accounts SET balance = balance - ? WHERE id = ?', [amount, fromId]);
@@ -204,6 +214,74 @@ try {
   await tx.rollbackTo(savepoint);
   throw error;
 }
+```
+
+## Distributed advisory locks
+
+Safely synchronize distributed workloads across multiple application instances using MySQL session-scoped advisory locks:
+
+```ts
+await db.withAdvisoryLock('nightly_data_aggregation', 15, async lockedClient => {
+  // Guaranteed single-instance execution
+  await lockedClient.execute('CALL aggregate_daily_metrics()');
+});
+```
+
+## Schema migrations & bootstrap (UpgradeManager)
+
+Manage database evolution with sequential integer migrations (`1, 2, 3...`) and instant snapshot bootstrap (`schemaInit`):
+
+```ts
+import { SqlClient, UpgradeManager } from '@catbee/mysql';
+
+const db = SqlClient.createPool({ /* connection options */ });
+
+const upgradeManager = new UpgradeManager(db, {
+  // Snapshot for fresh databases
+  schemaInit: {
+    version: 2,
+    create: async client => {
+      await client.execute(`
+        CREATE TABLE users (
+          id INT AUTO_INCREMENT PRIMARY KEY,
+          email VARCHAR(255) NOT NULL UNIQUE,
+          role VARCHAR(50) DEFAULT 'user',
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+      `);
+    }
+  },
+  // Sequential migrations for existing databases
+  migrations: [
+    {
+      version: 1,
+      name: 'create_users',
+      up: async client => {
+        await client.execute(`
+          CREATE TABLE users (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            email VARCHAR(255) NOT NULL UNIQUE,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+          );
+        `);
+      }
+    },
+    {
+      version: 2,
+      name: 'add_user_roles',
+      up: async client => {
+        await client.execute('ALTER TABLE users ADD COLUMN role VARCHAR(50) DEFAULT "user";');
+      },
+      down: async client => {
+        await client.execute('ALTER TABLE users DROP COLUMN role;');
+      }
+    }
+  ]
+});
+
+// Bootstraps fresh DB or upgrades existing DB safely under advisory lock
+const result = await upgradeManager.setup();
+console.log(`Current version: ${result.currentVersion}`);
 ```
 
 ## Query builder
@@ -349,6 +427,7 @@ Use UTC strings for storage and convert to local time only in the presentation l
 - `get()`, `all()`, `exists()`, and `count()`
 - `insert()`, `update()`, and `delete()`
 - `startTransaction()` and `transaction()`
+- `withAdvisoryLock()`
 - `ping()` and `close()`
 
 ### `SqlTransaction`
@@ -358,7 +437,14 @@ Use UTC strings for storage and convert to local time only in the presentation l
 - `commit()` and `rollback()`
 - `savepoint()`, `rollbackTo()`, and `releaseSavepoint()`
 
-Transaction clients do not expose client-only methods such as `raw()`, `queryNamed()`, `executeNamed()`, `ping()`, or `close()`.
+### `UpgradeManager`
+
+- `setup()`, `upgrade()`, `downgrade()`, `rollback()`, and `bootstrap()`
+- `getStatus()`, `getCurrentVersion()`, and `isFreshDatabase()`
+- `addMigration()`, `addMigrations()`, and `setSchemaInit()`
+- `getRegisteredMigrations()`, `getTableName()`, `getVersionTablePrefix()`, `getVersionTableSuffix()`, and `getLockName()`
+
+Transaction clients do not expose client-only methods such as `raw()`, `queryNamed()`, `executeNamed()`, `withAdvisoryLock()`, `ping()`, or `close()`.
 
 ## Links
 
