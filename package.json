@@ -44,7 +44,7 @@
     "sass": "^1.97.0"
   },
   "devDependencies": {
-    "@catbee/utils": "^1.1.0",
+    "@catbee/utils": "^2.4.0",
     "@commitlint/config-conventional": "^20.2.0",
     "@docusaurus/eslint-plugin": "^3.9.2",
     "@docusaurus/module-type-aliases": "^3.9.2",
