@@ -36,7 +36,7 @@
     "clsx": "^2.1.1",
     "devicon": "^2.17.0",
     "docusaurus-plugin-sass": "^0.2.6",
-    "framer-motion": "^12.23.26",
+    "motion": "^12.23.26",
     "material-icons": "^1.13.14",
     "prism-react-renderer": "^2.4.1",
     "react": "^19.2.3",
