@@ -39,8 +39,8 @@
     "framer-motion": "^12.23.26",
     "material-icons": "^1.13.14",
     "prism-react-renderer": "^2.4.1",
-    "react": "^19.2.3",
-    "react-dom": "^19.2.3",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
     "sass": "^1.97.0"
   },
   "devDependencies": {
