@@ -32,7 +32,8 @@ nav.navbar {
     -webkit-user-select: none;
     -moz-user-select: none;
     user-select: none;
-    width: 80px;
+    width: auto;
+    min-width: 75px;
     font-family: 'Kaushan Script';
   }
 
@@ -61,9 +62,12 @@ nav.navbar {
       background: var(--ifm-color-primary);
       @include transition-base;
       transform: translateX(-50%);
+      border-radius: 2px;
     }
 
-    &:hover::after {
+    &:hover::after,
+    &:has(.navbar__link--active)::after,
+    &.navbar__link--active::after {
       width: 80%;
     }
   }
@@ -72,7 +76,8 @@ nav.navbar {
     font-weight: 600;
     transition: color 0.2s ease;
 
-    &:hover {
+    &:hover,
+    &--active {
       color: var(--ifm-color-primary);
     }
   }
@@ -98,6 +103,26 @@ html[data-theme='light'] {
       border-right: var(--ifm-toc-border-color);
     }
   }
+
+  .dropdown__menu {
+    background: rgba(255, 255, 255, 0.96);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.08);
+
+    hr {
+      background: rgba(0, 0, 0, 0.08);
+    }
+
+    .dropdown__link {
+      color: #334155;
+
+      &:hover,
+      &--active {
+        background: rgba(106, 79, 188, 0.1);
+        color: var(--ifm-color-primary);
+      }
+    }
+  }
 }
 
 @mixin navbar-icon-common {
@@ -111,7 +136,9 @@ html[data-theme='light'] {
 .navbar-packages-dropdown,
 .navbar-tools-dropdown,
 .navbar-products-dropdown,
-.navbar-license-link {
+.navbar-license-link,
+.navbar-github-dropdown,
+.navbar-npm-dropdown {
   display: flex;
   align-items: center;
 
@@ -147,6 +174,10 @@ html[data-theme='light'] {
     @include navbar-icon-common;
   }
 
+  &.navbar-products-dropdown:hover::before {
+    transform: scale(1.2) rotate(-5deg);
+  }
+
   &.navbar-license-link::before {
     @include material-icons('gavel', 1.2rem, var(--ifm-color-primary));
     @include navbar-icon-common;
@@ -154,6 +185,129 @@ html[data-theme='light'] {
 
   &.navbar-license-link:hover::before {
     transform: scale(1.2) rotate(10deg);
+  }
+
+  &.navbar-github-dropdown::before {
+    content: '';
+    @include navbar-icon-common;
+    display: inline-block;
+    width: 1.15rem;
+    height: 1.15rem;
+    flex-shrink: 0;
+    background-color: var(--ifm-color-primary);
+    mask: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z'/%3E%3C/svg%3E") no-repeat center / contain;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z'/%3E%3C/svg%3E") no-repeat center / contain;
+  }
+
+  &.navbar-github-dropdown:hover::before {
+    transform: scale(1.2) rotate(-8deg);
+  }
+
+  &.navbar-npm-dropdown::before {
+    content: '';
+    @include navbar-icon-common;
+    display: inline-block;
+    width: 1.15rem;
+    height: 1.15rem;
+    flex-shrink: 0;
+    background-color: var(--ifm-color-primary);
+    mask: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1.763 0C.786 0 0 .786 0 1.763v20.474C0 23.214.786 24 1.763 24h20.474c.966 0 1.763-.786 1.763-1.763V1.763C24 .786 23.214 0 22.237 0zM5.13 5.323l13.837.019-.009 13.836h-3.464l.01-10.382h-3.456L12.04 19.17H5.113z'/%3E%3C/svg%3E") no-repeat center / contain;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1.763 0C.786 0 0 .786 0 1.763v20.474C0 23.214.786 24 1.763 24h20.474c.966 0 1.763-.786 1.763-1.763V1.763C24 .786 23.214 0 22.237 0zM5.13 5.323l13.837.019-.009 13.836h-3.464l.01-10.382h-3.456L12.04 19.17H5.113z'/%3E%3C/svg%3E") no-repeat center / contain;
+  }
+
+  &.navbar-npm-dropdown:hover::before {
+    transform: scale(1.2) rotate(8deg);
+  }
+}
+
+/* Dropdown Hover Reliability & Bridge */
+.dropdown--hoverable {
+  position: relative;
+
+  &:hover .dropdown__menu,
+  &.dropdown--show .dropdown__menu {
+    opacity: 1;
+    pointer-events: all;
+    transform: translateY(0);
+    visibility: visible;
+    transition-delay: 0s;
+  }
+}
+
+/* Modern Frosted Glass Dropdowns */
+.dropdown__menu {
+  background: rgba(15, 17, 24, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), 0 0 24px rgba(106, 79, 188, 0.15);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  padding: 0.45rem;
+  min-width: 14rem;
+  margin-top: 0 !important;
+  top: calc(100% - 2px);
+  // Grace delay on mouse-leave to prevent premature closing when moving diagonally:
+  transition: opacity 0.18s ease 0.14s, visibility 0.18s ease 0.14s, transform 0.18s ease 0.14s;
+
+  // Invisible hover bridge connecting the navbar trigger to the dropdown menu:
+  &::before {
+    content: '';
+    position: absolute;
+    top: -14px;
+    left: 0;
+    right: 0;
+    height: 16px;
+    background: transparent;
+    pointer-events: auto;
+    z-index: 5;
+  }
+
+  hr {
+    border: none;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.08);
+    margin: 0.4rem 0.25rem;
+  }
+
+  .dropdown__link {
+    font-size: 0.88rem;
+    font-weight: 500;
+    padding: 0.5rem 0.85rem;
+    border-radius: 8px;
+    transition: all 0.18s ease;
+    color: #cbd5e1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    &:hover,
+    &--active {
+      background: rgba(106, 79, 188, 0.18);
+      color: #ffffff;
+      transform: translateX(2px);
+    }
+  }
+}
+
+/* New Product Badge */
+.navbar-item-new-badge {
+  display: inline-flex;
+  align-items: center;
+
+  &::after {
+    content: 'NEW';
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    line-height: 1;
+    padding: 0.2rem 0.45rem;
+    border-radius: 999px;
+    background: linear-gradient(135deg, var(--catbee-primary-color), #8b5cf6);
+    color: #ffffff;
+    box-shadow: 0 2px 8px rgba(106, 79, 188, 0.4);
+    margin-left: 0.5rem;
+    display: inline-flex;
+    align-items: center;
   }
 }
 

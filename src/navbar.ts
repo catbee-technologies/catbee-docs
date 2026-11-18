@@ -56,7 +56,7 @@ const navbar: DeepPartial<Navbar> = {
       position: 'left',
       className: 'navbar-products-dropdown',
       items: [
-        { to: '/catbee-container-studio/', label: 'CatBee Container Studio' },
+        { to: '/catbee-container-studio/', label: 'CatBee Container Studio', className: 'navbar-item-new-badge' },
         {
           href: 'https://apps.microsoft.com/detail/9NX6H3J2RNX2?referrer=appbadge&mode=full',
           label: 'Get it from Microsoft Store'
@@ -71,6 +71,7 @@ const navbar: DeepPartial<Navbar> = {
     {
       label: 'GitHub',
       position: 'right',
+      className: 'navbar-github-dropdown',
       items: [
         { href: 'https://github.com/catbee-technologies/catbee-utils', label: 'Catbee Utils' },
         { href: 'https://github.com/catbee-technologies/catbee-mysql', label: 'Catbee MySQL' },
@@ -83,16 +84,13 @@ const navbar: DeepPartial<Navbar> = {
           type: 'html',
           value: '<hr style="margin: 0.3rem 0;">'
         },
-        { href: 'https://github.com/catbee-technologies/catbee-container-studio', label: 'Container Studio' },
-        {
-          type: 'html',
-          value: '<hr style="margin: 0.3rem 0;">'
-        }
+        { href: 'https://github.com/catbee-technologies/catbee-container-studio', label: 'Container Studio' }
       ]
     },
     {
       label: 'NPM',
       position: 'right',
+      className: 'navbar-npm-dropdown',
       items: [
         ...packages
           .filter(pkg => pkg.startsWith('@catbee'))
