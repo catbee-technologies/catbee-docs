@@ -44,12 +44,14 @@ export const studioScreens: StudioScreen[] = [
     icon: 'view_in_ar',
     badge: 'Fleet Control',
     description:
-      'Monitor your active container ecosystem in a single calm operational view. Track status badges, exposed ports, memory utilization, and grouped compose stacks with instant start, stop, restart, and prune controls.',
+      'Monitor your active container ecosystem in a unified operational cockpit. Track real-time status badges, published port shortcuts, CPU and memory progress bars, and automatically grouped Docker Compose projects with aggregate metrics and instant start, stop, restart, or force recreate actions.',
     highlights: [
-      'Real-time container status & health indicators',
-      'Direct port mapping with clickable localhost links',
-      'Instant start, restart, pause, stop, and terminate',
-      'Grouped Docker Compose projects and standalone services'
+      'Docker Compose project grouping with aggregate CPU and memory metrics',
+      'Force recreate for individual containers, selected containers, or Compose groups',
+      'Visual CPU and memory progress bars with real-time utilization tracking',
+      'Interactive published port pills with quick-launch browser links',
+      'Quick filters for running containers and Kubernetes-managed services',
+      'Multi-selection with shift-click range select and resizable persistent columns'
     ]
   },
   {
@@ -63,88 +65,93 @@ export const studioScreens: StudioScreen[] = [
     icon: 'terminal',
     badge: 'Live Logs',
     description:
-      'Stream live application stdout and stderr in full ANSI color. Search with regex, filter out noisy levels, toggle auto-scroll, and copy log traces without jumping back and forth from terminal tabs.',
+      'Stream live application stdout and stderr with high-performance virtualized scrolling in full ANSI color. Search with regex, case-matching, and whole-word toggles, click hyperlinks directly inside output lines, hover-highlight log entries, and adjust restart policies or published ports from the unified summary header.',
     highlights: [
-      'Zero-lag streaming terminal output with ANSI colors',
-      'Instant regex search filtering and term highlighting',
-      'Auto-scroll lock and clear buffer controls',
-      'One-click log snippet copying and trace inspection'
+      'Zero-lag streaming terminal output with ANSI colors and line hover highlights',
+      'Instant regex search, case-sensitive (Aa), and whole-word (W) filters',
+      'Directly clickable hyperlinks in logs for docs, tracing, and URLs',
+      'Auto-scroll follow lock, buffer clear, and one-click log trace copying',
+      'Unified header with live restart policy dropdown and port mapping editors'
     ]
   },
   {
     id: 'containers-env',
     number: '03',
-    title: 'Environment Variables Inspector',
-    subtitle: 'Audit runtime parameters, configuration, and secret tokens safely',
+    title: 'Environment Variables Editor & Inspector',
+    subtitle: 'Inspect, edit, paste .env files, and safely recreate containers with updated variables',
     category: 'containers',
     categoryLabel: 'Containers',
     image: `${mediaPath}/3.containers-env.png`,
     icon: 'tune',
-    badge: 'Configuration',
+    badge: 'Env & Recreation',
     description:
-      'Inspect and verify all environment variables injected into the container runtime. Compare configurations between staging and local environments, inspect flags, and verify configuration without running bash scripts.',
+      'Inspect, search, copy, add, edit, or remove environment variables injected into the container runtime. Paste full .env files directly, preview variable diffs, and save changes with safe container recreation and rollback protection.',
     highlights: [
-      'Clean key-value table formatting with quick search',
-      'Safe copy for connection strings and API tokens',
-      'Identifies image defaults vs compose overridden variables',
-      'Zero risk of unintended terminal secret leakage'
+      'Interactive key-value variable editor with direct raw .env file paste support',
+      'Safe Docker Engine container recreation preserving volumes and ports',
+      'Automatic rollback protection if recreation or startup encounters an error',
+      'Clean key-value table formatting with instant search and one-click copy',
+      'Unsaved changes guard protecting drafts when navigating away or switching tabs'
     ]
   },
   {
     id: 'containers-mounts',
     number: '04',
-    title: 'Mounts & Volume Bindings',
-    subtitle: 'Inspect persistent storage maps, bind mounts, and read/write flags',
+    title: 'Mounts, Volumes & Storage Bindings',
+    subtitle: 'Redesigned mount cards, in-place mount editing, and one-click file navigation',
     category: 'containers',
     categoryLabel: 'Containers',
     image: `${mediaPath}/4.containers-mounts.png`,
     icon: 'folder_shared',
     badge: 'Storage Maps',
     description:
-      'Gain transparent visibility into host directory bindings, named Docker volumes, and tmpfs mounts. Verify destination paths, read/write flags, and storage drivers in an instant.',
+      'Gain transparent visibility into host directory bind mounts, named volumes, and declared paths with summary counters (attached, read/write, read-only, declared). Edit mounts in place with host directory selection, jump directly to volume details, or click any container path to navigate straight into the Files browser.',
     highlights: [
-      'Host source directory to container target path mappings',
-      'Read-only vs Read-Write permission verification',
-      'Direct shortcut to inspect attached named volumes',
-      'Driver specification and volume propagation mode'
+      'Source-to-destination cards with volume links and one-click navigation to Files',
+      'Summary metrics for attached mounts, read/write flags, and declared paths',
+      'In-place Edit Mounts dialog with host directory picker and container recreation',
+      'Engine recreation safety preserving image IDs and anonymous volume sources',
+      'Direct navigation to destination folder inside container Files tab'
     ]
   },
   {
     id: 'containers-files',
     number: '05',
-    title: 'In-Container File Explorer',
-    subtitle: 'Browse, inspect, and extract files directly inside running containers',
+    title: 'In-Container Files Explorer & Monaco Editor',
+    subtitle: 'Browse directories, inspect permissions, and edit files in-app with Monaco Editor',
     category: 'containers',
     categoryLabel: 'Containers',
     image: `${mediaPath}/5.containers-files.png`,
     icon: 'folder_open',
-    badge: 'Direct Filesystem',
+    badge: 'Files & Monaco',
     description:
-      'Explore container directories, inspect configuration files, verify file permissions, and check file sizes directly inside the container without typing a single `docker cp` or `cat` command.',
+      'Explore the full container filesystem with breadcrumbs, sorting, and search. View and edit configuration files in-app using the integrated Monaco Editor with syntax highlighting, inspect file permissions and sizes, delete files, or jump straight from mounts into target file destinations.',
     highlights: [
-      'Intuitive tree-view folder navigation inside containers',
-      'Inspect file sizes, permission modes, and timestamps',
-      'Directly view file contents inside the desktop studio',
-      'Eliminates tedious `docker cp` and CLI shell navigation'
+      'Integrated Monaco Editor for syntax-highlighted in-container file viewing and editing',
+      'Breadcrumb path navigation with copyable paths and instant folder filtering',
+      'File permission modes (e.g., rwxr-xr-x), exact sizes, timestamps, and deletion',
+      'Auto-selection and scroll-into-view when navigated from container mounts',
+      'Symlink recognition without following to prevent circular locks'
     ]
   },
   {
     id: 'containers-shell',
     number: '06',
     title: 'Embedded Interactive Terminal',
-    subtitle: 'Direct `/bin/sh` or `/bin/bash` terminal sessions with full PTY support',
+    subtitle: 'Direct /bin/sh or /bin/bash terminal sessions with full PTY support',
     category: 'containers',
     categoryLabel: 'Containers',
     image: `${mediaPath}/6.containers-shell.png`,
     icon: 'wysiwyg',
     badge: 'Embedded Shell',
     description:
-      'Drop straight into a live interactive terminal session inside any container. Full PTY terminal support with keyboard shortcuts, command history, and automatic shell detection.',
+      'Drop straight into an interactive terminal session inside any container. Built with xterm.js featuring full PTY emulation, terminal text search, live connection indicators, reconnect controls, and automatic shell detection (/bin/bash, /bin/sh).',
     highlights: [
-      '1-click shell launch into running containers',
-      'Automatic detection of `/bin/bash`, `/bin/sh`, or custom shells',
-      'Full ANSI color, responsive window resize, and interactive PTY',
-      'No need to remember container IDs or open external terminals'
+      '1-click interactive shell launch powered by xterm.js',
+      'Built-in terminal text search (Find in terminal)',
+      'Live connection status indicator and one-click Reconnect button',
+      'Automatic detection of /bin/bash, /bin/sh, or custom container shells',
+      'Full ANSI colors, keyboard navigation, copy/paste, and responsive resizing'
     ]
   },
   {
@@ -158,12 +165,13 @@ export const studioScreens: StudioScreen[] = [
     icon: 'speed',
     badge: 'Telemetry Pulse',
     description:
-      'Monitor live container health with dynamic streaming charts. Track CPU percentage, active memory vs configured memory limits, network throughput bytes, and disk block I/O in real time.',
+      'Monitor live container resource consumption with dynamic streaming charts. Track CPU percentage, active memory against configured limits, network throughput (Rx/Tx MB), and disk block I/O (Read/Write MB) with intelligent background throttling.',
     highlights: [
-      'Live streaming CPU percentage and memory utilization charts',
-      'Network I/O bytes received vs transmitted graphs',
-      'Disk block read and write operation counters',
-      'Ultra-lightweight background streaming with zero CPU overhead'
+      'Live streaming CPU % chart with instant utilization metrics',
+      'Memory usage curve with threshold boundaries and percentage tracking',
+      'Real-time Network I/O throughput (Rx and Tx megabytes)',
+      'Disk Block I/O tracking read and write bandwidth',
+      'Throttled background polling when window is hidden to save host CPU'
     ]
   },
   {
@@ -177,12 +185,13 @@ export const studioScreens: StudioScreen[] = [
     icon: 'layers',
     badge: 'Image Fleet',
     description:
-      'Catalog all local Docker images with visual repository tags, total virtual disk footprints, and creation timestamps. Launch new containers or prune unused images in a single click.',
+      'Catalog all local Docker images with repository names, tags, copyable IDs, virtual disk footprints, and relative creation ages. Pull images from registries, filter by usage, launch containers, or prune dangling images safely.',
     highlights: [
-      'Visual repository and image tag hierarchy',
-      'Accurate disk space and layer size metrics',
-      'Instant 1-click Run dialog for any local image',
-      'Clean up dangling and unused images safely'
+      'Total fleet size metrics and aggregate image counters',
+      'Segmented status filtering: All, Used, Unused, and Dangling',
+      'Pull images directly from Docker Hub or private container registries',
+      '1-click container launch dialog for any local image',
+      'Bulk selection and safe cleanup of dangling or unreferenced images'
     ]
   },
   {
@@ -196,94 +205,98 @@ export const studioScreens: StudioScreen[] = [
     icon: 'data_object',
     badge: 'Layer Breakdown',
     description:
-      'Inspect the inner anatomy of any Docker image. Step through build history commands, examine individual layer sizes, exposed ports, environment variables, and architecture details.',
+      'Inspect the anatomy of any Docker image with unified metadata cards. Step through layer-by-layer build commands with sizes, inspect architecture (OS / Arch), entrypoints, CMD, and discover all containers currently using the image.',
     highlights: [
-      'Detailed layer-by-layer size breakdown and caching analysis',
-      'Dockerfile command history trace',
-      'Exposed ports, user, and entrypoint configuration',
-      'Image digest, OS architecture, and label verification'
+      'Unified details summary with repository, tag, size, ID, and quick Run action',
+      'Detailed layer-by-layer size breakdown and Dockerfile build command history',
+      'System metadata cards: OS/Arch, entrypoint, default CMD, and creation time',
+      'Containers Using This Image tab to audit running dependencies before deletion'
     ]
   },
   {
     id: 'images-run',
     number: '10',
     title: 'Visual Container Launcher',
-    subtitle: 'Intuitive wizard for port bindings, env vars, volumes, and restart policies',
+    subtitle: 'Form-based runner with port mappings, volume maps, and env editor',
     category: 'images',
     categoryLabel: 'Images',
     image: `${mediaPath}/10.images-run.png`,
     icon: 'play_arrow',
     badge: 'Launch Wizard',
     description:
-      'Run containers from any image with an intuitive visual form. Configure host-to-container port bindings, volume mappings, environment variables, container names, and restart policies without syntax errors.',
+      'Create and start containers directly from any image with an intuitive dialog. Configure port mappings with conflict checks, persistent volume binds, environment variables with raw .env paste support, and custom container names.',
     highlights: [
-      'Form-based port binding configuration with conflict checks',
-      'Add persistent volume mounts and directory binds easily',
-      'Define custom container names and restart policies',
-      'Eliminates long, error-prone `docker run -p -v -e` commands'
+      'Port mappings editor with duplicate binding checks and random host port (0) support',
+      'Volume mappings editor with host path picker, container path, and read-only toggle',
+      'Environment variables editor with key-value pairs and direct .env file paste',
+      'Confirmation guard protecting unsaved creation drafts from accidental navigation',
+      'Eliminates error-prone docker run terminal commands'
     ]
   },
   {
     id: 'volumes-list',
     number: '11',
-    title: 'Volume Fleet Manager',
-    subtitle: 'Inspect persistent Docker volumes, storage drivers, and attached containers',
+    title: 'Volume Fleet Manager & Creation',
+    subtitle: 'Manage persistent Docker volumes, create named volumes, and track usage',
     category: 'volumes',
     categoryLabel: 'Volumes',
     image: `${mediaPath}/11.volumes-list.png`,
     icon: 'storage',
     badge: 'Volume Fleet',
     description:
-      'Manage persistent Docker volumes across your system. Identify which containers are currently attached, review volume drivers, and reclaim unused disk space safely.',
+      'Manage persistent Docker volumes across your system. Create named volumes with custom drivers and optional host directory paths, calculate accurate disk space, filter by usage, and prune unused volumes safely.',
     highlights: [
-      'Identifies mounted vs unmounted orphan volumes',
-      'Storage driver and filesystem scope details',
-      'Attached container cross-references',
-      'Safe deletion of unused persistent volumes'
+      'Create named Docker volumes with custom driver and host directory options',
+      'Total fleet size calculation and per-volume disk consumption',
+      'Segmented status filter: All, In Use, and Unused volumes',
+      'One-click Prune Unused button to reclaim disk space safely',
+      'Quick identification of attached containers and volume drivers'
     ]
   },
   {
     id: 'volumes-files',
     number: '12',
-    title: 'Direct Volume File Explorer',
-    subtitle: 'Browse and inspect files inside Docker volumes directly from your desktop',
+    title: 'Direct Volume Files Explorer & Monaco Editor',
+    subtitle: 'Browse and edit files inside Docker volumes directly from your desktop',
     category: 'volumes',
     categoryLabel: 'Volumes',
     image: `${mediaPath}/12.volumes-files.png`,
     icon: 'inventory_2',
     badge: 'Volume Explorer',
     description:
-      'Directly browse files and folder hierarchies stored inside persistent Docker volumes. Inspect database files, uploaded assets, and application state without spinning up helper containers.',
+      'Directly browse folder hierarchies and edit files stored inside persistent Docker volumes. Inspect volume metadata (driver, mountpoint, created, ref count) and view or modify file contents in-app using Monaco Editor without helper containers.',
     highlights: [
-      'Direct filesystem exploration into named Docker volumes',
-      'Inspect files without spinning up helper busybox containers',
-      'Check nested folder structures, permissions, and file sizes',
-      'Verify persistent databases and uploaded asset directories'
+      'Direct filesystem navigation into named Docker volumes without helper containers',
+      'In-app file viewing and editing powered by the integrated Monaco Editor',
+      'Unified volume details header with total size, mountpoint path, and reference counts',
+      'Breadcrumb path navigation, folder filtering, and safe file deletion',
+      'Audit persistent database configs and uploaded files on your host'
     ]
   },
   {
     id: 'networks-list',
     number: '13',
-    title: 'Network Topologies Hub',
-    subtitle: 'Overview of bridge, host, and overlay networks with subnets & gateways',
+    title: 'Network Topologies & Network Creation',
+    subtitle: 'Inspect bridge, host, and overlay networks, subnets, and create custom networks',
     category: 'networks',
     categoryLabel: 'Networks',
     image: `${mediaPath}/13.networks-list.png`,
     icon: 'lan',
     badge: 'Topologies',
     description:
-      'Visualize and manage Docker networks. Check network drivers (bridge, host, macvlan, overlay), subnets, gateways, and internal isolation settings across all compose and custom networks.',
+      'Visualize, create, and manage Docker networks. Create custom networks with driver selection, custom subnets, gateways, and IP ranges. Inspect connected container counts, driver types, and IPAM mappings.',
     highlights: [
-      'Driver type and network scope overview',
+      'Create custom Docker networks with driver, subnet, gateway, and IP range options',
+      'Driver badges (BRIDGE, NULL, HOST, OVERLAY) and network scope details',
       'Subnet CIDR blocks and default gateway IP mappings',
-      'Internal network isolation status',
-      'Fast search across custom and compose networks'
+      'Segmented filters: All, In Use, Unused, and one-click Prune Unused',
+      'Unsaved network creation draft protection against accidental closure'
     ]
   },
   {
     id: 'networks-containers',
     number: '14',
-    title: 'Network Connectivity & IP Routing',
+    title: 'Network Connectivity & Connected Containers',
     subtitle: 'Map connected containers, IP addresses, aliases, and MAC addresses',
     category: 'networks',
     categoryLabel: 'Networks',
@@ -291,12 +304,13 @@ export const studioScreens: StudioScreen[] = [
     icon: 'hub',
     badge: 'IP Routing',
     description:
-      'Inspect exactly which containers communicate on each network. See IPv4/IPv6 addresses, MAC addresses, endpoint IDs, and network aliases at a glance to diagnose connectivity issues in seconds.',
+      'Inspect connected services on each network in a dedicated table layout. Review container running states, short IDs, image tags, assigned IPv4 addresses with CIDR masks (e.g. 172.18.0.x/16), and uptimes to diagnose inter-service routing.',
     highlights: [
-      'Per-container IPv4 and IPv6 address resolution',
-      'Container network aliases and endpoint IDs',
-      'MAC address and virtual network interface details',
-      'Verify network segregation and inter-service routing'
+      'Dedicated connected containers table with live running status indicators',
+      'Per-container IPv4 address and CIDR prefix resolution',
+      'Unified network summary header with driver, container count, and internal flag',
+      'Network configuration tab for deep driver and IPAM inspection',
+      'Verify network segregation and resolve multi-service communication bugs'
     ]
   },
   {
@@ -310,12 +324,13 @@ export const studioScreens: StudioScreen[] = [
     icon: 'analytics',
     badge: 'Global Stream',
     description:
-      'Aggregate and stream logs across your entire Docker fleet into a single unified timeline. Search keywords across all containers simultaneously to trace multi-service interactions and distributed bugs.',
+      'Aggregate and stream logs across all active containers into a unified real-time timeline. Select specific containers from the filter drawer, search with regex, case-matching, and whole-word toggles, click external URLs, and trace distributed issues.',
     highlights: [
-      'Multi-container simultaneous real-time log stream',
-      'Color-coded container source badges for fast identification',
-      'Fleet-wide instant keyword and regex search',
-      'Correlate events across microservices and databases effortlessly'
+      'Fleet-wide concurrent real-time log aggregation with configurable line buffer',
+      'Color-coded container badges for instant source identification',
+      'Container selection drawer to filter logs by specific services or compose stacks',
+      'Search toolbar with case sensitivity (Aa), whole word (W), and regex (.*)',
+      'Clickable links, hover line highlighting, follow lock, and one-click copy'
     ]
   }
 ];
@@ -332,20 +347,20 @@ const bentoFeatures = [
   {
     span: 'col-span-2',
     kicker: 'Storage & Internals',
-    title: 'A True File Explorer for Docker',
+    title: 'Files Explorer & In-App Monaco Editor',
     description:
-      'Explore, inspect, and manage files inside running containers and persistent volumes just like a native desktop folder. No more assembly of docker cp commands or spinning up helper containers.',
-    badge: 'Zero CLI Commands',
+      'Explore, inspect, edit, and manage files inside running containers and persistent volumes directly from your desktop with the integrated Monaco Editor. No `docker cp` commands or temporary helper containers needed.',
+    badge: 'Monaco Editor Inside',
     image: `${mediaPath}/5.containers-files.png`,
     secondaryImage: `${mediaPath}/12.volumes-files.png`,
-    tags: ['Container Filesystem', 'Volume Filesystem', 'Direct Inspection', 'Permission Auditing']
+    tags: ['In-Container Files', 'Volume Filesystem', 'Monaco Editor', 'Live In-App Editing']
   },
   {
     span: 'col-span-1',
     kicker: 'Zero Latency',
     title: 'Real-Time Resource Pulse',
     description:
-      'Dynamic streaming telemetry tracking CPU %, memory usage against limits, network throughput, and disk block I/O with negligible overhead.',
+      'Live streaming telemetry tracking CPU %, memory against configured limits, network throughput, and disk block I/O with automatic background throttling.',
     badge: 'Live Telemetry',
     image: `${mediaPath}/7.containers-stats.png`,
     tags: ['CPU %', 'Memory Limits', 'Network I/O', 'Disk Stats']
@@ -353,42 +368,42 @@ const bentoFeatures = [
   {
     span: 'col-span-1',
     kicker: 'Direct Access',
-    title: 'Interactive Embedded Shell',
+    title: 'Interactive Terminal & Search',
     description:
-      'Drop straight into `/bin/sh` or `/bin/bash` with full interactive PTY terminal support, command history, and responsive window resizing.',
-    badge: '1-Click Shell',
+      'Drop straight into `/bin/sh` or `/bin/bash` with full xterm.js PTY emulation, built-in terminal text search, reconnect button, and live connection status.',
+    badge: 'PTY Shell + Search',
     image: `${mediaPath}/6.containers-shell.png`,
-    tags: ['PTY Support', 'Bash & Sh', 'ANSI Colors', 'One-Click Exec']
+    tags: ['xterm.js PTY', 'Terminal Search', 'ANSI Colors', 'One-Click Exec']
   },
   {
     span: 'col-span-1',
-    kicker: 'Effortless Run',
-    title: 'Visual Container Launcher',
+    kicker: 'Safe Configuration',
+    title: 'Live Env & Mount Recreation',
     description:
-      'Configure port bindings, volume mappings, environment variables, and restart policies visually in seconds with built-in validation.',
-    badge: 'No Syntax Errors',
-    image: `${mediaPath}/10.images-run.png`,
-    tags: ['Port Validation', 'Volume Maps', 'Env Editor', 'Restart Policies']
+      'Edit environment variables (with raw `.env` paste) and volume mounts directly. Apply changes via safe Docker Engine recreation with automatic rollback protection.',
+    badge: 'Rollback Protection',
+    image: `${mediaPath}/3.containers-env.png`,
+    tags: ['Raw .env Paste', 'Mount Bindings', 'Safe Recreation', 'Rollback Guard']
   },
   {
     span: 'col-span-1',
-    kicker: 'Networking Map',
-    title: 'Network Topologies & IP Map',
+    kicker: 'Fleet Control',
+    title: 'Compose Stacks & Group Metrics',
     description:
-      'Inspect which containers communicate on each network, resolve assigned IPv4/IPv6 addresses, MAC addresses, and verify isolation.',
-    badge: 'Network Insights',
-    image: `${mediaPath}/14.networks-containers.png`,
-    tags: ['Subnets & Gateways', 'IP Mapping', 'Bridge & Host', 'Aliases']
+      'Group containers by Docker Compose projects with aggregate CPU & memory metrics, coordinated start/stop/restart, and Compose-aware force recreation.',
+    badge: 'Compose Aware',
+    image: `${mediaPath}/1.containers-list.png`,
+    tags: ['Compose Grouping', 'Aggregate Metrics', 'Force Recreate', 'Shift-Click Select']
   },
   {
     span: 'col-span-2',
     kicker: 'Fleet Observability',
     title: 'Unified Multi-Container Global Logs',
     description:
-      'Aggregate stdout and stderr across all your active containers into a unified timeline. Search keywords fleet-wide to trace microservice issues effortlessly.',
+      'Stream stdout and stderr across all active containers into a unified timeline. Filter by container, search with regex, click URLs, and correlate distributed microservice events.',
     badge: 'Fleet-Wide Search',
     image: `${mediaPath}/15.global-logs.png`,
-    tags: ['Multi-Service Stream', 'Color-Coded Badges', 'Global Search', 'Distributed Tracing']
+    tags: ['Multi-Service Stream', 'Color-Coded Badges', 'Regex Search', 'Clickable Links']
   }
 ];
 
@@ -400,6 +415,8 @@ export default function ContainerStudioPage(): ReactNode {
   const selectedOS = userSelectedOS ?? detectedOS;
   const [otherFormatsOpen, setOtherFormatsOpen] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const subNavRef = useRef<HTMLDivElement>(null);
+  const isFirstTourRender = useRef<boolean>(true);
   const [releaseInfo, setReleaseInfo] = useState<{
     version: string;
     publishedDate?: string;
@@ -415,21 +432,26 @@ export default function ContainerStudioPage(): ReactNode {
   const activeTourModuleKey = activeTourScreen.category;
   const currentModuleScreens = studioScreens.filter(s => s.category === activeTourModuleKey);
 
-  const currentScreenIndex = currentModuleScreens.findIndex(s => s.id === activeTourId);
-  const safeCurrentIndex = currentScreenIndex !== -1 ? currentScreenIndex : 0;
-
   const primaryDownload = ContainerStudioConfig.getPrimaryDownload(selectedOS, releaseInfo.version);
   const allDownloads = ContainerStudioConfig.getAllDownloads(releaseInfo.version);
 
   const goToPrevTourScreen = useCallback(() => {
-    const prevIdx = (safeCurrentIndex - 1 + currentModuleScreens.length) % currentModuleScreens.length;
-    setActiveTourId(currentModuleScreens[prevIdx].id);
-  }, [safeCurrentIndex, currentModuleScreens]);
+    setActiveTourId(prevId => {
+      const idx = studioScreens.findIndex(s => s.id === prevId);
+      const safeIdx = idx !== -1 ? idx : 0;
+      const prevIdx = (safeIdx - 1 + studioScreens.length) % studioScreens.length;
+      return studioScreens[prevIdx].id;
+    });
+  }, []);
 
   const goToNextTourScreen = useCallback(() => {
-    const nextIdx = (safeCurrentIndex + 1) % currentModuleScreens.length;
-    setActiveTourId(currentModuleScreens[nextIdx].id);
-  }, [safeCurrentIndex, currentModuleScreens]);
+    setActiveTourId(prevId => {
+      const idx = studioScreens.findIndex(s => s.id === prevId);
+      const safeIdx = idx !== -1 ? idx : 0;
+      const nextIdx = (safeIdx + 1) % studioScreens.length;
+      return studioScreens[nextIdx].id;
+    });
+  }, []);
 
   const touchStartXRef = useRef<number | null>(null);
   const touchStartYRef = useRef<number | null>(null);
@@ -501,6 +523,39 @@ export default function ContainerStudioPage(): ReactNode {
       });
   }, []);
 
+  useEffect(() => {
+    studioScreens.forEach(scr => {
+      const img = new Image();
+      img.src = scr.image;
+    });
+  }, []);
+
+  useEffect(() => {
+    if (isFirstTourRender.current) {
+      isFirstTourRender.current = false;
+      return;
+    }
+    const container = subNavRef.current;
+    if (container) {
+      const activeBtn = container.querySelector<HTMLElement>(`.${styles.subScreenChipActive}`);
+      if (activeBtn) {
+        const containerLeft = container.scrollLeft;
+        const containerWidth = container.clientWidth;
+        const btnLeft = activeBtn.offsetLeft;
+        const btnWidth = activeBtn.offsetWidth;
+
+        if (btnLeft < containerLeft) {
+          container.scrollTo({ left: Math.max(0, btnLeft - 12), behavior: 'smooth' });
+        } else if (btnLeft + btnWidth > containerLeft + containerWidth) {
+          container.scrollTo({
+            left: btnLeft + btnWidth - containerWidth + 12,
+            behavior: 'smooth'
+          });
+        }
+      }
+    }
+  }, [activeTourId]);
+
   const openLightbox = useCallback((id: string) => {
     const idx = studioScreens.findIndex(s => s.id === id);
     if (idx !== -1) {
@@ -509,7 +564,12 @@ export default function ContainerStudioPage(): ReactNode {
   }, []);
 
   const closeLightbox = useCallback(() => {
-    setLightboxIndex(null);
+    setLightboxIndex(curr => {
+      if (curr !== null && studioScreens[curr]) {
+        setActiveTourId(studioScreens[curr].id);
+      }
+      return null;
+    });
   }, []);
 
   const nextLightboxImage = useCallback(() => {
@@ -519,6 +579,33 @@ export default function ContainerStudioPage(): ReactNode {
   const prevLightboxImage = useCallback(() => {
     setLightboxIndex(prev => (prev === null ? null : (prev - 1 + studioScreens.length) % studioScreens.length));
   }, []);
+
+  const lightboxTouchStartXRef = useRef<number | null>(null);
+  const lightboxTouchStartYRef = useRef<number | null>(null);
+
+  const handleLightboxTouchStart = useCallback((e: React.TouchEvent) => {
+    lightboxTouchStartXRef.current = e.touches[0].clientX;
+    lightboxTouchStartYRef.current = e.touches[0].clientY;
+  }, []);
+
+  const handleLightboxTouchEnd = useCallback(
+    (e: React.TouchEvent) => {
+      if (lightboxTouchStartXRef.current === null || lightboxTouchStartYRef.current === null) return;
+      const deltaX = e.changedTouches[0].clientX - lightboxTouchStartXRef.current;
+      const deltaY = e.changedTouches[0].clientY - lightboxTouchStartYRef.current;
+
+      if (Math.abs(deltaX) > 35 && Math.abs(deltaX) > Math.abs(deltaY) * 1.3) {
+        if (deltaX < 0) {
+          nextLightboxImage();
+        } else {
+          prevLightboxImage();
+        }
+      }
+      lightboxTouchStartXRef.current = null;
+      lightboxTouchStartYRef.current = null;
+    },
+    [nextLightboxImage, prevLightboxImage]
+  );
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -796,8 +883,10 @@ export default function ContainerStudioPage(): ReactNode {
                 <CatbeeIcon name='bolt' size='medium' />
               </div>
               <div className={styles.tickerText}>
-                <Heading as='h4'>Zero-Command Flow</Heading>
-                <p>Start, stop, restart, inspect, and configure resources with single-click precision.</p>
+                <Heading as='h4'>Zero-Command Lifecycle</Heading>
+                <p>
+                  Start, stop, restart, force recreate, inspect, and configure containers with single-click precision.
+                </p>
               </div>
             </div>
 
@@ -806,8 +895,8 @@ export default function ContainerStudioPage(): ReactNode {
                 <CatbeeIcon name='folder' size='medium' />
               </div>
               <div className={styles.tickerText}>
-                <Heading as='h4'>Direct In-Container Files</Heading>
-                <p>Explore and inspect files inside containers and volumes like local desktop folders.</p>
+                <Heading as='h4'>Direct Files & Monaco Editor</Heading>
+                <p>Explore, inspect, and edit files inside running containers and volumes with Monaco Editor.</p>
               </div>
             </div>
 
@@ -816,8 +905,8 @@ export default function ContainerStudioPage(): ReactNode {
                 <CatbeeIcon name='show_chart' size='medium' />
               </div>
               <div className={styles.tickerText}>
-                <Heading as='h4'>Live Telemetry Graphs</Heading>
-                <p>Stream real-time CPU %, memory consumption, and network I/O with zero lag.</p>
+                <Heading as='h4'>Live Telemetry & Group Metrics</Heading>
+                <p>Stream real-time CPU %, memory consumption, network throughput, and Compose stack metrics.</p>
               </div>
             </div>
 
@@ -872,7 +961,7 @@ export default function ContainerStudioPage(): ReactNode {
 
             {/* Sub-screen Selectors */}
             <div className={styles.tourSubNavWrapper}>
-              <div className={styles.tourSubNav}>
+              <div className={styles.tourSubNav} ref={subNavRef}>
                 {currentModuleScreens.map(scr => {
                   const isSelected = scr.id === activeTourId;
                   return (
@@ -883,7 +972,7 @@ export default function ContainerStudioPage(): ReactNode {
                       onClick={() => setActiveTourId(scr.id)}
                     >
                       <span className={styles.chipNum}>{scr.number}</span>
-                      <span>{scr.title.split('&')[0].trim()}</span>
+                      <span>{scr.badge ?? scr.title.split('&')[0].trim()}</span>
                     </button>
                   );
                 })}
@@ -936,7 +1025,7 @@ export default function ContainerStudioPage(): ReactNode {
                       onClick={() => openLightbox(activeTourScreen.id)}
                       aria-label={`Open ${activeTourScreen.title} in fullscreen`}
                     >
-                      <AnimatePresence mode='wait'>
+                      <AnimatePresence mode='popLayout'>
                         <motion.img
                           key={activeTourScreen.id}
                           src={activeTourScreen.image}
@@ -945,8 +1034,8 @@ export default function ContainerStudioPage(): ReactNode {
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
                           exit={{ opacity: 0 }}
-                          transition={{ duration: 0.22, ease: 'easeInOut' }}
-                          loading='lazy'
+                          transition={{ duration: 0.18, ease: 'easeInOut' }}
+                          loading='eager'
                         />
                       </AnimatePresence>
                     </button>
@@ -993,16 +1082,13 @@ export default function ContainerStudioPage(): ReactNode {
 
                   <p className={styles.tourMetaDesc}>{activeTourScreen.description}</p>
 
-                  <div className={styles.tourHighlightsBlock}>
-                    <div className={styles.highlightsHeader}>Key Capabilities:</div>
-                    <ul className={styles.highlightsList}>
-                      {activeTourScreen.highlights.map((h, i) => (
-                        <li key={i}>
-                          <CatbeeIcon name='check_circle' size='small' />
-                          <span>{h}</span>
-                        </li>
-                      ))}
-                    </ul>
+                  <div className={styles.tourHighlightsPills}>
+                    {activeTourScreen.highlights.slice(0, 3).map((h, i) => (
+                      <div key={i} className={styles.tourHighlightPill} title={h}>
+                        <CatbeeIcon name='check_circle' size='small' />
+                        <span>{h}</span>
+                      </div>
+                    ))}
                   </div>
 
                   <div className={styles.tourMetaActions}>
@@ -1112,8 +1198,8 @@ export default function ContainerStudioPage(): ReactNode {
                 </div>
                 <Heading as='h3'>Electron + Angular Architecture</Heading>
                 <p>
-                  High-performance desktop shell powered by Angular’s modern reactivity and Electron’s native OS
-                  integration. Low idle memory and instantaneous view switching.
+                  High-performance desktop shell powered by Angular Signals, Signal Forms, and control flow paired with
+                  Electron. Low idle memory, instantaneous view switching, and integrated Monaco Editor.
                 </p>
               </div>
 
@@ -1124,7 +1210,7 @@ export default function ContainerStudioPage(): ReactNode {
                 <Heading as='h3'>Direct Engine Socket</Heading>
                 <p>
                   Communicates directly through local Docker daemon sockets (`/var/run/docker.sock` on Linux/macOS or
-                  `\\.\pipe\docker_engine` on Windows). No intermediaries.
+                  `\\.\pipe\docker_engine` on Windows) via Dockerode. No intermediaries.
                 </p>
               </div>
 
@@ -1145,8 +1231,8 @@ export default function ContainerStudioPage(): ReactNode {
                 </div>
                 <Heading as='h3'>Universal Compatibility</Heading>
                 <p>
-                  Works out of the box with Docker Desktop, Rancher Desktop, Colima, Podman, or standalone rootless
-                  Docker installations on Windows, macOS, and Linux.
+                  Available for Windows (.exe, portable .zip, Microsoft Store), macOS (Universal .dmg, .zip), and Linux
+                  (.AppImage, .deb, .rpm, .tar.gz). Works with Docker Desktop, Rancher, Colima, or Podman.
                 </p>
               </div>
             </div>
@@ -1214,7 +1300,7 @@ export default function ContainerStudioPage(): ReactNode {
                 </li>
                 <li>
                   <span>Framework</span>
-                  <strong>Electron • Angular • Dockerode</strong>
+                  <strong>Electron • Angular • Monaco Editor • Dockerode</strong>
                 </li>
               </ul>
 
@@ -1299,6 +1385,19 @@ export default function ContainerStudioPage(): ReactNode {
                   </div>
 
                   <div className={styles.lightboxActions}>
+                    <div className={styles.lightboxShortcutInfo}>
+                      <span className={styles.shortcutKeyGroup}>
+                        <kbd>←</kbd>
+                        <kbd>→</kbd>
+                        <span>Navigate</span>
+                      </span>
+                      <span className={styles.shortcutDivider}>•</span>
+                      <span className={styles.shortcutKeyGroup}>
+                        <kbd>Esc</kbd>
+                        <span>Close</span>
+                      </span>
+                    </div>
+
                     <button
                       type='button'
                       className={styles.lightboxCloseBtn}
@@ -1312,7 +1411,11 @@ export default function ContainerStudioPage(): ReactNode {
                 </div>
 
                 {/* Lightbox Media Stage */}
-                <div className={styles.lightboxMediaStage}>
+                <div
+                  className={styles.lightboxMediaStage}
+                  onTouchStart={handleLightboxTouchStart}
+                  onTouchEnd={handleLightboxTouchEnd}
+                >
                   <button
                     type='button'
                     className={clsx(styles.lightboxNavBtn, styles.lightboxPrevBtn)}
@@ -1321,6 +1424,7 @@ export default function ContainerStudioPage(): ReactNode {
                       prevLightboxImage();
                     }}
                     title='Previous image (Left arrow)'
+                    aria-label='Previous image'
                   >
                     <CatbeeIcon name='chevron_left' size='large' />
                   </button>
@@ -1330,6 +1434,7 @@ export default function ContainerStudioPage(): ReactNode {
                       src={studioScreens[lightboxIndex].image}
                       alt={studioScreens[lightboxIndex].title}
                       className={styles.lightboxImage}
+                      loading='eager'
                     />
                   </div>
 
@@ -1341,6 +1446,7 @@ export default function ContainerStudioPage(): ReactNode {
                       nextLightboxImage();
                     }}
                     title='Next image (Right arrow)'
+                    aria-label='Next image'
                   >
                     <CatbeeIcon name='chevron_right' size='large' />
                   </button>
@@ -1359,7 +1465,6 @@ export default function ContainerStudioPage(): ReactNode {
                       ))}
                     </div>
                   </div>
-                  <div className={styles.lightboxShortcutInfo}>Use ← and → arrow keys to navigate, Esc to close</div>
                 </div>
               </motion.div>
             </motion.div>

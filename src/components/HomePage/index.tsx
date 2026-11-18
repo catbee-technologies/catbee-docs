@@ -126,8 +126,11 @@ server.enableGracefulShutdown();
             />
             <div className={styles.containerStudioPromoCopy}>
               <span className={styles.containerStudioPromoKicker}>New from CatBee</span>
-              <Heading as='h2'>Docker, with a little more clarity.</Heading>
-              <p>Run, inspect, and manage containers, images, volumes, and files from one focused desktop workspace.</p>
+              <Heading as='h2'>Docker, with complete desktop clarity.</Heading>
+              <p>
+                Run, inspect, edit files with Monaco Editor, and manage containers, images, volumes, and networks from
+                one focused desktop workspace.
+              </p>
               <div className={styles.containerStudioPromoActions}>
                 <Link
                   className={clsx(

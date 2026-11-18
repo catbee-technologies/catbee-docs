@@ -32,7 +32,7 @@ export class ContainerStudioConfig {
   static readonly MICROSOFT_STORE_PRODUCT_ID = '9NX6H3J2RNX2';
   static readonly MICROSOFT_STORE_URL = `https://apps.microsoft.com/detail/${this.MICROSOFT_STORE_PRODUCT_ID}?referrer=appbadge&mode=full`;
 
-  static readonly DEFAULT_VERSION = 'v0.4.0';
+  static readonly DEFAULT_VERSION = 'v0.6.0';
 
   private static readonly DOWNLOAD_URL = `${this.GITHUB_URL}/releases/download`;
 
