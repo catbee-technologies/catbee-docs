@@ -56,7 +56,17 @@ const navbar: DeepPartial<Navbar> = {
       position: 'left',
       className: 'navbar-products-dropdown',
       items: [
-        { to: '/catbee-container-studio/', label: 'CatBee Container Studio', className: 'navbar-item-new-badge' },
+        {
+          to: '/catbee-container-studio/',
+          label: 'CatBee Container Studio',
+          className: 'navbar-item-new-badge',
+          activeBaseRegex: '^/catbee-container-studio/?$'
+        },
+        {
+          to: '/catbee-container-studio/docs/',
+          label: 'Container Studio Docs',
+          activeBaseRegex: '^/catbee-container-studio/docs(?:/|$)'
+        },
         {
           href: 'https://apps.microsoft.com/detail/9NX6H3J2RNX2?referrer=appbadge&mode=full',
           label: 'Get it from Microsoft Store'
