@@ -41,6 +41,18 @@ const footer: DeepPartial<MultiColumnFooter> = {
         {
           label: 'CatBee Container Studio',
           to: '/catbee-container-studio/'
+        },
+        {
+          label: 'Container Studio Docs',
+          to: '/catbee-container-studio/docs/'
+        },
+        {
+          label: 'Built-in Engine',
+          to: '/catbee-container-studio/docs/docker-engine/built-in-engine'
+        },
+        {
+          label: 'Kubernetes (kind)',
+          to: '/catbee-container-studio/docs/kubernetes'
         }
       ]
     },

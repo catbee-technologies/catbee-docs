@@ -102,7 +102,23 @@ const config: Config = {
       ]
     }
   } satisfies Preset.ThemeConfig,
-  plugins: ['@docusaurus/plugin-client-redirects', 'docusaurus-plugin-sass'],
+  plugins: [
+    '@docusaurus/plugin-client-redirects',
+    'docusaurus-plugin-sass',
+    [
+      '@docusaurus/plugin-content-docs',
+      {
+        id: 'container-studio',
+        path: 'container-studio-docs',
+        routeBasePath: '/catbee-container-studio/docs',
+        sidebarPath: './sidebarsContainerStudio.ts',
+        showLastUpdateTime: true,
+        breadcrumbs: true,
+        showLastUpdateAuthor: true,
+        editUrl: 'https://github.com/catbee-technologies/catbee-docs/tree/main/'
+      }
+    ]
+  ],
   clientModules: ['./src/vercel-insights.ts']
 };
 

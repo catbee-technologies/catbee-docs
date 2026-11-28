@@ -50,7 +50,7 @@ export const studioScreens: StudioScreen[] = [
       'Force recreate for individual containers, selected containers, or Compose groups',
       'Visual CPU and memory progress bars with real-time utilization tracking',
       'Interactive published port pills with quick-launch browser links',
-      'Quick filters for running containers and Kubernetes-managed services',
+      'Quick filters for running containers and Kubernetes-managed (k8s) nodes',
       'Multi-selection with shift-click range select and resizable persistent columns'
     ]
   },
@@ -631,7 +631,7 @@ export default function ContainerStudioPage(): ReactNode {
   return (
     <Layout
       title='CatBee Container Studio'
-      description='A focused desktop control room for Docker containers, images, volumes, networks, and files.'
+      description='A focused desktop control room with a built-in Docker engine, local Kubernetes (kind), bundled Docker CLI, and Monaco file editing.'
     >
       <main className={styles.page}>
         {/* ================= HERO SECTION ================= */}
@@ -645,7 +645,7 @@ export default function ContainerStudioPage(): ReactNode {
               transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
             >
               <p className={styles.eyebrow}>
-                <span /> Desktop tooling for Docker
+                <span /> Built-in Engine • Kubernetes • Docker Control Room
               </p>
 
               <Heading as='h1'>
@@ -655,8 +655,9 @@ export default function ContainerStudioPage(): ReactNode {
               </Heading>
 
               <p className={styles.heroLead}>
-                CatBee Container Studio is a focused control room for Docker. Run, inspect, monitor, and manage your
-                containers, images, volumes, networks, and files without losing your flow to the command line.
+                CatBee Container Studio {releaseInfo.version} is a cross-platform desktop control room with an optional
+                built-in container engine (WSL 2, Lima VM, Rootless Linux), local Kubernetes via kind, bundled Docker
+                CLI, and Monaco file editing — no Docker Desktop required.
               </p>
 
               <div className={styles.heroActions}>
@@ -806,6 +807,11 @@ export default function ContainerStudioPage(): ReactNode {
                     <span>Universal AppImage</span>
                   </Link>
                 )}
+
+                <Link className={styles.outlineButton} to={ContainerStudioConfig.DOCS_URL}>
+                  <CatbeeIcon name='menu_book' size='small' />
+                  <span>Documentation</span>
+                </Link>
               </div>
 
               <div className={styles.platforms}>
@@ -880,12 +886,25 @@ export default function ContainerStudioPage(): ReactNode {
           <div className={clsx('container', styles.tickerGrid)}>
             <div className={styles.tickerCard}>
               <div className={styles.tickerIcon}>
+                <CatbeeIcon name='developer_board' size='medium' />
+              </div>
+              <div className={styles.tickerText}>
+                <Heading as='h4'>Built-in Engine &amp; Kubernetes</Heading>
+                <p>
+                  Isolated WSL 2, Lima VM, or Rootless Docker engines plus local 1–8 node kind Kubernetes out of the
+                  box.
+                </p>
+              </div>
+            </div>
+
+            <div className={styles.tickerCard}>
+              <div className={styles.tickerIcon}>
                 <CatbeeIcon name='bolt' size='medium' />
               </div>
               <div className={styles.tickerText}>
                 <Heading as='h4'>Zero-Command Lifecycle</Heading>
                 <p>
-                  Start, stop, restart, force recreate, inspect, and configure containers with single-click precision.
+                  Compose grouping, force recreate with rollback guard, quick switcher sidebar, and bundled Docker CLI.
                 </p>
               </div>
             </div>
@@ -895,18 +914,8 @@ export default function ContainerStudioPage(): ReactNode {
                 <CatbeeIcon name='folder' size='medium' />
               </div>
               <div className={styles.tickerText}>
-                <Heading as='h4'>Direct Files & Monaco Editor</Heading>
+                <Heading as='h4'>Direct Files &amp; Monaco Editor</Heading>
                 <p>Explore, inspect, and edit files inside running containers and volumes with Monaco Editor.</p>
-              </div>
-            </div>
-
-            <div className={styles.tickerCard}>
-              <div className={styles.tickerIcon}>
-                <CatbeeIcon name='show_chart' size='medium' />
-              </div>
-              <div className={styles.tickerText}>
-                <Heading as='h4'>Live Telemetry & Group Metrics</Heading>
-                <p>Stream real-time CPU %, memory consumption, network throughput, and Compose stack metrics.</p>
               </div>
             </div>
 
@@ -915,8 +924,10 @@ export default function ContainerStudioPage(): ReactNode {
                 <CatbeeIcon name='shield' size='medium' />
               </div>
               <div className={styles.tickerText}>
-                <Heading as='h4'>100% Local & Private</Heading>
-                <p>Direct Docker socket connection with zero external servers and zero telemetry leakage.</p>
+                <Heading as='h4'>100% Local &amp; Private</Heading>
+                <p>
+                  Direct Docker socket connection with corporate CA sync, zero external servers, and zero telemetry.
+                </p>
               </div>
             </div>
           </div>
@@ -1186,31 +1197,86 @@ export default function ContainerStudioPage(): ReactNode {
                 <span>privacy, and reliability.</span>
               </Heading>
               <p>
-                CatBee Container Studio is designed as a direct desktop interface. No cloud proxies, no required
-                accounts, and no telemetry tracking your containers.
+                CatBee Container Studio v1.x.x combines a direct desktop Docker workspace with an optional built-in
+                container engine, local Kubernetes, and bundled Docker CLI — with no cloud proxies or telemetry.
               </p>
             </div>
 
             <div className={styles.specsGrid}>
               <div className={styles.specCard}>
                 <div className={styles.specIcon}>
-                  <CatbeeIcon name='devicon-electron-original' size='large' />
+                  <CatbeeIcon name='developer_board' size='large' />
                 </div>
-                <Heading as='h3'>Electron + Angular Architecture</Heading>
+                <Heading as='h3'>Built-in Container Engine</Heading>
                 <p>
-                  High-performance desktop shell powered by Angular Signals, Signal Forms, and control flow paired with
-                  Electron. Low idle memory, instantaneous view switching, and integrated Monaco Editor.
+                  Run containers without Docker Desktop using an isolated WSL 2 Alpine distro (Windows), Lima VM with
+                  Apple Virtualization &amp; Rosetta 2 (macOS), or native Rootless Docker (Linux).
                 </p>
               </div>
 
               <div className={styles.specCard}>
                 <div className={styles.specIcon}>
-                  <CatbeeIcon name='devicon-docker-plain' size='large' />
+                  <CatbeeIcon name='hub' size='large' />
                 </div>
-                <Heading as='h3'>Direct Engine Socket</Heading>
+                <Heading as='h3'>Local Kubernetes (kind)</Heading>
                 <p>
-                  Communicates directly through local Docker daemon sockets (`/var/run/docker.sock` on Linux/macOS or
-                  `\\.\pipe\docker_engine` on Windows) via Dockerode. No intermediaries.
+                  Launch 1–8 node Kubernetes clusters on the built-in engine with selectable versions, automatic
+                  kubeconfig setup, and LoadBalancer support via cloud-provider-kind.
+                </p>
+              </div>
+
+              <div className={styles.specCard}>
+                <div className={styles.specIcon}>
+                  <CatbeeIcon name='terminal' size='large' />
+                </div>
+                <Heading as='h3'>Bundled Docker CLI &amp; Contexts</Heading>
+                <p>
+                  Bundles the standalone Docker CLI in `~/.catbee/bin`, manages the `catbee-desktop` context, and
+                  translates Windows host bind-mount paths automatically.
+                </p>
+              </div>
+
+              <div className={styles.specCard}>
+                <div className={styles.specIcon}>
+                  <CatbeeIcon name='devicon-electron-original' size='large' />
+                </div>
+                <Heading as='h3'>Electron + Angular Architecture</Heading>
+                <p>
+                  Powered by Angular Signals, Signal Forms, Monaco Editor, xterm.js, Chart.js, and TanStack Virtual.
+                  Includes a collapsible Container Quick Switcher sidebar and searchable JSON inspect viewer.
+                </p>
+              </div>
+
+              <div className={styles.specCard}>
+                <div className={styles.specIcon}>
+                  <CatbeeIcon name='vpn_lock' size='large' />
+                </div>
+                <Heading as='h3'>Proxies &amp; Corporate CA Sync</Heading>
+                <p>
+                  Independent Engine and Container HTTP/HTTPS proxies, automatic Windows/macOS Root CA trust sync,
+                  `~/.docker/certs.d` mirroring, and VPN-friendly MTU clamping.
+                </p>
+              </div>
+
+              <div className={styles.specCard}>
+                <div className={styles.specIcon}>
+                  <CatbeeIcon name='tune' size='large' />
+                </div>
+                <Heading as='h3'>Modular Settings &amp; Updates</Heading>
+                <p>
+                  Searchable Settings across General, Resources, Engine, Kubernetes, and Troubleshoot, live
+                  `daemon.json` &amp; BuildKit cache inspector, and in-app updates with GitHub release notes.
+                </p>
+              </div>
+
+              <div className={styles.specCard}>
+                <div className={styles.specIcon}>
+                  <CatbeeIcon name='cleaning_services' size='large' />
+                </div>
+                <Heading as='h3'>Clean Teardown &amp; Recovery</Heading>
+                <p>
+                  Restart the engine, prune unused resources, restore factory defaults, or run a complete Factory Reset
+                  &amp; Teardown from Settings or via `--factory-reset` / `--uninstall`.
                 </p>
               </div>
 
@@ -1218,21 +1284,10 @@ export default function ContainerStudioPage(): ReactNode {
                 <div className={styles.specIcon}>
                   <CatbeeIcon name='lock' size='large' />
                 </div>
-                <Heading as='h3'>100% Offline & Private</Heading>
+                <Heading as='h3'>Direct Socket &amp; 100% Private</Heading>
                 <p>
-                  Your images, environment variables, secret tokens, and volume data remain entirely local on your
-                  workstation. Zero external telemetry or cloud analytics.
-                </p>
-              </div>
-
-              <div className={styles.specCard}>
-                <div className={styles.specIcon}>
-                  <CatbeeIcon name='devices' size='large' />
-                </div>
-                <Heading as='h3'>Universal Compatibility</Heading>
-                <p>
-                  Available for Windows (.exe, portable .zip, Microsoft Store), macOS (Universal .dmg, .zip), and Linux
-                  (.AppImage, .deb, .rpm, .tar.gz). Works with Docker Desktop, Rancher, Colima, or Podman.
+                  Communicates directly with built-in or external Docker daemons (Docker Desktop, Rancher, Colima,
+                  Podman) via local sockets or named pipes. Zero accounts and zero telemetry.
                 </p>
               </div>
             </div>
@@ -1250,10 +1305,15 @@ export default function ContainerStudioPage(): ReactNode {
                 <span>from your desktop.</span>
               </Heading>
               <p className={styles.downloadLead}>
-                Available for Windows, macOS, and Linux. Free and open source under the MIT License.
+                Available for Windows, macOS, and Linux. Free and open source under the MIT License — with full docs for
+                built-in engines, Docker CLI, and Kubernetes.
               </p>
 
               <div className={styles.downloadActions}>
+                <Link className={styles.primaryButton} to={ContainerStudioConfig.DOCS_URL}>
+                  <CatbeeIcon name='menu_book' size='small' />
+                  <span>Read Documentation</span>
+                </Link>
                 <Link
                   className={styles.outlineButton}
                   href='https://github.com/catbee-technologies/catbee-container-studio'
@@ -1290,6 +1350,17 @@ export default function ContainerStudioPage(): ReactNode {
                     <strong>{releaseInfo.publishedDate}</strong>
                   </li>
                 )}
+                <li>
+                  <span>Documentation</span>
+                  <Link to={ContainerStudioConfig.DOCS_URL} className={styles.releaseBadgeLink}>
+                    <strong>Container Studio Docs</strong>
+                    <span className={styles.releaseBadgeArrow}>→</span>
+                  </Link>
+                </li>
+                <li>
+                  <span>Engines</span>
+                  <strong>Built-in (WSL 2 / Lima / Rootless) • External • kind K8s</strong>
+                </li>
                 <li>
                   <span>License</span>
                   <strong>MIT Open Source</strong>

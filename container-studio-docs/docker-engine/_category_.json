@@ -1,0 +1,8 @@
+{
+  "label": "Docker Engine & Runtimes",
+  "position": 3,
+  "link": {
+    "type": "generated-index",
+    "description": "Configure CatBee's built-in engine, external Docker engines, standalone Docker CLI contexts, proxies, certificates, and networking."
+  }
+}

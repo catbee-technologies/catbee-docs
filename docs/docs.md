@@ -60,6 +60,7 @@ MIT © Catbee Technologies (see the [LICENSE](/license) file for the full text)
 
 ## 🔗 Quick Links
 
+- [CatBee Container Studio](/catbee-container-studio/) & [Container Studio Docs](/catbee-container-studio/docs/)
 - [@ng-catbee (Angular Libraries)](./@ng-catbee/)
 - [@catbee (Backend Libraries)](./@catbee/)
 - [GitHub Organization](https://github.com/catbee-technologies)

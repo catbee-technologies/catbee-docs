@@ -31,8 +31,10 @@ export class ContainerStudioConfig {
   static readonly LATEST_RELEASE_URL = `${this.GITHUB_URL}/releases/latest`;
   static readonly MICROSOFT_STORE_PRODUCT_ID = '9NX6H3J2RNX2';
   static readonly MICROSOFT_STORE_URL = `https://apps.microsoft.com/detail/${this.MICROSOFT_STORE_PRODUCT_ID}?referrer=appbadge&mode=full`;
+  static readonly DOCS_URL = '/catbee-container-studio/docs/';
+  static readonly KUBERNETES_DOCS_URL = '/catbee-container-studio/docs/kubernetes';
 
-  static readonly DEFAULT_VERSION = 'v0.6.0';
+  static readonly DEFAULT_VERSION = 'v1.0.0';
 
   private static readonly DOWNLOAD_URL = `${this.GITHUB_URL}/releases/download`;
 

@@ -231,6 +231,23 @@ html[data-theme='light'] {
     transform: translateY(0);
     visibility: visible;
     transition-delay: 0s;
+
+    &::before {
+      pointer-events: auto;
+    }
+  }
+}
+
+/* Immediately close any previously hovered dropdown when another dropdown is hovered */
+nav.navbar:has(.dropdown--hoverable:hover) .dropdown--hoverable:not(:hover):not(.dropdown--show) .dropdown__menu {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition-duration: 0s;
+  transition-delay: 0s;
+
+  &::before {
+    pointer-events: none;
   }
 }
 
@@ -246,10 +263,9 @@ html[data-theme='light'] {
   min-width: 14rem;
   margin-top: 0 !important;
   top: calc(100% - 2px);
-  // Grace delay on mouse-leave to prevent premature closing when moving diagonally:
-  transition: opacity 0.18s ease 0.14s, visibility 0.18s ease 0.14s, transform 0.18s ease 0.14s;
+  transition: opacity 0.12s ease 0.08s, visibility 0.12s ease 0.08s, transform 0.12s ease 0.08s;
 
-  // Invisible hover bridge connecting the navbar trigger to the dropdown menu:
+  // Invisible hover bridge connecting the navbar trigger to the dropdown menu when open:
   &::before {
     content: '';
     position: absolute;
@@ -258,7 +274,7 @@ html[data-theme='light'] {
     right: 0;
     height: 16px;
     background: transparent;
-    pointer-events: auto;
+    pointer-events: none;
     z-index: 5;
   }
 

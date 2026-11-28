@@ -126,7 +126,7 @@
   align-items: center;
   gap: 0.85rem;
   margin-top: 1.8rem;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
 
   @media (max-width: 991px) {
     flex-wrap: wrap;
